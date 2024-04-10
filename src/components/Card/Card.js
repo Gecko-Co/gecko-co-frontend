@@ -8,8 +8,11 @@ const Card = ({ page, results }) => {
 
   if (results) {
     display = results.map((x) => {
-      let { id, image, name, status, location } = x;
+      // Ensure x and x.location are defined before accessing their properties
+      let { id, image, name, status, location, species, price = {} } = x || {};
 
+      // Now, even if x or location is undefined, the code won't throw an error
+      // but instead, use the default empty object {} and proceed without crashing
       return (
         <Link
           style={{ textDecoration: "none" }}
@@ -20,18 +23,21 @@ const Card = ({ page, results }) => {
           <div
             className={`${styles.card} d-flex flex-column justify-content-center`}
           >
-            <img className={`${styles.img} img-fluid`} src={image} alt="" />
+            <img className={`${styles.img} img-fluid`} src={image} alt={name} style={{ width: "250px", height: "200px" }} />
             <div className={`${styles.content}`}>
               <div className="fs-5 fw-bold mb-4">{name}</div>
-              <div className="">
-                <div className="fs-6 fw-normal">Last Location</div>
-                <div className="fs-5">{location.name}</div>
-              </div>
+              
+                <div className="fs-7 fw-normal">Species</div>
+                <div className="fs-6">{species || 'Unknown'}</div>
+              
+
+              
+              
             </div>
           </div>
 
           {(() => {
-            if (status === "Dead") {
+            if (status === "Sold") {
               return (
                 <div
                   className={`${styles.badge} position-absolute badge bg-danger`}
@@ -39,7 +45,7 @@ const Card = ({ page, results }) => {
                   {status}
                 </div>
               );
-            } else if (status === "Alive") {
+            } else if (status === "Available") {
               return (
                 <div
                   className={`${styles.badge} position-absolute badge bg-success`}
@@ -47,10 +53,10 @@ const Card = ({ page, results }) => {
                   {status}
                 </div>
               );
-            } else {
+            } else if (status === "Reserved") {
               return (
                 <div
-                  className={`${styles.badge} position-absolute badge bg-secondary`}
+                  className={`${styles.badge} position-absolute badge bg-primary`}
                 >
                   {status}
                 </div>
@@ -61,7 +67,7 @@ const Card = ({ page, results }) => {
       );
     });
   } else {
-    display = "No Characters Found :/";
+    display = "No Geckos Found :/";
   }
 
   return <>{display}</>;

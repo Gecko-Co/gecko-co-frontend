@@ -3,17 +3,10 @@ import FilterBTN from "../FilterBTN";
 
 const Species = ({ updateSpecies, updatePageNumber }) => {
   let species = [
-    "Human",
-    "Alien",
-    "Humanoid",
-    "Poopybutthole",
-    "Mythological",
-    "Unknown",
-    "Animal",
-    "Disease",
-    "Robot",
-    "Cronenberg",
-    "Planet",
+    "Leopard Gecko",
+    "Crested Gecko",
+    "African Fat-tailed Gecko",
+    "Knob-Tailed Gecko",
   ];
   return (
     <div className="accordion-item ">

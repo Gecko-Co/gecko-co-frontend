@@ -14,7 +14,7 @@ const Search = ({ setSearch, updatePageNumber }) => {
           updatePageNumber(1);
           setSearch(e.target.value);
         }}
-        placeholder="Search for characters"
+        placeholder="Search for geckos"
         className={styles.input}
         type="text"
       />

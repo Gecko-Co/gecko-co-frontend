@@ -1,7 +1,7 @@
-import React from "react";
-import Gender from "./category/Gender";
-import Species from "./category/Species";
-import Status from "./category/Status";
+import React, { useState } from 'react'; // Ensure useState is imported from 'react'
+import Status from './category/Status'; // Adjust the path as necessary
+import Species from './category/Species'; // Adjust the path as necessary
+import Gender from './category/Gender'; // Adjust the path as necessary
 
 const Filter = ({
   pageNumber,
@@ -10,6 +10,8 @@ const Filter = ({
   updateGender,
   updateSpecies,
 }) => {
+  const [selectedStatus, setSelectedStatus] = useState('');
+
   let clear = () => {
     updateStatus("");
     updateGender("");
@@ -17,6 +19,13 @@ const Filter = ({
     updatePageNumber(1);
     window.location.reload(false);
   };
+
+  const handleStatusChange = (e) => {
+    const newStatus = e.target.value;
+    setSelectedStatus(newStatus);
+    updateStatus(newStatus);
+  };
+
   return (
     <div className="col-lg-3 col-12 mb-5">
       <div className="text-center fw-bold fs-4 mb-2">Filters</div>
@@ -29,6 +38,8 @@ const Filter = ({
       </div>
       <div className="accordion" id="accordionExample">
         <Status
+          selectedStatus={selectedStatus}
+          setSelectedStatus={setSelectedStatus}
           updatePageNumber={updatePageNumber}
           updateStatus={updateStatus}
         />
@@ -41,6 +52,8 @@ const Filter = ({
           updateGender={updateGender}
         />
       </div>
+      {/* Status filter dropdown */}
+
     </div>
   );
 };

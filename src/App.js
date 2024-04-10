@@ -1,6 +1,6 @@
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import Search from "./components/Search/Search";
 import Card from "./components/Card/Card";
@@ -12,6 +12,59 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Episodes from "./Pages/Episodes";
 import Location from "./Pages/Location";
 import CardDetails from "./components/Card/CardDetails";
+
+const placeholderData = {
+  info: {
+    count: 4,
+    pages: 1,
+  },
+  results: [
+    {
+      id: 1,
+      name: "KT1",
+      status: "Sold",
+      species: "Knob-tailed Gecko",
+      gender: "Male",
+      image: "/images/kt1.jpg",
+    },
+    {
+      id: 2,
+      name: "LG1",
+      status: "Reserved",
+      species: "Leopard Gecko",
+      gender: "Male",
+      image: "/images/lg1.jpg",
+      price: "$1000"
+    },
+    {
+      id: 3,
+      name: "AFT1",
+      status: "Available",
+      species: "African Fat-Tailed Gecko",
+      gender: "Male",
+      image: "/images/aft1.jpg",
+      price: "$1000"
+    },
+    {
+      id: 4,
+      name: "C1",
+      status: "Available",
+      species: "Crested Gecko",
+      gender: "Male",
+      image: "/images/c1.jpg",
+      price: "$1000"
+    },
+    {
+      id: 4,
+      name: "LG2",
+      status: "Reserved",
+      species: "Leopard Gecko",
+      gender: "Male",
+      image: "/images/lg2.jpg",
+      price: "$1000"
+    },
+  ],
+};
 
 function App() {
   return (
@@ -38,21 +91,15 @@ const Home = () => {
   let [status, updateStatus] = useState("");
   let [gender, updateGender] = useState("");
   let [species, updateSpecies] = useState("");
-  let [fetchedData, updateFetchedData] = useState([]);
   let [search, setSearch] = useState("");
+
+  // Use static data instead of fetched data
+  let fetchedData = placeholderData; // Use the static data here
   let { info, results } = fetchedData;
 
-  let api = `https://rickandmortyapi.com/api/character/?page=${pageNumber}&name=${search}&status=${status}&gender=${gender}&species=${species}`;
-
-  useEffect(() => {
-    (async function () {
-      let data = await fetch(api).then((res) => res.json());
-      updateFetchedData(data);
-    })();
-  }, [api]);
   return (
     <div className="App">
-      <h1 className="text-center mb-3">Characters</h1>
+      <h1 className="text-center mb-3">Geckos</h1>
       <Search setSearch={setSearch} updatePageNumber={updatePageNumber} />
       <div className="container">
         <div className="row">
