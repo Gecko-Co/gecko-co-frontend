@@ -25,8 +25,7 @@ const placeholderData = {
       status: "Sold",
       species: "Knob-tailed Gecko",
       gender: "Male",
-      images: "/images/kt1.jpg",
-      cow: "Knob-"
+      images: "images/kt1.jpg",
     },
     {
       id: 2,
@@ -34,7 +33,7 @@ const placeholderData = {
       status: "Reserved",
       species: "Leopard Gecko",
       gender: "Male",
-      images: "/images/lg1.jpg",
+      images: "images/lg1.jpg",
       price: "$1000"
     },
     {
@@ -61,7 +60,7 @@ const placeholderData = {
       status: "Reserved",
       species: "Leopard Gecko",
       gender: "Male",
-      images: "/public/images/1.png",
+      images: "images/lg2.png",
       price: "$1000"
     },
   ],
