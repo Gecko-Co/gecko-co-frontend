@@ -42,11 +42,9 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "https://github.com/jancarloonce/gecko-co-frontend",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/jancarloonce/gecko-co-frontend.git"
-  },
+  "homepage": "https://jancarloonce.github.io/gecko-co-frontend/",
+
+  
   "devDependencies": {
     "gh-pages": "^x.x.x"
   }
