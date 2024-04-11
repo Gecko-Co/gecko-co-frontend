@@ -9,7 +9,7 @@ const Card = ({ page, results }) => {
   if (results) {
     display = results.map((x) => {
       // Ensure x and x.location are defined before accessing their properties
-      let { id, image, name, status, location, species, price = {} } = x || {};
+      let { id, images, name, status, species = {} } = x || {};
 
       // Now, even if x or location is undefined, the code won't throw an error
       // but instead, use the default empty object {} and proceed without crashing
@@ -23,7 +23,7 @@ const Card = ({ page, results }) => {
           <div
             className={`${styles.card} d-flex flex-column justify-content-center`}
           >
-            <img className={`${styles.img} img-fluid`} src={image} alt={name} style={{ width: "250px", height: "200px" }} />
+            <img className={`${styles.img} img-fluid`} src={images} alt={name} style={{ width: "250px", height: "200px" }} />
             <div className={`${styles.content}`}>
               <div className="fs-5 fw-bold mb-4">{name}</div>
               

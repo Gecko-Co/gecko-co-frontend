@@ -15,7 +15,7 @@ import CardDetails from "./components/Card/CardDetails";
 
 const placeholderData = {
   info: {
-    count: 4,
+    count: 5,
     pages: 1,
   },
   results: [
@@ -25,7 +25,8 @@ const placeholderData = {
       status: "Sold",
       species: "Knob-tailed Gecko",
       gender: "Male",
-      image: "/images/kt1.jpg",
+      images: "/images/kt1.jpg",
+      cow: "Knob-"
     },
     {
       id: 2,
@@ -33,7 +34,7 @@ const placeholderData = {
       status: "Reserved",
       species: "Leopard Gecko",
       gender: "Male",
-      image: "/images/lg1.jpg",
+      images: "/images/lg1.jpg",
       price: "$1000"
     },
     {
@@ -42,7 +43,7 @@ const placeholderData = {
       status: "Available",
       species: "African Fat-Tailed Gecko",
       gender: "Male",
-      image: "/images/aft1.jpg",
+      images: "images/aft1.jpg",
       price: "$1000"
     },
     {
@@ -51,16 +52,16 @@ const placeholderData = {
       status: "Available",
       species: "Crested Gecko",
       gender: "Male",
-      image: "/images/c1.jpg",
+      images: "images/c1.jpg",
       price: "$1000"
     },
     {
-      id: 4,
+      id: 5,
       name: "LG2",
       status: "Reserved",
       species: "Leopard Gecko",
       gender: "Male",
-      image: "/images/lg2.jpg",
+      images: "/public/images/1.png",
       price: "$1000"
     },
   ],
@@ -73,7 +74,7 @@ function App() {
         <Navbar />
       </div>
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/gecko-co" element={<Home />} />
         <Route path="/:id" element={<CardDetails />} />
 
         <Route path="/episodes" element={<Episodes />} />
