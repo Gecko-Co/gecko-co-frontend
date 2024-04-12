@@ -7,10 +7,11 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
     "@testing-library/user-event": "^12.8.3",
+    "@vercel/analytics": "^1.2.2",
     "bootstrap": "^5.1.3",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-paginate": "^7.1.5",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-paginate": "^8.2.0",
     "react-router-dom": "^6.0.1",
     "react-scripts": "4.0.3",
     "sass": "^1.43.4",
@@ -42,9 +43,6 @@
       "last 1 safari version"
     ]
   },
-  
-
-  
   "devDependencies": {
     "gh-pages": "^x.x.x"
   }
