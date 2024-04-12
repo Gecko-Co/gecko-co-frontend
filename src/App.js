@@ -74,7 +74,7 @@ function App() {
       </div>
       <Routes>
         <Route path="/gecko-co" element={<Home />} />
-        <Route path="/:id" element={<CardDetails />} />
+        <Route path="/gecko-co" element={<CardDetails />} />
 
         <Route path="/episodes" element={<Episodes />} />
         <Route path="/episodes/:id" element={<CardDetails />} />
