@@ -86,45 +86,49 @@ function App() {
   );
 }
 
-const Home = () => {
-  let [pageNumber, updatePageNumber] = useState(1);
-  let [status, updateStatus] = useState("");
-  let [gender, updateGender] = useState("");
-  let [species, updateSpecies] = useState("");
-  let [search, setSearch] = useState("");
+function Home() {
+  const [filteredResults, setFilteredResults] = useState(placeholderData.results);
+  const [pageNumber, updatePageNumber] = useState(1);
+  const [status, updateStatus] = useState("");
+  const [gender, updateGender] = useState("");
+  const [species, updateSpecies] = useState("");
+  const [search, setSearch] = useState("");
 
-  // Use static data instead of fetched data
-  let fetchedData = placeholderData; // Use the static data here
-  let { info, results } = fetchedData;
+  const handleFilterChange = (newStatus) => {
+    updateStatus(newStatus);
+    const filtered = placeholderData.results.filter(result => result.status === newStatus);
+    setFilteredResults(filtered);
+    updatePageNumber(1);
+  };
 
   return (
     <div className="App">
-      <h1 className="text-center mb-3"></h1>
+      <h1 className="text-center mb-3">Geckos</h1>
       <Search setSearch={setSearch} updatePageNumber={updatePageNumber} />
       <div className="container">
         <div className="row">
           <Filter
             pageNumber={pageNumber}
             status={status}
-            updateStatus={updateStatus}
+            updateStatus={handleFilterChange}
             updateGender={updateGender}
             updateSpecies={updateSpecies}
             updatePageNumber={updatePageNumber}
           />
           <div className="col-lg-8 col-12">
             <div className="row">
-              <Card page="/" results={results} />
+              <Card page="/" results={filteredResults} />
             </div>
           </div>
         </div>
       </div>
       <Pagination
-        info={info}
+        info={placeholderData.info}
         pageNumber={pageNumber}
         updatePageNumber={updatePageNumber}
       />
     </div>
   );
-};
+}
 
 export default App;
