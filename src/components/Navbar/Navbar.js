@@ -35,18 +35,14 @@ const Navbar = () => {
         >
           <div className="navbar-nav fs-5">
             <NavLink to="/" className="nav-link">
-              For Sale
+              Shop
             </NavLink>
-            {/* <NavLink to="/episodes" className="nav-link">
-              Morph Wiki
-            </NavLink> */}
-            {/* <NavLink
-              activeClassName="active"
-              className="nav-link"
-              to="/location"
-            >
-              Breeders
-            </NavLink> */}
+            <span className="nav-link">
+              MORPHpedia
+            </span>
+            <span className="nav-link">
+              PH Husbandry
+            </span>
           </div>
         </div>
       </div>
@@ -55,4 +51,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
