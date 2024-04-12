@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/gecko-co/static/css/main.b57b1618.chunk.css",
+    "main.js": "/gecko-co/static/js/main.f72464be.chunk.js",
+    "main.js.map": "/gecko-co/static/js/main.f72464be.chunk.js.map",
+    "runtime-main.js": "/gecko-co/static/js/runtime-main.7647c06f.js",
+    "runtime-main.js.map": "/gecko-co/static/js/runtime-main.7647c06f.js.map",
+    "static/css/2.f1b2261f.chunk.css": "/gecko-co/static/css/2.f1b2261f.chunk.css",
+    "static/js/2.f0a5d681.chunk.js": "/gecko-co/static/js/2.f0a5d681.chunk.js",
+    "static/js/2.f0a5d681.chunk.js.map": "/gecko-co/static/js/2.f0a5d681.chunk.js.map",
+    "static/js/3.6e58b596.chunk.js": "/gecko-co/static/js/3.6e58b596.chunk.js",
+    "static/js/3.6e58b596.chunk.js.map": "/gecko-co/static/js/3.6e58b596.chunk.js.map",
+    "index.html": "/gecko-co/index.html",
+    "static/css/2.f1b2261f.chunk.css.map": "/gecko-co/static/css/2.f1b2261f.chunk.css.map",
+    "static/css/main.b57b1618.chunk.css.map": "/gecko-co/static/css/main.b57b1618.chunk.css.map",
+    "static/js/2.f0a5d681.chunk.js.LICENSE.txt": "/gecko-co/static/js/2.f0a5d681.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.7647c06f.js",
+    "static/css/2.f1b2261f.chunk.css",
+    "static/js/2.f0a5d681.chunk.js",
+    "static/css/main.b57b1618.chunk.css",
+    "static/js/main.f72464be.chunk.js"
+  ]
+}
