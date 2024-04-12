@@ -1,7 +1,6 @@
 {
   "name": "react-gecko-co",
   "version": "0.1.0",
-  "homepage": "https://jancarloonce.github.io/gecko-co",
   "private": true,
   "dependencies": {
     "@popperjs/core": "^2.10.2",
