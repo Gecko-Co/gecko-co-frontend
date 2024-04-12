@@ -36,7 +36,7 @@ const Species = ({ updateSpecies, updatePageNumber }) => {
                 index={index}
                 key={index}
                 updatePageNumber={updatePageNumber}
-                task={updateSpecies}
+                task={() => updateSpecies(item)} // Call updateSpecies with the selected item
                 input={item}
               />
             );

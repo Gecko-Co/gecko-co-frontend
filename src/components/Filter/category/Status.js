@@ -29,7 +29,7 @@ const Status = ({ updateStatus, updatePageNumber }) => {
               key={index}
               index={index}
               name="status"
-              task={updateStatus}
+              task={() => updateStatus(item)}
               updatePageNumber={updatePageNumber}
               input={item}
             />

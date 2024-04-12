@@ -1,7 +1,7 @@
-import React, { useState } from 'react'; // Ensure useState is imported from 'react'
-import Status from './category/Status'; // Adjust the path as necessary
-import Species from './category/Species'; // Adjust the path as necessary
-import Gender from './category/Gender'; // Adjust the path as necessary
+import React, { useState } from 'react';
+import Status from './category/Status';
+import Species from './category/Species';
+import Gender from './category/Gender';
 
 const Filter = ({
   pageNumber,
@@ -11,19 +11,13 @@ const Filter = ({
   updateSpecies,
 }) => {
   const [selectedStatus, setSelectedStatus] = useState('');
+  const [selectedSpecies, setSelectedSpecies] = useState('');
 
   let clear = () => {
     updateStatus("");
     updateGender("");
     updateSpecies("");
     updatePageNumber(1);
-    window.location.reload(false);
-  };
-
-  const handleStatusChange = (e) => {
-    const newStatus = e.target.value;
-    setSelectedStatus(newStatus);
-    updateStatus(newStatus);
   };
 
   return (
@@ -44,6 +38,8 @@ const Filter = ({
           updateStatus={updateStatus}
         />
         <Species
+          selectedSpecies={selectedSpecies}
+          setSelectedSpecies={setSelectedSpecies}
           updatePageNumber={updatePageNumber}
           updateSpecies={updateSpecies}
         />
@@ -52,8 +48,6 @@ const Filter = ({
           updateGender={updateGender}
         />
       </div>
-      {/* Status filter dropdown */}
-
     </div>
   );
 };

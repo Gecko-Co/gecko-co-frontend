@@ -1,3 +1,4 @@
+// FilterBTN.js
 import React from "react";
 
 const FilterBTN = ({ input, task, updatePageNumber, index, name }) => {
@@ -24,7 +25,7 @@ const FilterBTN = ({ input, task, updatePageNumber, index, name }) => {
         />
         <label
           onClick={(x) => {
-            task(input);
+            task(input); // Ensure task function is correctly invoked
             updatePageNumber(1);
           }}
           className="btn btn-outline-primary"

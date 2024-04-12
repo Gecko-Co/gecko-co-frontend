@@ -24,15 +24,15 @@ const Gender = ({ updateGender, updatePageNumber }) => {
         data-bs-parent="#accordionExample"
       >
         <div className="accordion-body d-flex flex-wrap gap-3">
-          {genders.map((items, index) => {
+          {genders.map((item, index) => {
             return (
               <FilterBTN
                 name="gender"
                 index={index}
                 key={index}
                 updatePageNumber={updatePageNumber}
-                task={updateGender}
-                input={items}
+                task={() => updateGender(item)} // Call updateGender with the selected item
+                input={item}
               />
             );
           })}
