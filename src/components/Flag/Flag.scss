@@ -1,0 +1,16 @@
+.development-banner {
+    background-color: green;
+    color: white;
+    text-align: center;
+    padding: 10px;
+    position: relative;
+    z-index: 9999;
+    transition: top 0.3s ease; /* Smooth transition when floating */
+  
+    &.floating {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+  }
