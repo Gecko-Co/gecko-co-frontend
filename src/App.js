@@ -60,7 +60,7 @@ const placeholderData = {
       status: "Reserved",
       species: "Leopard Gecko",
       gender: "Male",
-      images: "images/lg2.png",
+      images: "images/lg2.jpg",
       price: "$1000"
     },
   ],
