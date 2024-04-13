@@ -36,7 +36,7 @@ const Footer = () => {
             <p>
               <a href="/" className="footer-link">Shop</a>
               <span className="mx-2">|</span>
-              <a href="/shop" className="footer-link">MORPHpedia</a>
+              <a href="/shop" className="footer-link">Geckopedia</a>
               <span className="mx-2">|</span>
               <a href="/about" className="footer-link">PH Husbandry</a>
               <span className="mx-2">|</span>
