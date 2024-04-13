@@ -6,6 +6,7 @@ import Navbar from './components/Navbar/Navbar';
 import Home from './components/Home/Home';
 import Flag from './components/Flag/Flag';
 import Footer from './components/Footer/Footer';
+import AdSenseScript from './components/Adsense/Adsense';
 import { inject } from '@vercel/analytics';
 
 inject();
@@ -23,6 +24,7 @@ function App() {
         {/* Other routes */}
       </Routes>
       <Footer />
+      <AdSenseScript />
     </Router>
     
   );
