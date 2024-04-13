@@ -3,7 +3,7 @@ import './Flag.scss';
 
 const Flag = () => {
     const [isFloating, setIsFloating] = useState(false);
-    console.log("ENV var: ",process.env.NEXT_PUBLIC_VERCEL_ENV)
+    console.log("ENV var: ",process.env.FLAG)
     const environment = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' ? 'DEV' : 'PROD';
     const environmentStyle = environment === 'DEV' ? { color: 'blue', fontWeight: 'bold' } : { color: 'red', fontWeight: 'bold' };
 
