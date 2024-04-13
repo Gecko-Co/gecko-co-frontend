@@ -111,8 +111,6 @@ function Home() {
                   onChange={(e) => handleSort(e.target.value)}
                 >
                   <option value="name">Sort by Name</option>
-                  <option value="species">Sort by Species</option>
-                  <option value="status">Sort by Status</option>
                   <option value="price">Sort by Price</option>
                 </select>
 
