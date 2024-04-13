@@ -83,7 +83,7 @@ function Home() {
 
  return (
     <div className="App">
-      <h1 className="text-center mb-3"></h1>
+      <h1 className="text-center mb-3">Gecko Co.</h1>
 
       <div className="container">
         <div className="row">
@@ -98,10 +98,13 @@ function Home() {
           <div className="col-lg-8 col-12">
             <div className="row mb-3">
               <div className="col">
-                <select className="form-select" onChange={(e) => setSortOrder(e.target.value)}>
-                 <option value="asc" selected={sortOrder === "asc"}>Sort by Price (Ascending)</option>
-                 <option value="desc" selected={sortOrder === "desc"}>Sort by Price (Descending)</option>
-                </select>
+                <span style={{ color: '#23283b' }}>Sort by Price:</span>
+                <button onClick={toggleSortOrder} className={`btn btn-link ${sortOrder === 'asc' ? 'active' : ''}`} style={{ color: '#23283b' }}>
+                 <i className="fas fa-arrow-up"></i>
+                </button>
+                <button onClick={toggleSortOrder} className={`btn btn-link ${sortOrder === 'desc' ? 'active' : ''}`} style={{ color: '#23283b' }}>
+                 <i className="fas fa-arrow-down"></i>
+                </button>
               </div>
             </div>
 
