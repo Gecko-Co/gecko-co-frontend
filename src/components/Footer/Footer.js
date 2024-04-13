@@ -14,17 +14,17 @@ const Footer = () => {
                 <FontAwesomeIcon icon={faFacebook} size="2x" />
               </div>
             </a>
-            <a href="https://www.instagram.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+            <a href="https://www.instagram.com/geckoco11" target="_blank" rel="noopener noreferrer" className="social-icon">
               <div className="social-circle">
                 <FontAwesomeIcon icon={faInstagram} size="2x" />
               </div>
             </a>
-            <a href="https://www.twitter.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+            <a href="https://www.twitter.com/geckoco11" target="_blank" rel="noopener noreferrer" className="social-icon">
               <div className="social-circle">
                 <FontAwesomeIcon icon={faTwitter} size="2x" />
               </div>
             </a>
-            <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+            <a href="https://www.youtube.com/geckoco11" target="_blank" rel="noopener noreferrer" className="social-icon">
               <div className="social-circle">
                 <FontAwesomeIcon icon={faYoutube} size="2x" />
               </div>
