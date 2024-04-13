@@ -7,54 +7,68 @@ import Filter from "../Filter/Filter";
 import placeholderData from "../../data";
 
 function Home() {
-  const history = useNavigate();
-  const [filteredResults, setFilteredResults] = useState(placeholderData.results);
-  const [pageNumber, updatePageNumber] = useState(1);
-  const [status, updateStatus] = useState("");
-  const [gender, updateGender] = useState("");
-  const [species, updateSpecies] = useState("");
-  const [search, setSearch] = useState("");
+ const history = useNavigate();
+ const [filteredResults, setFilteredResults] = useState(placeholderData.results);
+ const [pageNumber, updatePageNumber] = useState(1);
+ const [status, updateStatus] = useState("");
+ const [gender, updateGender] = useState("");
+ const [species, updateSpecies] = useState("");
 
-  const handleStatusChange = (newStatus) => {
+ const handleStatusChange = (newStatus) => {
     updateStatus(newStatus);
     filterResults(newStatus, species, gender);
-  };
+ };
 
-  const handleSpeciesChange = (newSpecies) => {
+ const handleSpeciesChange = (newSpecies) => {
     updateSpecies(newSpecies);
     filterResults(status, newSpecies, gender);
-  };
+ };
 
-  const handleGenderChange = (newGender) => {
+ const handleGenderChange = (newGender) => {
     updateGender(newGender);
     filterResults(status, species, newGender);
-  };
+ };
 
-  const filterResults = (status, species, gender) => {
-    const filtered = placeholderData.results.filter(result => 
-      (!status || result.status === status) &&
-      (!species || result.species === species) &&
-      (!gender || result.gender === gender)
-    );
+ const filterResults = (status, species, gender) => {
+    let filtered = placeholderData.results;
+
+    if (status) {
+      filtered = filtered.filter(result => result.status === status);
+    }
+
+    if (species) {
+      filtered = filtered.filter(result => result.species === species);
+    }
+
+    if (gender) {
+      filtered = filtered.filter(result => result.gender === gender);
+    }
+
     setFilteredResults(filtered);
     updatePageNumber(1);
-  };
+ };
 
-  return (
+ const clearFilters = () => {
+    setFilteredResults(placeholderData.results);
+    updatePageNumber(1);
+    updateStatus("");
+    updateSpecies("");
+    updateGender("");
+ };
+
+ return (
     <div className="App">
       <h1 className="text-center mb-3"></h1>
-      
+
       <div className="container">
         <div className="row">
           <Filter
             pageNumber={pageNumber}
-            status={status}
-            species={species}
-            gender={gender}
+            updatePageNumber={updatePageNumber}
             updateStatus={handleStatusChange}
             updateGender={handleGenderChange}
             updateSpecies={handleSpeciesChange}
-            updatePageNumber={updatePageNumber}
+            clearFilters={clearFilters} // Pass clearFilters as a prop
           />
           <div className="col-lg-8 col-12">
             <div className="row">
@@ -69,7 +83,7 @@ function Home() {
         updatePageNumber={updatePageNumber}
       />
     </div>
-  );
+ );
 }
 
 export default Home;

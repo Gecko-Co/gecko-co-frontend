@@ -21,24 +21,35 @@ const Pagination = ({ pageNumber, info, updatePageNumber }) => {
     <>
       <style jsx>
         {`
-          @media (max-width: 768px) {
-            .pagination {
-              font-size: 12px;
-            }
+          .pagination {
+            background-color: transparent;
+            color: white;
+            padding: 10px;
           }
-          @media (min-width: 769px) and (max-width: 992px) {
-            .pagination {
-              font-size: 14px;
-            }
+          .pagination a {
+            color: #23283b; /* Same as footer background */
+            cursor: pointer;
+            transition: color 0.3s;
+          }
+          .pagination a:hover {
+            color: orange;
+          }
+          .pagination .active a {
+            background-color: #23283b; /* Same as footer background */
+            color: white;
           }
           .custom-prev-next {
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
+            color: #23283b; /* Same as footer background */
           }
           .custom-prev-next .icon {
             margin-right: 8px;
+          }
+          .custom-prev-next:hover {
+            color: orange;
           }
         `}
       </style>

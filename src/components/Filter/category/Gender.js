@@ -1,8 +1,9 @@
 import React from "react";
 import FilterBTN from "../FilterBTN";
 
-const Gender = ({ updateGender, updatePageNumber }) => {
-  let genders = ["Female", "Male", "Genderless",];
+const Gender = ({ selectedGender, setSelectedGender, updateGender, updatePageNumber }) => {
+  let genders = ["Female", "Male", "Genderless"];
+  
   return (
     <div className="accordion-item">
       <h2 className="accordion-header" id="headingThree">
@@ -24,18 +25,18 @@ const Gender = ({ updateGender, updatePageNumber }) => {
         data-bs-parent="#accordionExample"
       >
         <div className="accordion-body d-flex flex-wrap gap-3">
-          {genders.map((item, index) => {
-            return (
-              <FilterBTN
-                name="gender"
-                index={index}
-                key={index}
-                updatePageNumber={updatePageNumber}
-                task={() => updateGender(item)} // Call updateGender with the selected item
-                input={item}
-              />
-            );
-          })}
+          {genders.map((item, index) => (
+            <FilterBTN
+              name="gender"
+              index={index}
+              key={index}
+              updatePageNumber={updatePageNumber}
+              task={() => updateGender(item)}
+              input={item}
+              selectedValue={selectedGender}
+              setSelectedValue={setSelectedGender}
+            />
+          ))}
         </div>
       </div>
     </div>
