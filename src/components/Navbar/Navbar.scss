@@ -1,55 +1,117 @@
 .navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  background-color: #23283b;
+
+  .logo-link {
+    text-decoration: none;
+    color: white;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    padding: 10px 20px;
-    background-color: #23283b;
-  
-    .logo-link {
-      text-decoration: none;
-      color: white;
-      display: flex;
-      align-items: center;
-  
-      .logo {
-        width: 50px;
-        height: auto;
-        margin-right: 10px; // Spacing between logo and text
-      }
-  
-      .company-name {
-        font-size: 1.5rem; // Increase font size
-        font-weight: bold; // Make it bold
-        color: #bd692d; // Custom color for "Gecko Co."
-      }
+
+    .logo {
+      width: 50px;
+      height: auto;
+      margin-right: 10px;
     }
-  
-    .nav-links {
-      display: flex;
-      gap: 20px;
+
+    .company-name {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #bd692d;
     }
-  
-    .nav-link {
-      text-decoration: none;
-      color: white;
-      position: relative;
-      font-size: 1.2rem; // Increase font size
-      font-weight: bold; // Make it bold
-      transition: color 0.3s;
-  
-      &:hover {
-        color: #bd692d;
-      }
-  
-      &.active::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        right: 0;
-        bottom: -3px;
-        height: 2px;
-        background-color: #bd692d;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 20px;
+
+    @media (max-width: 768px) {
+      display: none;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background-color: #23283b;
+      z-index: 9;
+
+      &.open {
+        display: flex;
       }
     }
   }
-  
+
+  .nav-link {
+    text-decoration: none;
+    color: white;
+    position: relative;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: color 0.3s;
+
+    &:hover {
+      color: #bd692d;
+    }
+
+    &.active::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: -3px;
+      height: 2px;
+      background-color: #bd692d;
+    }
+
+    @media (max-width: 768px) {
+      padding: 1rem;
+      width: 100%;
+      text-align: center;
+    }
+  }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-around;
+    width: 2rem;
+    height: 2rem;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 10;
+
+    span {
+      width: 2rem;
+      height: 0.25rem;
+      background: white;
+      border-radius: 10px;
+      transition: all 0.3s linear;
+      position: relative;
+      transform-origin: 1px;
+    }
+  }
+
+  .hamburger.open span:nth-child(1) {
+    transform: rotate(45deg);
+  }
+
+  .hamburger.open span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  .hamburger.open span:nth-child(3) {
+    transform: rotate(-45deg);
+  }
+
+  @media (max-width: 768px) {
+    .navbar .hamburger {
+      display: flex;
+    }
+  }
+}
