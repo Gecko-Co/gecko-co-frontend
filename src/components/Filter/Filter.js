@@ -48,6 +48,13 @@ const Filter = ({
           updateGender={updateGender}
         />
       </div>
+      {/* Inline styles for the open accordion heading */}
+      <style jsx>{`
+        .accordion-button:not(.collapsed) {
+          background-color: #23283b; /* Same as footer background color */
+          color: white !important; /* Important to override Bootstrap's default color */
+        }
+      `}</style>
     </div>
   );
 };

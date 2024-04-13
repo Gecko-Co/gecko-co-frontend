@@ -1,5 +1,5 @@
 .footer {
-    background-color: #0b5ed7;
+    background-color: #23283b;
     color: white;
     padding: 20px 0;
   
@@ -18,18 +18,18 @@
         transition: background-color 0.3s, transform 0.3s;
   
         &:hover {
-          background-color: orange;
+          background-color: #23283b; /* Same as footer background */
           transform: scale(1.1);
         }
       }
   
       svg {
-        color: #0b5ed7;
+        color: #23283b; /* Same as footer background */
         transition: color 0.3s;
-      }
   
-      &:hover svg {
-        color: orange;
+        &:hover {
+          color: orange;
+        }
       }
     }
   

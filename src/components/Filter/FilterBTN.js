@@ -1,4 +1,3 @@
-// FilterBTN.js
 import React from "react";
 
 const FilterBTN = ({ input, task, updatePageNumber, index, name }) => {
@@ -7,8 +6,9 @@ const FilterBTN = ({ input, task, updatePageNumber, index, name }) => {
       <style jsx>
         {`
           .x:checked + label {
-            background-color: #0b5ed7;
+            background-color: #23283b; /* Same as footer background */
             color: white;
+            border-color: #23283b; /* Same as footer background */
           }
           input[type="radio"] {
             display: none;
