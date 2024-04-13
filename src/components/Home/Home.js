@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import Search from "../Search/Search";
 import Card from "../Card/Card";
@@ -13,20 +13,22 @@ function Home() {
  const [status, updateStatus] = useState("");
  const [gender, updateGender] = useState("");
  const [species, updateSpecies] = useState("");
+ const [noResults, setNoResults] = useState(false); // State to track no results
+
+ useEffect(() => {
+    filterResults(status, species, gender);
+ }, [status, species, gender]);
 
  const handleStatusChange = (newStatus) => {
     updateStatus(newStatus);
-    filterResults(newStatus, species, gender);
  };
 
  const handleSpeciesChange = (newSpecies) => {
     updateSpecies(newSpecies);
-    filterResults(status, newSpecies, gender);
  };
 
  const handleGenderChange = (newGender) => {
     updateGender(newGender);
-    filterResults(status, species, newGender);
  };
 
  const filterResults = (status, species, gender) => {
@@ -44,6 +46,12 @@ function Home() {
       filtered = filtered.filter(result => result.gender === gender);
     }
 
+    if (filtered.length === 0) {
+      setNoResults(true);
+    } else {
+      setNoResults(false);
+    }
+
     setFilteredResults(filtered);
     updatePageNumber(1);
  };
@@ -54,11 +62,12 @@ function Home() {
     updateStatus("");
     updateSpecies("");
     updateGender("");
+    setNoResults(false); // Reset no results state
  };
 
  return (
     <div className="App">
-      <h1 className="text-center mb-3"></h1>
+      <h1 className="text-center mb-3">Gecko Marketplace</h1>
 
       <div className="container">
         <div className="row">
@@ -72,7 +81,13 @@ function Home() {
           />
           <div className="col-lg-8 col-12">
             <div className="row">
-              <Card page="/" results={filteredResults} />
+              {noResults ? (
+                <div className="text-center mt-5">
+                  <p style={{ fontSize: '24px', fontWeight: 'bold' }}>No Geckos Found 😢</p>
+                </div>
+              ) : (
+                <Card page="/" results={filteredResults} />
+              )}
             </div>
           </div>
         </div>
