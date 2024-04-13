@@ -45,30 +45,35 @@ const Card = ({ page, results, disableLink = true }) => {
             badgeColor = "bg-primary";
           }
 
-          const priceInPHP = price ? `₱${price}` : "Price not available";
+          const priceInPHP = price ? `₱${parseFloat(price).toLocaleString('en-US')}` : "Price not available";
 
           return (
             <div key={breeder} className="col-lg-4 col-md-6 col-sm-6 col-12 mb-4 position-relative text-dark d-flex">
               <div style={cardStyle} className="d-flex flex-column justify-content-between w-100">
                 {disableLink ? (
-                  <img style={imgStyle} className="img-fluid" src={images} alt={breeder} />
+                 <img style={imgStyle} className="img-fluid" src={images} alt={breeder} />
                 ) : (
-                  <Link style={{ textDecoration: "none" }} to={`${page}${breeder}`}>
+                 <Link style={{ textDecoration: "none" }} to={`${page}${breeder}`}>
                     <img style={imgStyle} className="img-fluid" src={images} alt={breeder} />
-                  </Link>
+                 </Link>
                 )}
 
-                <div className="content" style={{ padding: "10px" }}>
-                  <div className="fs-5 fw-bold mb-2">{species || 'Unknown Species'}</div>
-                  <div className="fs-6">
-                    <span className="fw-bold">Gender:</span> {genderIcon} {gender}
-                  </div>
-                  <div className="fs-6"><span className="fw-bold">Price:</span> {priceInPHP}</div>
-                  <div className="fs-6 mt-2 fw-bold">Breeder: {breeder}</div>
+                <div className="content" style={{ padding: "10px", display: 'flex', flexDirection: 'column' }}>
+                 <div className="fs-5 fw-bold mb-2">{species || 'Unknown Species'}</div>
+                 <div className="fs-6" style={{ display: 'flex', alignItems: 'center' }}>
+                    <span className="fw-bold">Gender:</span> 
+                    <span style={{ marginRight: '5px', marginLeft: '5px' }}>{gender}</span> 
+                    {genderIcon}
+                 </div>
+
+                 <div className="fs-6"><span className="fw-bold">Price: </span>{priceInPHP}</div>
+                 <div className="fs-6">
+                    <span style={{ fontWeight: 'bold' }}>Breeder:</span> {breeder}
+                 </div>
                 </div>
 
                 <div className={`position-absolute badge ${badgeColor}`} style={badgeStyle}>
-                  {status}
+                 {status}
                 </div>
               </div>
             </div>

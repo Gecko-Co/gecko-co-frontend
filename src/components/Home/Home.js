@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import Search from "../Search/Search";
 import Card from "../Card/Card";
 import Pagination from "../Pagination/Pagination";
 import Filter from "../Filter/Filter";
@@ -14,7 +13,7 @@ function Home() {
  const [gender, updateGender] = useState("");
  const [species, updateSpecies] = useState("");
  const [noResults, setNoResults] = useState(false); // State to track no results
- const [sortCriteria, setSortCriteria] = useState("name"); // default sorting by name
+ const [sortCriteria, setSortCriteria] = useState("price"); // default sorting by price
  const [sortOrder, setSortOrder] = useState("asc"); // default ascending order
 
  useEffect(() => {
@@ -56,10 +55,13 @@ function Home() {
 
     // Apply sorting
     const sortedResults = [...filtered].sort((a, b) => {
+      const priceA = parseFloat(a.price);
+      const priceB = parseFloat(b.price);
+
       if (sortOrder === "asc") {
-        return a[sortCriteria].localeCompare(b[sortCriteria]);
+        return priceA - priceB;
       } else {
-        return b[sortCriteria].localeCompare(a[sortCriteria]);
+        return priceB - priceA;
       }
     });
 
