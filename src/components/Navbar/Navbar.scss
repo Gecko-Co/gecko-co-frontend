@@ -1,0 +1,55 @@
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #0b5ed7;
+  
+    .logo-link {
+      text-decoration: none;
+      color: white;
+      display: flex;
+      align-items: center;
+  
+      .logo {
+        width: 50px;
+        height: auto;
+        margin-right: 10px; // Spacing between logo and text
+      }
+  
+      .company-name {
+        font-size: 1.5rem; // Increase font size
+        font-weight: bold; // Make it bold
+        color: #b94d00; // Custom color for "Gecko Co."
+      }
+    }
+  
+    .nav-links {
+      display: flex;
+      gap: 20px;
+    }
+  
+    .nav-link {
+      text-decoration: none;
+      color: white;
+      position: relative;
+      font-size: 1.2rem; // Increase font size
+      font-weight: bold; // Make it bold
+      transition: color 0.3s;
+  
+      &:hover {
+        color: #b94d00;
+      }
+  
+      &.active::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -3px;
+        height: 2px;
+        background-color: #b94d00;
+      }
+    }
+  }
+  

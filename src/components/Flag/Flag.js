@@ -1,32 +1,29 @@
-import React from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import './Flag.scss';
+
 const Flag = () => {
     const [isFloating, setIsFloating] = useState(false);
+    const environment = process.env.NEXT_PUBLIC_VERCEL_ENV === 'preview' ? 'DEV' : 'PROD';
+    const environmentStyle = environment === 'DEV' ? { color: 'blue', fontWeight: 'bold' } : { color: 'red', fontWeight: 'bold' };
 
-    // Add scroll event listener to track scroll position
     useEffect(() => {
-      const handleScroll = () => {
-        // Determine scroll position
-        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-        
-        // Check if scroll position meets threshold to make banner float
-        setIsFloating(scrollTop > 100); // Adjust threshold as needed
-      };
-  
-      window.addEventListener('scroll', handleScroll);
-  
-      // Clean up event listener
-      return () => {
-        window.removeEventListener('scroll', handleScroll);
-      };
+        const handleScroll = () => {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            setIsFloating(scrollTop > 100); // Adjust threshold as needed
+        };
+
+        window.addEventListener('scroll', handleScroll);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
     }, []);
-  
+
     return (
-      <div className={`development-banner ${isFloating ? 'floating' : ''}`}>
-        DEV environment: This site is still in development.
-      </div>
+        <div className={`development-banner ${isFloating ? 'floating' : ''}`}>
+            <span style={environmentStyle}>{environment}</span> environment: This site is still in development.
+        </div>
     );
-  };
+};
 
 export default Flag;
