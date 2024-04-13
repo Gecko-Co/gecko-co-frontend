@@ -5,6 +5,7 @@ import 'bootstrap/dist/js/bootstrap';
 import Navbar from './components/Navbar/Navbar';
 import Home from './components/Home/Home';
 import Flag from './components/Flag/Flag';
+import Footer from './components/Footer/Footer';
 import { inject } from '@vercel/analytics';
 
 inject();
@@ -15,12 +16,15 @@ function App() {
       <div className="App">
         <Flag />
         <Navbar />
+      
       </div>
       <Routes>
         <Route path="/" element={<Home />} />
         {/* Other routes */}
       </Routes>
+      <Footer />
     </Router>
+    
   );
 }
 

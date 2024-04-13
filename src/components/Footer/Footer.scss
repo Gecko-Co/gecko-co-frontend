@@ -1,0 +1,51 @@
+.footer {
+    background-color: #0b5ed7;
+    color: white;
+    padding: 20px 0;
+  
+    .social-icon {
+      display: inline-block;
+      margin: 0 15px;
+  
+      .social-circle {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background-color: white;
+        transition: background-color 0.3s, transform 0.3s;
+  
+        &:hover {
+          background-color: orange;
+          transform: scale(1.1);
+        }
+      }
+  
+      svg {
+        color: #0b5ed7;
+        transition: color 0.3s;
+      }
+  
+      &:hover svg {
+        color: orange;
+      }
+    }
+  
+    p {
+      margin: 0;
+      font-size: 14px;
+    }
+  
+    .footer-link {
+      color: white;
+      text-decoration: none;
+      transition: color 0.3s;
+  
+      &:hover {
+        color: orange;
+      }
+    }
+  }
+  
