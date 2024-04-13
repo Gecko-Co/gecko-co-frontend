@@ -24,7 +24,7 @@ const Flag = () => {
   
     return (
       <div className={`development-banner ${isFloating ? 'floating' : ''}`}>
-        This site is still in development.
+        DEV environment: This site is still in development.
       </div>
     );
   };
