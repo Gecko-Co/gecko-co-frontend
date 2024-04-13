@@ -34,13 +34,13 @@ const Footer = () => {
         <div className="row mt-3">
           <div className="col-md-12 text-center">
             <p>
-              <a href="/" className="footer-link">Home</a>
+              <a href="/" className="footer-link">Shop</a>
               <span className="mx-2">|</span>
-              <a href="/shop" className="footer-link">Shop</a>
+              <a href="/shop" className="footer-link">MORPHpedia</a>
               <span className="mx-2">|</span>
-              <a href="/about" className="footer-link">About</a>
+              <a href="/about" className="footer-link">PH Husbandry</a>
               <span className="mx-2">|</span>
-              <a href="/contact" className="footer-link">Contact</a>
+              <a href="/contact" className="footer-link">Genetic Calculator</a>
             </p>
           </div>
         </div>
