@@ -20,7 +20,7 @@
       .company-name {
         font-size: 1.5rem; // Increase font size
         font-weight: bold; // Make it bold
-        color: #b94d00; // Custom color for "Gecko Co."
+        color: #bd692d; // Custom color for "Gecko Co."
       }
     }
   
@@ -38,7 +38,7 @@
       transition: color 0.3s;
   
       &:hover {
-        color: #b94d00;
+        color: #bd692d;
       }
   
       &.active::after {
@@ -48,7 +48,7 @@
         right: 0;
         bottom: -3px;
         height: 2px;
-        background-color: #b94d00;
+        background-color: #bd692d;
       }
     }
   }
