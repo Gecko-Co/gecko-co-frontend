@@ -1,8 +1,9 @@
 import React from "react";
 import FilterBTN from "../FilterBTN";
 
-const Status = ({ updateStatus, updatePageNumber }) => {
+const Status = ({ selectedStatus, setSelectedStatus, updateStatus, updatePageNumber }) => {
   let status = ["Available", "Sold", "Reserved"];
+  
   return (
     <div className="accordion-item">
       <h2 className="accordion-header" id="headingOne">
@@ -32,6 +33,8 @@ const Status = ({ updateStatus, updatePageNumber }) => {
               task={() => updateStatus(item)}
               updatePageNumber={updatePageNumber}
               input={item}
+              selectedValue={selectedStatus}
+              setSelectedValue={setSelectedStatus}
             />
           ))}
         </div>
