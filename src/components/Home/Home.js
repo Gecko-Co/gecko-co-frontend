@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
-import Search from "../Search/Search";
 import Card from "../Card/Card";
 import Pagination from "../Pagination/Pagination";
 import Filter from "../Filter/Filter";
@@ -13,20 +12,23 @@ function Home() {
  const [status, updateStatus] = useState("");
  const [gender, updateGender] = useState("");
  const [species, updateSpecies] = useState("");
+ const [noResults, setNoResults] = useState(false); // State to track no results
+ const [sortOrder, setSortOrder] = useState("asc"); // default ascending order
+
+ useEffect(() => {
+    filterResults(status, species, gender);
+ }, [status, species, gender, sortOrder]);
 
  const handleStatusChange = (newStatus) => {
     updateStatus(newStatus);
-    filterResults(newStatus, species, gender);
  };
 
  const handleSpeciesChange = (newSpecies) => {
     updateSpecies(newSpecies);
-    filterResults(status, newSpecies, gender);
  };
 
  const handleGenderChange = (newGender) => {
     updateGender(newGender);
-    filterResults(status, species, newGender);
  };
 
  const filterResults = (status, species, gender) => {
@@ -44,7 +46,25 @@ function Home() {
       filtered = filtered.filter(result => result.gender === gender);
     }
 
-    setFilteredResults(filtered);
+    if (filtered.length === 0) {
+      setNoResults(true);
+    } else {
+      setNoResults(false);
+    }
+
+    // Apply sorting
+    const sortedResults = [...filtered].sort((a, b) => {
+      const priceA = parseFloat(a.price);
+      const priceB = parseFloat(b.price);
+
+      if (sortOrder === "asc") {
+        return priceA - priceB;
+      } else {
+        return priceB - priceA;
+      }
+    });
+
+    setFilteredResults(sortedResults);
     updatePageNumber(1);
  };
 
@@ -54,6 +74,11 @@ function Home() {
     updateStatus("");
     updateSpecies("");
     updateGender("");
+    setNoResults(false); // Reset no results state
+ };
+
+ const toggleSortOrder = () => {
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
  };
 
  return (
@@ -71,9 +96,22 @@ function Home() {
             clearFilters={clearFilters} // Pass clearFilters as a prop
           />
           <div className="col-lg-8 col-12">
-            <div className="row">
-              <Card page="/" results={filteredResults} />
+            <div className="row mb-3">
+              <div className="col">
+                <select className="form-select" onChange={(e) => setSortOrder(e.target.value)}>
+                 <option value="asc" selected={sortOrder === "asc"}>Sort by Price (Ascending)</option>
+                 <option value="desc" selected={sortOrder === "desc"}>Sort by Price (Descending)</option>
+                </select>
+              </div>
             </div>
+
+            {noResults ? (
+              <div className="text-center mt-5">
+                <p style={{ fontSize: '24px', fontWeight: 'bold' }}>No Geckos Found 😢</p>
+              </div>
+            ) : (
+              <Card page="/" results={filteredResults} />
+            )}
           </div>
         </div>
       </div>
