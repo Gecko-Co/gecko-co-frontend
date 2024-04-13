@@ -40,6 +40,15 @@ function Home() {
     updatePageNumber(1);
   };
 
+  const handleClearFilters = () => {
+    updateStatus("");
+    updateSpecies("");
+    updateGender("");
+    setSearch("");
+    setFilteredResults(placeholderData.results);
+    updatePageNumber(1);
+  };
+
   return (
     <div className="App">
       <h1 className="text-center mb-3"></h1>
@@ -55,6 +64,7 @@ function Home() {
             updateGender={handleGenderChange}
             updateSpecies={handleSpeciesChange}
             updatePageNumber={updatePageNumber}
+            onClearFilters={handleClearFilters} // Pass the clear function
           />
           <div className="col-lg-8 col-12">
             <div className="row">

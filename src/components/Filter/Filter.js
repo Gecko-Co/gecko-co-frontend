@@ -9,6 +9,7 @@ const Filter = ({
   updateStatus,
   updateGender,
   updateSpecies,
+  onClearFilters,
 }) => {
   const [selectedStatus, setSelectedStatus] = useState('');
   const [selectedSpecies, setSelectedSpecies] = useState('');
@@ -19,6 +20,9 @@ const Filter = ({
     updateGender("");
     updateSpecies("");
     updatePageNumber(1);
+    setSelectedStatus(""); // Clear selected status
+    setSelectedSpecies(""); // Clear selected species
+    onClearFilters();
     setIsClicked(true);
     setTimeout(() => {
       setIsClicked(false);
