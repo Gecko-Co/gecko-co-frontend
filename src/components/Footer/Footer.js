@@ -9,7 +9,7 @@ const Footer = () => {
       <div className="container">
         <div className="row">
           <div className="col-md-12 text-center">
-            <a href="https://www.facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon">
+            <a href="https://www.facebook.com/geckoco11" target="_blank" rel="noopener noreferrer" className="social-icon">
               <div className="social-circle">
                 <FontAwesomeIcon icon={faFacebook} size="2x" />
               </div>

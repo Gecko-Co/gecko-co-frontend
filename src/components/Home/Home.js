@@ -13,12 +13,11 @@ function Home() {
  const [gender, updateGender] = useState("");
  const [species, updateSpecies] = useState("");
  const [noResults, setNoResults] = useState(false); // State to track no results
- const [sortCriteria, setSortCriteria] = useState("price"); // default sorting by price
  const [sortOrder, setSortOrder] = useState("asc"); // default ascending order
 
  useEffect(() => {
     filterResults(status, species, gender);
- }, [status, species, gender, sortCriteria, sortOrder]);
+ }, [status, species, gender, sortOrder]);
 
  const handleStatusChange = (newStatus) => {
     updateStatus(newStatus);
@@ -78,13 +77,8 @@ function Home() {
     setNoResults(false); // Reset no results state
  };
 
- const handleSort = (criteria) => {
-    if (sortCriteria === criteria) {
-      setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
-    } else {
-      setSortCriteria(criteria);
-      setSortOrder("asc");
-    }
+ const toggleSortOrder = () => {
+    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
  };
 
  return (
@@ -102,36 +96,22 @@ function Home() {
             clearFilters={clearFilters} // Pass clearFilters as a prop
           />
           <div className="col-lg-8 col-12">
-            <div className="row">
-              {/* Sorting controls */}
-              <div className="d-flex justify-content-end mb-3">
-                <select
-                  className="form-select"
-                  value={sortCriteria}
-                  onChange={(e) => handleSort(e.target.value)}
-                >
-                  <option value="name">Sort by Name</option>
-                  <option value="price">Sort by Price</option>
-                </select>
-
-                <select
-                  className="form-select ms-2"
-                  value={sortOrder}
-                  onChange={(e) => setSortOrder(e.target.value)}
-                >
-                  <option value="asc">Ascending</option>
-                  <option value="desc">Descending</option>
+            <div className="row mb-3">
+              <div className="col">
+                <select className="form-select" onChange={(e) => setSortOrder(e.target.value)}>
+                 <option value="asc" selected={sortOrder === "asc"}>Sort by Price (Ascending)</option>
+                 <option value="desc" selected={sortOrder === "desc"}>Sort by Price (Descending)</option>
                 </select>
               </div>
-
-              {noResults ? (
-                <div className="text-center mt-5">
-                  <p style={{ fontSize: '24px', fontWeight: 'bold' }}>No Geckos Found 😢</p>
-                </div>
-              ) : (
-                <Card page="/" results={filteredResults} />
-              )}
             </div>
+
+            {noResults ? (
+              <div className="text-center mt-5">
+                <p style={{ fontSize: '24px', fontWeight: 'bold' }}>No Geckos Found 😢</p>
+              </div>
+            ) : (
+              <Card page="/" results={filteredResults} />
+            )}
           </div>
         </div>
       </div>
