@@ -3,21 +3,21 @@ import { Link, useLocation } from 'react-router-dom';
 import './Navbar.scss';
 
 const Navbar = () => {
- const location = useLocation();
- const [isOpen, setIsOpen] = useState(false); // State to toggle the hamburger menu
+  const location = useLocation();
+  const [isOpen, setIsOpen] = useState(false); // State to toggle the hamburger menu
 
- const toggleMenu = () => {
+  const toggleMenu = () => {
     setIsOpen(!isOpen);
- };
+  };
 
- return (
+  return (
     <nav className="navbar">
       <Link to="/" className="logo-link">
         <img src="/images/geckoco-png.png" alt="Geckoco Logo" className="logo" />
         <span className="company-name">Gecko Co.</span>
       </Link>
       <div className={`nav-links ${isOpen ? 'open' : ''}`}>
-      <NavLink to="#" text="Home" />
+        <NavLink to="#" text="Home" />
         <NavLink to="/" text="Shop" />
         <NavLink to="#" text="Geckopedia" />
         <NavLink to="#" text="Genetic Calculator" />
@@ -28,20 +28,30 @@ const Navbar = () => {
         <span></span>
       </button>
     </nav>
- );
+  );
 };
 
 const NavLink = ({ to, text }) => {
- const location = useLocation();
+  const location = useLocation();
 
- return (
-    <Link 
-      to={to} 
-      className={`nav-link ${location.pathname === to ? 'active' : ''}`}
-    >
-      {text}
-    </Link>
- );
+  // Function to determine if a badge should be shown
+  const shouldShowBadge = (text) => {
+    return text === "Home" || text === "Genetic Calculator" || text === "Geckopedia";
+  };
+
+  return (
+    <div className="nav-link-container">
+      {shouldShowBadge(text) && (
+        <span className="maintenance-icon">🚨</span>
+      )}
+      <Link 
+        to={to} 
+        className={`nav-link ${location.pathname === to ? 'active' : ''}`}
+      >
+        {text}
+      </Link>
+    </div>
+  );
 };
 
 export default Navbar;
