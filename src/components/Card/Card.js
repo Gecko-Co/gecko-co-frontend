@@ -20,8 +20,12 @@ const Card = ({ page, results, disableLink = true }) => {
     overflow: "hidden",
   };
 
-  const imgStyle = {
+  const imgContainerStyle = {
     borderRadius: "10px 10px 0 0",
+    overflow: "hidden",
+  };
+
+  const imgStyle = {
     height: "200px",
     objectFit: "cover",
     transition: "transform 0.3s ease-in-out",
@@ -30,12 +34,12 @@ const Card = ({ page, results, disableLink = true }) => {
 
   const hoverContentStyle = {
     position: "absolute",
-    top: "30%",  // Moved to 30% from 50%
+    top: "30%",  
     left: "50%",
     transform: "translate(-50%, -50%)",
     textAlign: "center",
     zIndex: "1",
-    textDecoration: "none",  // Removed underline
+    textDecoration: "none",
     display: hoveredIndex !== null ? "block" : "none",
     color: "#fff",
     fontSize: "18px",
@@ -43,7 +47,7 @@ const Card = ({ page, results, disableLink = true }) => {
     backgroundColor: "#23283b",
     padding: "10px",
     borderRadius: "5px",
-    pointerEvents: disableLink ? "none" : "auto", // Disable pointer events if disableLink is true
+    pointerEvents: disableLink ? "none" : "auto",
   };
 
   if (results) {
@@ -81,20 +85,24 @@ const Card = ({ page, results, disableLink = true }) => {
                 onMouseLeave={handleMouseLeave}
               >
                 {disableLink ? (
-                  <img 
-                    style={{ ...imgStyle, transform: hoveredIndex === index ? "scale(1.1)" : "scale(1)" }}
-                    className="img-fluid" 
-                    src={images} 
-                    alt={breeder} 
-                  />
-                ) : (
-                  <Link style={{ textDecoration: "none" }} to={`${page}${breeder}`}>
+                  <div style={imgContainerStyle}>
                     <img 
                       style={{ ...imgStyle, transform: hoveredIndex === index ? "scale(1.1)" : "scale(1)" }}
                       className="img-fluid" 
                       src={images} 
                       alt={breeder} 
                     />
+                  </div>
+                ) : (
+                  <Link style={{ textDecoration: "none" }} to={`${page}${breeder}`}>
+                    <div style={imgContainerStyle}>
+                      <img 
+                        style={{ ...imgStyle, transform: hoveredIndex === index ? "scale(1.1)" : "scale(1)" }}
+                        className="img-fluid" 
+                        src={images} 
+                        alt={breeder} 
+                      />
+                    </div>
                   </Link>
                 )}
 
