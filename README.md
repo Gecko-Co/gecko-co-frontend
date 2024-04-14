@@ -63,6 +63,8 @@ Your contributions are what make the open-source community such an amazing place
 4. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 5. Push to the Branch (`git push origin feature/AmazingFeature`)
 6. Open a Pull Request
+7. Approved pull request on Dev branch will be automatically deployed on [https://www.geckoco.shop/](https://www.geckoco.shop/)
+8. Approved pull request on Main branch will be automatically deployed on [https://www.geckoco.ph/](https://www.geckoco.ph/)
 
 ## Contact
 
