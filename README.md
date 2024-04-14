@@ -1,39 +1,73 @@
-# Tutorial
+# Gecko Co. Project
 
-### Packages installation steps
+Welcome to the Gecko Co. Project, a cutting-edge initiative aimed at revolutionizing the way we interact with technology. This repository serves as the front-end foundation of our project, built with a focus on user experience and innovation.
 
-```
-npx create-react-app .
+## Table of Contents
 
-npm install bootstrap
+- [Project Overview](#project-overview)
+- [Project Links](#project-links)
+- [Getting Started](#getting-started)
+- [Prerequisites](#prerequisites)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Contributing](#contributing)
+- [Contact](#contact)
 
-npm install @popperjs/core --save
+## Project Overview
 
-npm install sass
+Gecko Co. is a dynamic project that aims to leverage the latest web technologies to provide a seamless and engaging user experience. Our front-end is designed with a focus on performance, accessibility, and responsiveness, ensuring a smooth and enjoyable experience for all users.
 
-npm install react-paginate --save
+## Project Links
 
-npm install react-router-dom
+- **Project Board**: [GitHub Project Board](https://github.com/orgs/Gecko-Co/projects/1/)
+- **Repository**: [Gecko Co. Frontend Repository](https://github.com/Gecko-Co/gecko-co-frontend)
+- **Development Site**: [https://www.geckoco.shop/](https://www.geckoco.shop/)
+- **Production Site**: [https://www.geckoco.ph/](https://www.geckoco.ph/)
 
-npm start
-```
+## Getting Started
 
-### Font Awesome CDN
+To get started with the Gecko Co. Project, follow these steps to set up your development environment.
 
-```
-<link
-   rel="stylesheet"
-   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-/>
-    
-```
+### Prerequisites
 
-### Google Font Families
+Ensure you have the following installed on your system:
 
-```
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap');
+- Node.js (v14.0.0 or later)
+- npm (v6.0.0 or later)
 
+### Installation
 
-font-family: 'Poppins', sans-serif;
-font-family: 'Ubuntu', sans-serif;
-```
+1. Clone the repository:
+
+   `git clone https://github.com/Gecko-Co/gecko-co-frontend.git `
+
+2. Navigate to the project directory:
+
+   `cd gecko-co-frontend `
+
+## Usage
+
+To start the development server and begin contributing to the project, run:
+
+sh npm start
+
+This command will launch the development server, and you can view the project in your browser at `http://localhost:3000`.
+
+## Contributing
+
+Your contributions are what make the open-source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated. Here's how you can contribute:
+
+1. Fork the Project
+2. Check issues on the [Project Board](https://github.com/orgs/Gecko-Co/projects/1/) with Ready status
+3. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+4. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+5. Push to the Branch (`git push origin feature/AmazingFeature`)
+6. Open a Pull Request
+
+## Contact
+
+If you have any questions, suggestions, or feedback, feel free to reach out:
+
+- **LinkedIn**: [Jan Carlo Once](https://www.linkedin.com/in/jancarloonce)
+
+Thank you for your interest in the Gecko Co. Project!
