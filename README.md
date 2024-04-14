@@ -1,6 +1,14 @@
-# Gecko Co. Project
+# Gecko Co. <img src="public/images/geckoco-png.png" alt="Gecko Co. Logo" width="50">
 
-Welcome to the Gecko Co. Project, a cutting-edge initiative aimed at revolutionizing the way we interact with technology. This repository serves as the front-end foundation of our project, built with a focus on user experience and innovation.
+Welcome to the Gecko Co. Project, your go-to source for high-quality morphs of Leopard Geckos, African Fat-Tailed Geckos, Crested Geckos, and Knobtail Geckos. This repository serves as the front-end foundation of our project, dedicated to showcasing the exquisite beauty and diversity of these fascinating reptiles.
+
+## About the Breeder
+
+Gecko Co. is the brainchild of a passionate reptile enthusiast with a keen eye for quality and aesthetics. As a dedicated breeder, our focus lies in breeding exceptional morphs of Leopard Geckos, African Fat-Tailed Geckos, Crested Geckos, and Knobtail Geckos, ensuring each reptile is a unique masterpiece.
+
+## Project Overview
+
+The Gecko Co. Project aims to provide a seamless and engaging platform to explore and appreciate these stunning gecko species. Our front-end is meticulously designed with a focus on user experience, showcasing high-resolution images and detailed information about each morph, allowing enthusiasts and collectors to discover and learn about these captivating creatures.
 
 ## Table of Contents
 
@@ -72,4 +80,4 @@ If you have any questions, suggestions, or feedback, feel free to reach out:
 
 - **LinkedIn**: [Jan Carlo Once](https://www.linkedin.com/in/jancarloonce)
 
-Thank you for your interest in the Gecko Co. Project!
+Thank you for your interest in the Gecko Co.!
