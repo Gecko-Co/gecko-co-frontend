@@ -1,39 +1,55 @@
-# Tutorial
+# Gecko Co. Project
 
-### Packages installation steps
+This is the front-end repository for the Gecko Co. project.
 
-```
-npx create-react-app .
+## Project Links
 
-npm install bootstrap
+- [Project Board](https://github.com/orgs/Gecko-Co/projects/1/)
+- [Repository](https://github.com/Gecko-Co/gecko-co-frontend)
+- [Development Site](https://www.geckoco.shop/)
+- [Production Site](https://www.geckoco.ph/)
 
-npm install @popperjs/core --save
+## Getting Started
 
-npm install sass
+To get a local copy up and running, follow these simple steps.
 
-npm install react-paginate --save
+### Prerequisites
 
-npm install react-router-dom
+Make sure you have Node.js and npm installed.
 
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/Gecko-Co/gecko-co-frontend.git
+   ```
+2. Install NPM packages
+   ```sh
+   npm install
+   ```
+
+## Usage
+
+To start the development server, run:
+
+```sh
 npm start
 ```
 
-### Font Awesome CDN
+## Contributing
 
-```
-<link
-   rel="stylesheet"
-   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
-/>
-    
-```
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are greatly appreciated.
 
-### Google Font Families
+1. Fork the Project
+2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the Branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-```
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Ubuntu:wght@300;400;500;700&display=swap');
+## License
 
+Distributed under the MIT License. See `LICENSE` for more information.
 
-font-family: 'Poppins', sans-serif;
-font-family: 'Ubuntu', sans-serif;
-```
+## Contact
+
+See me on [LinkedIn](https://www.linkedin.com/in/jancarloonce
