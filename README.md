@@ -1,4 +1,4 @@
-# Gecko Co. Project
+# Gecko Co.
 
 Welcome to the Gecko Co. Project, your go-to source for high-quality morphs of Leopard Geckos, African Fat-Tailed Geckos, Crested Geckos, and Knobtail Geckos. This repository serves as the front-end foundation of our project, dedicated to showcasing the exquisite beauty and diversity of these fascinating reptiles.
 
@@ -80,4 +80,4 @@ If you have any questions, suggestions, or feedback, feel free to reach out:
 
 - **LinkedIn**: [Jan Carlo Once](https://www.linkedin.com/in/jancarloonce)
 
-Thank you for your interest in the Gecko Co. Project!
+Thank you for your interest in the Gecko Co.!
