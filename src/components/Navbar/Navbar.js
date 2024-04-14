@@ -17,9 +17,9 @@ const Navbar = () => {
         <span className="company-name">Gecko Co.</span>
       </Link>
       <div className={`nav-links ${isOpen ? 'open' : ''}`}>
+      <NavLink to="#" text="Home" />
         <NavLink to="/" text="Shop" />
         <NavLink to="#" text="Geckopedia" />
-        <NavLink to="#" text="PH Husbandry" />
         <NavLink to="#" text="Genetic Calculator" />
       </div>
       <button className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>

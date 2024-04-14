@@ -11,7 +11,6 @@ Welcome to the Gecko Co. Project, a cutting-edge initiative aimed at revolutioni
 - [Installation](#installation)
 - [Usage](#usage)
 - [Contributing](#contributing)
-- [License](#license)
 - [Contact](#contact)
 
 ## Project Overview
@@ -40,11 +39,11 @@ Ensure you have the following installed on your system:
 
 1. Clone the repository:
 
-    ```git clone https://github.com/Gecko-Co/gecko-co-frontend.git ```
+   `git clone https://github.com/Gecko-Co/gecko-co-frontend.git `
 
 2. Navigate to the project directory:
 
-    ```cd gecko-co-frontend ```
+   `cd gecko-co-frontend `
 
 ## Usage
 
@@ -64,10 +63,6 @@ Your contributions are what make the open-source community such an amazing place
 4. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 5. Push to the Branch (`git push origin feature/AmazingFeature`)
 6. Open a Pull Request
-
-## License
-
-This project is licensed under the MIT License. See the `LICENSE` file for more details.
 
 ## Contact
 
