@@ -22,8 +22,8 @@ Gecko Co. is a dynamic project that aims to leverage the latest web technologies
 
 - **Project Board**: [GitHub Project Board](https://github.com/orgs/Gecko-Co/projects/1/)
 - **Repository**: [Gecko Co. Frontend Repository](https://github.com/Gecko-Co/gecko-co-frontend)
-- **Development Site**: [Gecko Co. Development Site](https://www.geckoco.shop/)
-- **Production Site**: [Gecko Co. Production Site](https://www.geckoco.ph/)
+- **Development Site**: [https://www.geckoco.shop/](https://www.geckoco.shop/)
+- **Production Site**: [https://www.geckoco.ph/](https://www.geckoco.ph/)
 
 ## Getting Started
 
