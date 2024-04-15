@@ -22,7 +22,7 @@ const Flag = () => {
 
     return (
         <div className={`development-banner ${isFloating ? 'floating' : ''}`}>
-            <span style={environmentStyle}>{environment}</span> environment: This site is still in development.
+            <span style={environmentStyle}>{environment}</span> - This site is still in development.
         </div>
     );
 };
