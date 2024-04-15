@@ -1,41 +1,41 @@
 body {
   overflow-x: hidden; // Prevent horizontal overflow
- }
- 
- .navbar {
+}
+
+.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
   background-color: #23283b;
   position: relative;
- 
+
   .logo-link {
      text-decoration: none;
      color: white;
      display: flex;
      align-items: center;
- 
+
      .logo {
        width: 50px;
        height: auto;
        margin-right: 10px;
      }
- 
+
      .company-name {
        font-size: 1.5rem;
        font-weight: bold;
        color: #bd692d;
      }
   }
- 
+
   .nav-links {
      display: flex;
      flex-direction: row;
      gap: 20px;
      background-color: #23283b;
      align-items: center;
- 
+
      @media (max-width: 480px) {
        display: none; // Hide by default
        flex-direction: column;
@@ -49,13 +49,13 @@ body {
        z-index: 1000;
        padding: 20px 0;
        overflow-y: auto;
- 
+
        &.open {
          display: flex;
          flex-direction: column;
          justify-content: center;
          align-items: center;
- 
+
          .close-icon {
            position: fixed; // Fixed position for the X icon
            top: 10px;
@@ -68,13 +68,13 @@ body {
        }
      }
   }
- 
+
   .nav-link-container {
      position: relative;
      display: flex;
      align-items: center;
      justify-content: center;
- 
+
      .maintenance-icon {
        margin-left: 5px;
        font-size: 14px;
@@ -82,33 +82,34 @@ body {
        right: -5px; // Adjusted to bring the icon closer to the text
        bottom: 50%;
        transform: translateY(-25%) rotate(20deg);
-       animation: glowIcon 2s infinite; // Updated animation duration for faster on-off cycle
- 
+       animation: glowIcon 1s infinite;
+       display: inline-block;
+
        &:nth-child(2) {
          animation-delay: 0.5s;
        }
- 
+
        &:nth-child(3) {
          animation-delay: 1s;
        }
      }
   }
- 
+
   @keyframes glowIcon {
      0%, 25% {
-       text-shadow: none; // Glow off
+       text-shadow: none;
      }
      26%, 50% {
-       text-shadow: 0 0 15px #ff0000, 0 0 20px #ff0000, 0 0 25px #ff0000, 0 0 30px #ff0000; // Glow on
+       text-shadow: 0 0 15px #ff0000, 0 0 20px #ff0000, 0 0 25px #ff0000, 0 0 30px #ff0000;
      }
      51%, 75% {
-       text-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000, 0 0 50px #ff0000, 0 0 60px #ff0000, 0 0 70px #ff0000; // Glow at its brightest
+       text-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000, 0 0 50px #ff0000, 0 0 60px #ff0000, 0 0 70px #ff0000;
      }
      76%, 100% {
-       text-shadow: none; // Glow off again
+       text-shadow: none;
      }
   }
- 
+
   .nav-link {
      text-decoration: none;
      color: white;
@@ -118,11 +119,11 @@ body {
      transition: color 0.3s;
      display: flex;
      align-items: center;
- 
+
      &:hover {
        color: #bd692d;
      }
- 
+
      &.active::after {
        content: '';
        position: absolute;
@@ -134,10 +135,10 @@ body {
        width: 100%;
      }
   }
- 
+
   .hamburger {
      display: none;
- 
+
      @media (max-width: 480px) {
        display: flex;
        flex-direction: column;
@@ -150,7 +151,7 @@ body {
        padding: 0;
        z-index: 1001;
        position: relative;
- 
+
        span {
          width: 2rem;
          height: 0.25rem;
@@ -161,7 +162,7 @@ body {
          transform-origin: 1px;
        }
      }
- 
+
      &.open {
        span:nth-child(1) {
          transform: rotate(45deg);
@@ -174,13 +175,13 @@ body {
        }
      }
   }
- 
+
   .close-icon {
      display: none;
- 
+
      @media (max-width: 480px) {
        display: block;
-       position: fixed; // Fixed position for the X icon
+       position: fixed;
        top: 10px;
        right: 10px;
        color: white;
@@ -189,5 +190,4 @@ body {
        z-index: 1002;
      }
   }
- }
- 
+}
