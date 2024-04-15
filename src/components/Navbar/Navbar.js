@@ -1,26 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import './Navbar.scss';
 
 const Navbar = () => {
-  const location = useLocation();
-  const [isOpen, setIsOpen] = useState(false); // State to toggle the hamburger menu
+ const location = useLocation();
+ const [isOpen, setIsOpen] = useState(false);
 
-  const toggleMenu = () => {
+ const toggleMenu = () => {
     setIsOpen(!isOpen);
-  };
+ };
 
-  return (
+ useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50 && isOpen) {
+        toggleMenu();
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+ }, [isOpen]);
+
+ return (
     <nav className="navbar">
       <Link to="/" className="logo-link">
         <img src="/images/geckoco-png.png" alt="Geckoco Logo" className="logo" />
         <span className="company-name">Gecko Co.</span>
       </Link>
       <div className={`nav-links ${isOpen ? 'open' : ''}`}>
-        <NavLink to="#" text="Home" />
-        <NavLink to="/" text="Shop" />
-        <NavLink to="#" text="Geckopedia" />
-        <NavLink to="#" text="Genetic Calculator" />
+        <NavLink to="#" text="Home" toggleMenu={toggleMenu} />
+        <NavLink to="/" text="Shop" toggleMenu={toggleMenu} />
+        <NavLink to="#" text="Geckopedia" toggleMenu={toggleMenu} />
+        <NavLink to="#" text="Genetic Calculator" toggleMenu={toggleMenu} />
       </div>
       <button className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>
         <span></span>
@@ -28,30 +39,34 @@ const Navbar = () => {
         <span></span>
       </button>
     </nav>
-  );
+ );
 };
 
-const NavLink = ({ to, text }) => {
-  const location = useLocation();
+const NavLink = ({ to, text, toggleMenu }) => {
+ const location = useLocation();
 
-  // Function to determine if a badge should be shown
-  const shouldShowBadge = (text) => {
+ const shouldShowBadge = (text) => {
     return text === "Home" || text === "Genetic Calculator" || text === "Geckopedia";
-  };
+ };
 
-  return (
+ const handleClick = () => {
+    toggleMenu();
+ };
+
+ return (
     <div className="nav-link-container">
-      {shouldShowBadge(text) && (
-        <span className="maintenance-icon">🚨</span>
-      )}
       <Link 
         to={to} 
         className={`nav-link ${location.pathname === to ? 'active' : ''}`}
+        onClick={handleClick}
       >
         {text}
       </Link>
+      {shouldShowBadge(text) && (
+        <span className="maintenance-icon">🚨</span>
+      )}
     </div>
-  );
+ );
 };
 
 export default Navbar;
