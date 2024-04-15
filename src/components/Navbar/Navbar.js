@@ -63,7 +63,7 @@ const NavLink = ({ to, text, toggleMenu }) => {
         {text}
       </Link>
       {shouldShowBadge(text) && (
-        <span className="maintenance-icon">&#x1F6A8;</span>
+        <span className="maintenance-icon">&#x1F6A7;</span>
       )}
     </div>
  );
