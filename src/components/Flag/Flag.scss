@@ -1,28 +1,32 @@
 .development-banner {
- background-color: green;
- color: white;
- text-align: center;
- padding: 10px;
- position: relative;
- z-index: 9999;
- transition: top 0.3s ease; /* Smooth transition when floating */
-
- &.floating {
+   background-color: green;
+   color: white;
+   text-align: center;
+   padding: 10px;
+   position: fixed; // Make the flag component fixed
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 45px; // Assuming the flag component's height is 60px
+   z-index: 9999;
+   transition: top 0.3s ease; /* Smooth transition when floating */
+  
+   &.floating {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
- }
-
- .dev {
-    color: red;
-    font-weight: bold;
-    font-size: 1.2em; /* Adjust size as needed */
- }
-
- .prod {
-    color: green;
-    font-weight: bold;
-    font-size: 1.2em; /* Adjust size as needed */
- }
-}
+   }
+  
+   .dev {
+      color: red;
+      font-weight: bold;
+      font-size: 1.2em; /* Adjust size as needed */
+   }
+  
+   .prod {
+      color: green;
+      font-weight: bold;
+      font-size: 1.2em; /* Adjust size as needed */
+   }
+  }

@@ -85,7 +85,7 @@ function Home() {
     <div className="App">
       <h1 className="text-center mb-3"></h1>
 
-      <div className="container">
+      <div className="container" style={{ marginTop: '130px' }}>
         <div className="row">
           <Filter
             pageNumber={pageNumber}

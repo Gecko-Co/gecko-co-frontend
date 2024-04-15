@@ -1,14 +1,33 @@
 body {
   overflow-x: hidden; // Prevent horizontal overflow
-}
-
-.navbar {
+ }
+ 
+ .flag-component {
+  position: fixed; // Make the flag component fixed
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; // Ensure it's above other elements
+  height: 45px; // Assuming the flag component's height is 60px
+  /* Other styles */
+ }
+ 
+ .content-after-flag {
+  margin-top: 45px; // Adjust based on the height of your flag component
+  /* Other styles */
+ }
+ 
+ .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
   background-color: #23283b;
-  position: relative;
+  position: fixed; // Ensure it's fixed or sticky
+  top: 45px; // Adjust based on the height of your flag component
+  left: 0;
+  width: 100%;
+  z-index: 10000; // Increase z-index to ensure it's above the flag component
 
   .logo-link {
      text-decoration: none;
