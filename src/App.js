@@ -4,6 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap';
 import Navbar from './components/Navbar/Navbar';
 import Home from './components/Home/Home';
+import Shop from './components/Shop/Shop';
 import Flag from './components/Flag/Flag';
 import Footer from './components/Footer/Footer';
 import AdSenseScript from './components/Adsense/Adsense';
@@ -21,7 +22,7 @@ function App() {
       </div>
       <Routes>
         <Route path="/" element={<Home />} />
-        {/* Other routes */}
+        <Route path="/Shop" element={<Shop />} />
       </Routes>
       <Footer />
       <AdSenseScript />
