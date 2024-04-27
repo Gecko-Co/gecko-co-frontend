@@ -1,130 +1,71 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
-import Card from "../Card/Card";
-import Pagination from "../Pagination/Pagination";
-import Filter from "../Filter/Filter";
-import placeholderData from "../../data";
+import React, { useEffect, useRef, useState } from 'react';
+import './Home.scss';
+import Typed from 'typed.js';
+import { Link } from 'react-router-dom';
 
 function Home() {
- const history = useNavigate();
- const [filteredResults, setFilteredResults] = useState(placeholderData.results);
- const [pageNumber, updatePageNumber] = useState(1);
- const [status, updateStatus] = useState("");
- const [gender, updateGender] = useState("");
- const [species, updateSpecies] = useState("");
- const [noResults, setNoResults] = useState(false); // State to track no results
- const [sortOrder, setSortOrder] = useState("asc"); // default ascending order
+    const typedRef = useRef(null);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0); // State to manage the current image index
+    const images = [ // Array of image sources
+        "images/home1.png",
+        "images/home2.png",
+        "images/home3.png",
+        // Add more image sources as needed
+    ];
 
- useEffect(() => {
-    filterResults(status, species, gender);
- }, [status, species, gender, sortOrder]);
+    useEffect(() => {
+        const options = {
+            strings: ["Looking for the next pet you would surely love?"],
+            typeSpeed: 40,
+            backSpeed: 50,
+            loop: true,
+            contentType: 'text',
+            cursorChar: '',
+        };
 
- const handleStatusChange = (newStatus) => {
-    updateStatus(newStatus);
- };
+        const typed = new Typed(typedRef.current, options);
 
- const handleSpeciesChange = (newSpecies) => {
-    updateSpecies(newSpecies);
- };
+        return () => {
+            typed.destroy();
+        };
+    }, []);
 
- const handleGenderChange = (newGender) => {
-    updateGender(newGender);
- };
+    // Function to update the current image index based on the clicked dot
+    const goToSlide = (index) => {
+        setCurrentImageIndex(index);
+    };
 
- const filterResults = (status, species, gender) => {
-    let filtered = placeholderData.results;
+    // Set up an interval to change the image every 5 seconds
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+        }, 3000); // Change image every 5 seconds
 
-    if (status) {
-      filtered = filtered.filter(result => result.status === status);
-    }
+        return () => clearInterval(interval); // Clean up the interval on component unmount
+    }, [images.length]); // Depend on the length of the images array to reset the interval if images change
 
-    if (species) {
-      filtered = filtered.filter(result => result.species === species);
-    }
-
-    if (gender) {
-      filtered = filtered.filter(result => result.gender === gender);
-    }
-
-    if (filtered.length === 0) {
-      setNoResults(true);
-    } else {
-      setNoResults(false);
-    }
-
-    // Apply sorting
-    const sortedResults = [...filtered].sort((a, b) => {
-      const priceA = parseFloat(a.price);
-      const priceB = parseFloat(b.price);
-
-      if (sortOrder === "asc") {
-        return priceA - priceB;
-      } else {
-        return priceB - priceA;
-      }
-    });
-
-    setFilteredResults(sortedResults);
-    updatePageNumber(1);
- };
-
- const clearFilters = () => {
-    setFilteredResults(placeholderData.results);
-    updatePageNumber(1);
-    updateStatus("");
-    updateSpecies("");
-    updateGender("");
-    setNoResults(false); // Reset no results state
- };
-
- const toggleSortOrder = () => {
-    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
- };
-
- return (
-    <div className="App">
-      <h1 className="text-center mb-3"></h1>
-
-      <div className="container" style={{ marginTop: '130px' }}>
-        <div className="row">
-          <Filter
-            pageNumber={pageNumber}
-            updatePageNumber={updatePageNumber}
-            updateStatus={handleStatusChange}
-            updateGender={handleGenderChange}
-            updateSpecies={handleSpeciesChange}
-            clearFilters={clearFilters} // Pass clearFilters as a prop
-          />
-          <div className="col-lg-8 col-12">
-            <div className="row mb-3">
-              <div className="col">
-                <span style={{ color: '#23283b' }}>Sort by Price:</span>
-                <button onClick={toggleSortOrder} className={`btn btn-link ${sortOrder === 'asc' ? 'active' : ''}`} style={{ color: '#23283b' }}>
-                 <i className="fas fa-arrow-up"></i>
-                </button>
-                <button onClick={toggleSortOrder} className={`btn btn-link ${sortOrder === 'desc' ? 'active' : ''}`} style={{ color: '#23283b' }}>
-                 <i className="fas fa-arrow-down"></i>
-                </button>
-              </div>
+    return (
+        <div className="App">
+            <div className="first-section">
+                <div className="text-container">
+                    <h1 className="text-center mb-3" ref={typedRef}></h1>
+                    <Link to="/shop" className="shop-now-button">SHOP NOW!</Link>
+                </div>
+                <div className="image-container">
+                    <img src={images[currentImageIndex]} alt="Background" className="background-image" />
+                </div>
+                <div className="slideshowDots">
+                    {images.map((_, index) => (
+                        <div
+                            key={index}
+                            className={`slideshowDot${currentImageIndex === index ? " active" : ""}`}
+                            onClick={() => goToSlide(index)}
+                        ></div>
+                    ))}
+                </div>
             </div>
-
-            {noResults ? (
-              <div className="text-center mt-5">
-                <p style={{ fontSize: '24px', fontWeight: 'bold' }}>No Geckos Found 😢</p>
-              </div>
-            ) : (
-              <Card page="/" results={filteredResults} />
-            )}
-          </div>
         </div>
-      </div>
-      <Pagination
-        info={placeholderData.info}
-        pageNumber={pageNumber}
-        updatePageNumber={updatePageNumber}
-      />
-    </div>
- );
+    );
 }
 
 export default Home;
