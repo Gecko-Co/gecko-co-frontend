@@ -153,6 +153,10 @@ body {
        background-color: #bd692d;
        width: 100%;
      }
+
+     @media (max-width: 480px) {
+      color: #bd692d;
+     }
   }
 
   .hamburger {
@@ -168,13 +172,18 @@ body {
        border: none;
        cursor: pointer;
        padding: 0;
+       padding-right: 49px;
        z-index: 1001;
        position: relative;
+       
+       .nav-link {
+        color: #bd692d; // Change color here
+      }
 
        span {
          width: 2rem;
          height: 0.25rem;
-         background: white;
+         background: #bd692d;
          border-radius: 10px;
          transition: all 0.3s linear;
          position: relative;

@@ -1,107 +1,145 @@
 body {
-    background-color: #23283b; // Ensure this matches the initial navbar color
+    background-color: #23283b;
     transition: background-color 1s ease;
 }
 
 .navbar {
-    background-color: #23283b; // Match the initial background color
+    background-color: #23283b;
     transition: background-color 2s ease;
-    position: fixed; // Ensure it's fixed or sticky
-    top: 45px; // Adjust based on the height of your flag component
+    position: fixed;
+    top: 45px;
     left: 0;
     width: 100%;
-    z-index: 10000; // Increase z-index to ensure it's above the flag component
+    z-index: 10000;
 }
 
 .container {
-    margin-top: 90px; // Adjust this value based on the combined height of your flag and navbar
+    margin-top: 90px;
 }
 
 .first-section {
-    display: flex; // Use flexbox for layout
-    align-items: center; // Center items vertically
-    background-color: #23283b; // Match the navbar color
-    padding: 90px; // Add some padding for better appearance
-    color: white; // Ensure the text is visible against the dark background
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #23283b;
+    padding: 90px;
+    color: white;
 }
 
 .text-container {
-    padding: 30px; // Reduced padding to move the text higher
-    flex: 1; // Take up remaining space
+    padding: 30px;
+    width: 100%;
+    text-align: center;
+    min-width: 300px; /* Ensure the container does not shrink below this width */
 }
 
-// Or, if you prefer to adjust the h1 element directly:
 h1 {
-    margin-top: -10px; // Adjust this value to
+    margin-top: -10px;
 }
 
 .second-section {
-    background-color: yellow; // Yellow background for the second section
-    padding: 300px; // Add some padding for better appearance
-    text-align: center; // Center the text
-    color: black; // Ensure the text is visible against the yellow background
+    background-color: white;
+    padding: 300px;
+    text-align: center;
+    color: black;
 }
 
 .shop-now-button {
     display: inline-block;
-    margin-top: 20px; // Adjust as needed
+    margin-top: 20px;
     padding: 10px 20px;
-    background-color: #bd692d; // Orange background
+    background-color: #bd692d;
     color: white;
     text-decoration: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
-    position: absolute; // Change to absolute positioning
-    left: 310px; // Move 20px from the right edge of the nearest positioned ancestor
-    top: 70%; // Center vertically
-    transform: translateY(-50%); // Adjust vertical centering
+    position: static;
+    transform: none;
+    left: auto;
+    top: auto;
+    margin: 10px auto;
 
     &:hover {
-        background-color: #af5210; // Darker orange on hover
+        background-color: #af5210;
     }
 }
 
 .image-container {
     padding: 50px;
-    flex: 1; // Take up remaining space
-    text-align: right; // Align the image to the right
-    position: relative; // Ensure the dots are positioned relative to this container
-    height: 450px; // Set a fixed height for the container to accommodate the tallest image
-    overflow: hidden; // Hide any part of the image that exceeds the container's dimensions
-    width: 200px; /* Fixed width for the container */
+    flex: 1;
+    text-align: center;
+    position: relative;
+    height: 450px; // Fixed height to maintain consistency
+    overflow: hidden;
+    width: 100%;
 }
 
 .background-image {
-    max-width: 150%; // Ensure image does not exceed container width
-    max-height: 150%; // Ensure image does not exceed container height
-    width: 100%; // Ensure image does not exceed container width
-    height: 100%; // Ensure image does not exceed container height
-    display: block; // Remove extra space below image
-    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5)); // Add shadow following the image shape
-    object-fit: cover; // Cover the container without distorting the aspect ratio
+    object-fit: cover; // Maintain aspect ratio
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
 }
 
 .slideshowDots {
     position: absolute;
-    bottom: 130px; // Position the dots at the bottom of the image container
-    right: 350px; // Align the dots to the right side of the image container
-    transform: translateX(0); // No need for horizontal centering since we're aligning to the right
+    bottom: 0; // Position directly below the image container
+    right: 0; // Center the dots
+    left: 0; // Ensure the dots span the full width of the image container
+    transform: translateX(0);
     display: flex;
-    justify-content: flex-end; // Align the dots to the right within the container
+    justify-content: center; // Center the dots horizontally
     align-items: center;
-    width: 100%; // Ensure the dots container spans the full width of the image container
+    width: 100%;
 }
+
 
 .slideshowDot {
     display: inline-block;
-    height: 10px; // Make the dots smaller
+    height: 10px;
     width: 10px;
     border-radius: 50%;
     cursor: pointer;
-    margin: 0 5px; // Adjust spacing between dots
-    background-color: white; // Set the default dot color to white
+    margin: 0 5px;
+    background-color: white;
 }
 
 .slideshowDot.active {
-    background-color: #bd692d; // Set the active dot color to #bd692d
+    background-color: #bd692d;
+}
+
+/* Responsive adjustments for larger screens */
+@media (min-width: 768px) {
+    .first-section {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    .text-container, .image-container {
+        width: 45%;
+    }
+}
+
+/* Additional responsive adjustments for smaller screens */
+@media (max-width: 767px) {
+    .first-section {
+        padding-top: 50%;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .text-container, .image-container {
+        width: 200%; /* Ensure these containers take full width on smaller screens */
+    }
+
+    .slideshowDots {
+        bottom: 0; // Position directly below the image container
+        right: 0; // Center the dots
+        left: 0; // Ensure the dots span the full width of the image container
+    }
+}
+
+.red-text {
+    color: red;
 }
