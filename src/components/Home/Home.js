@@ -58,7 +58,9 @@ function Home() {
             <div className="first-section">
                 <div className="text-container">
                     <h1 className="text-center mb-3">
-                        Looking for a new pet you will </h1>
+                        Looking for a new pet </h1>
+                        <h1 className="text-center mb-3">
+                        you will </h1>
                         <h1 className="text-center mb-3"> surely <span className="red-text" ref={typedRef}></span>
                     </h1>
                     <Link to="/shop" className="shop-now-button">SHOP NOW!</Link>
