@@ -1,130 +1,85 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
-import Card from "../Card/Card";
-import Pagination from "../Pagination/Pagination";
-import Filter from "../Filter/Filter";
-import placeholderData from "../../data";
+import React, { useEffect, useRef, useState } from 'react';
+import './Home.scss';
+import Typed from 'typed.js';
+import { Link } from 'react-router-dom';
 
 function Home() {
- const history = useNavigate();
- const [filteredResults, setFilteredResults] = useState(placeholderData.results);
- const [pageNumber, updatePageNumber] = useState(1);
- const [status, updateStatus] = useState("");
- const [gender, updateGender] = useState("");
- const [species, updateSpecies] = useState("");
- const [noResults, setNoResults] = useState(false); // State to track no results
- const [sortOrder, setSortOrder] = useState("asc"); // default ascending order
+    const typedRef = useRef(null);
+    const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const images = [
+        "images/home1-resize.png",
+        "images/home2-resize.png",
+        "images/home3-resize.png",
+    ];
 
- useEffect(() => {
-    filterResults(status, species, gender);
- }, [status, species, gender, sortOrder]);
+    const words = ["love?"];
+    const [changingWordIndex, setChangingWordIndex] = useState(0);
 
- const handleStatusChange = (newStatus) => {
-    updateStatus(newStatus);
- };
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setChangingWordIndex((prevIndex) => (prevIndex + 1) % words.length);
+        }, 3000); // Change word every 3 seconds
 
- const handleSpeciesChange = (newSpecies) => {
-    updateSpecies(newSpecies);
- };
+        return () => clearInterval(interval);
+    }, [words]);
 
- const handleGenderChange = (newGender) => {
-    updateGender(newGender);
- };
+    useEffect(() => {
+        const options = {
+            strings: [words[changingWordIndex]], // Use the current word from the array
+            typeSpeed: 40,
+            backSpeed: 50,
+            loop: true,
+            contentType: 'text',
+            cursorChar: '',
+            smartBackspace: true, // Enable smart backspacing
+        };
 
- const filterResults = (status, species, gender) => {
-    let filtered = placeholderData.results;
+        const typed = new Typed(typedRef.current, options);
 
-    if (status) {
-      filtered = filtered.filter(result => result.status === status);
-    }
+        return () => {
+            typed.destroy();
+        };
+    }, [changingWordIndex]); // Depend on the changing word index to reset the Typed.js instance
 
-    if (species) {
-      filtered = filtered.filter(result => result.species === species);
-    }
+    const goToSlide = (index) => {
+        setCurrentImageIndex(index);
+    };
 
-    if (gender) {
-      filtered = filtered.filter(result => result.gender === gender);
-    }
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+        }, 3000);
 
-    if (filtered.length === 0) {
-      setNoResults(true);
-    } else {
-      setNoResults(false);
-    }
+        return () => clearInterval(interval);
+    }, [images.length]);
 
-    // Apply sorting
-    const sortedResults = [...filtered].sort((a, b) => {
-      const priceA = parseFloat(a.price);
-      const priceB = parseFloat(b.price);
-
-      if (sortOrder === "asc") {
-        return priceA - priceB;
-      } else {
-        return priceB - priceA;
-      }
-    });
-
-    setFilteredResults(sortedResults);
-    updatePageNumber(1);
- };
-
- const clearFilters = () => {
-    setFilteredResults(placeholderData.results);
-    updatePageNumber(1);
-    updateStatus("");
-    updateSpecies("");
-    updateGender("");
-    setNoResults(false); // Reset no results state
- };
-
- const toggleSortOrder = () => {
-    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
- };
-
- return (
-    <div className="App">
-      <h1 className="text-center mb-3"></h1>
-
-      <div className="container" style={{ marginTop: '130px' }}>
-        <div className="row">
-          <Filter
-            pageNumber={pageNumber}
-            updatePageNumber={updatePageNumber}
-            updateStatus={handleStatusChange}
-            updateGender={handleGenderChange}
-            updateSpecies={handleSpeciesChange}
-            clearFilters={clearFilters} // Pass clearFilters as a prop
-          />
-          <div className="col-lg-8 col-12">
-            <div className="row mb-3">
-              <div className="col">
-                <span style={{ color: '#23283b' }}>Sort by Price:</span>
-                <button onClick={toggleSortOrder} className={`btn btn-link ${sortOrder === 'asc' ? 'active' : ''}`} style={{ color: '#23283b' }}>
-                 <i className="fas fa-arrow-up"></i>
-                </button>
-                <button onClick={toggleSortOrder} className={`btn btn-link ${sortOrder === 'desc' ? 'active' : ''}`} style={{ color: '#23283b' }}>
-                 <i className="fas fa-arrow-down"></i>
-                </button>
-              </div>
+    return (
+        <div className="App">
+            <div className="first-section">
+                <div className="text-container">
+                    <h1 className="text-center mb-3">
+                        Looking for a new pet </h1>
+                        <h1 className="text-center mb-3">
+                        you will </h1>
+                        <h1 className="text-center mb-3"> surely <span className="red-text" ref={typedRef}></span>
+                    </h1>
+                    <Link to="/shop" className="shop-now-button">SHOP NOW!</Link>
+                </div>
+                <div className="image-container">
+                    <img src={images[currentImageIndex]} alt="Background" className="background-image" />
+                </div>
+                {/* <div className="slideshowDots">
+                    {images.map((_, index) => (
+                        <div
+                            key={index}
+                            className={`slideshowDot${currentImageIndex === index ? " active" : ""}`}
+                            onClick={() => goToSlide(index)}
+                        ></div>
+                    ))}
+                </div> */}
             </div>
-
-            {noResults ? (
-              <div className="text-center mt-5">
-                <p style={{ fontSize: '24px', fontWeight: 'bold' }}>No Geckos Found 😢</p>
-              </div>
-            ) : (
-              <Card page="/" results={filteredResults} />
-            )}
-          </div>
         </div>
-      </div>
-      <Pagination
-        info={placeholderData.info}
-        pageNumber={pageNumber}
-        updatePageNumber={updatePageNumber}
-      />
-    </div>
- );
+    );
 }
 
 export default Home;

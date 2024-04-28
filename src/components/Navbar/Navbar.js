@@ -28,8 +28,8 @@ const Navbar = () => {
         <span className="company-name">Gecko Co.</span>
       </Link>
       <div className={`nav-links ${isOpen ? 'open' : ''}`}>
-        <NavLink to="#" text="Home" toggleMenu={toggleMenu} />
-        <NavLink to="/" text="Shop" toggleMenu={toggleMenu} />
+        <NavLink to="/" text="Home" toggleMenu={toggleMenu} />
+        <NavLink to="/Shop" text="Shop" toggleMenu={toggleMenu} />
         <NavLink to="#" text="Geckopedia" toggleMenu={toggleMenu} />
         <NavLink to="#" text="Genetic Calculator" toggleMenu={toggleMenu} />
       </div>
