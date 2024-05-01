@@ -219,3 +219,39 @@ body {
      }
   }
 }
+
+  // Add shaking animation
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    10%, 90% {
+      transform: translateX(-5px);
+    }
+    20%, 80% {
+      transform: translateX(5px);
+    }
+  }
+
+ .logo-link,
+ .company-name {
+    transition: transform 0.3s ease-in-out;
+  }
+
+ .logo-link:hover,
+ .company-name:hover, .logo-link:active,
+ .company-name:active{
+    animation: shake 1s;
+ // Define the shaking animation
+ @keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 80% {
+    transform: translateX(5px);
+    }
+  }
+}
