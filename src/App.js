@@ -22,7 +22,7 @@ function App() {
       </div>
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/Shop" element={<Shop />} />
+        <Route path="/shop" element={<Shop />} />
       </Routes>
       <Footer />
       <AdSenseScript />

@@ -1,221 +1,232 @@
 body {
-  overflow-x: hidden; // Prevent horizontal overflow
- }
- 
- .flag-component {
-  position: fixed; // Make the flag component fixed
+  overflow-x: hidden;
+}
+
+.flag-component {
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000; // Ensure it's above other elements
-  height: 45px; // Assuming the flag component's height is 60px
-  /* Other styles */
- }
- 
- .content-after-flag {
-  margin-top: 45px; // Adjust based on the height of your flag component
-  /* Other styles */
- }
- 
- .navbar {
+  z-index: 1000;
+  height: 45px;
+}
+
+.content-after-flag {
+  margin-top: 45px;
+}
+
+.navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
   background-color: #23283b;
-  position: fixed; // Ensure it's fixed or sticky
-  top: 45px; // Adjust based on the height of your flag component
+  position: fixed;
+  top: 45px;
   left: 0;
   width: 100%;
-  z-index: 10000; // Increase z-index to ensure it's above the flag component
+  z-index: 10000;
 
-  .logo-link {
-     text-decoration: none;
-     color: white;
-     display: flex;
-     align-items: center;
+ .logo-link {
+    text-decoration: none;
+    color: white;
+    display: flex;
+    align-items: center;
 
-     .logo {
-       width: 50px;
-       height: auto;
-       margin-right: 10px;
-     }
+   .logo {
+      width: 50px;
+      height: auto;
+      margin-right: 10px;
+    }
 
-     .company-name {
-       font-size: 1.5rem;
-       font-weight: bold;
-       color: #bd692d;
-     }
-  }
-
-  .nav-links {
-     display: flex;
-     flex-direction: row;
-     gap: 20px;
-     background-color: #23283b;
-     align-items: center;
-
-     @media (max-width: 480px) {
-       display: none; // Hide by default
-       flex-direction: column;
-       gap: 20px;
-       position: fixed;
-       top: 0;
-       left: 0;
-       width: 100%;
-       height: 100vh;
-       background-color: #23283b(35, 40, 59, 0.9);
-       z-index: 1000;
-       padding: 20px 0;
-       overflow-y: auto;
-
-       &.open {
-         display: flex;
-         flex-direction: column;
-         justify-content: center;
-         align-items: center;
-
-         .close-icon {
-           position: fixed; // Fixed position for the X icon
-           top: 10px;
-           right: 10px;
-           color: white;
-           font-size: 1.5rem;
-           cursor: pointer;
-           z-index: 1002;
-         }
-       }
-     }
-  }
-
-  .nav-link-container {
-     position: relative;
-     display: flex;
-     align-items: center;
-     justify-content: center;
-
-     .maintenance-icon {
-       margin-left: 5px;
-       font-size: 14px;
-       position: absolute;
-       right: -5px; // Adjusted to bring the icon closer to the text
-       bottom: 50%;
-       transform: translateY(-25%) rotate(20deg);
-       animation: glowIcon 1s infinite;
-       display: inline-block;
-
-       &:nth-child(2) {
-         animation-delay: 0.5s;
-       }
-
-       &:nth-child(3) {
-         animation-delay: 1s;
-       }
-     }
-  }
-
-  @keyframes glowIcon {
-     0%, 25% {
-       text-shadow: none;
-     }
-     26%, 50% {
-       text-shadow: 0 0 15px #ff0000, 0 0 20px #ff0000, 0 0 25px #ff0000, 0 0 30px #ff0000;
-     }
-     51%, 75% {
-       text-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000, 0 0 50px #ff0000, 0 0 60px #ff0000, 0 0 70px #ff0000;
-     }
-     76%, 100% {
-       text-shadow: none;
-     }
-  }
-
-  .nav-link {
-     text-decoration: none;
-     color: white;
-     position: relative;
-     font-size: 1.2rem;
-     font-weight: bold;
-     transition: color 0.3s;
-     display: flex;
-     align-items: center;
-
-     &:hover {
-       color: #bd692d;
-     }
-
-     &.active::after {
-       content: '';
-       position: absolute;
-       left: 50%;
-       transform: translateX(-50%);
-       bottom: -3px;
-       height: 2px;
-       background-color: #bd692d;
-       width: 100%;
-     }
-
-     @media (max-width: 480px) {
+   .company-name {
+      font-size: 1.5rem;
+      font-weight: bold;
       color: #bd692d;
-     }
+    }
   }
 
-  .hamburger {
-     display: none;
+ .nav-links {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    background-color: #23283b;
+    align-items: center;
 
-     @media (max-width: 480px) {
-       display: flex;
-       flex-direction: column;
-       justify-content: space-around;
-       width: 2rem;
-       height: 2rem;
-       background: transparent;
-       border: none;
-       cursor: pointer;
-       padding: 0;
-       padding-right: 49px;
-       z-index: 1001;
-       position: relative;
-       
-       .nav-link {
-        color: #bd692d; // Change color here
+    @media (max-width: 480px) {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: rgba(35, 40, 59, 0.9);
+      z-index: 1000;
+      padding: 20px 0;
+      overflow-y: auto;
+
+      &.open {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+
+       .close-icon {
+          position: fixed;
+          top: 10px;
+          right: 10px;
+          color: white;
+          font-size: 1.5rem;
+          cursor: pointer;
+          z-index: 1002;
+        }
+      }
+    }
+  }
+
+ .nav-link-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+   .maintenance-icon {
+      margin-left: 5px;
+      font-size: 14px;
+      position: absolute;
+      right: -5px;
+      bottom: 50%;
+      transform: translateY(-25%) rotate(20deg);
+      animation: glowIcon 1s infinite;
+      display: inline-block;
+    }
+  }
+
+ .nav-link {
+    text-decoration: none;
+    color: white;
+    position: relative;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      color: #bd692d;
+    }
+
+    &.active::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -3px;
+      height: 2px;
+      background-color: #bd692d;
+      width: 100%;
+    }
+
+    @media (max-width: 480px) {
+      color: #bd692d;
+    }
+  }
+
+ .hamburger {
+    display: none;
+
+    @media (max-width: 480px) {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      width: 2rem;
+      height: 2rem;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      padding-right: 49px;
+      z-index: 1001;
+      position: relative;
+
+     .nav-link {
+        color: #bd692d;
       }
 
-       span {
-         width: 2rem;
-         height: 0.25rem;
-         background: #bd692d;
-         border-radius: 10px;
-         transition: all 0.3s linear;
-         position: relative;
-         transform-origin: 1px;
-       }
-     }
+      span {
+        width: 2rem;
+        height: 0.25rem;
+        background: #bd692d;
+        border-radius: 10px;
+        transition: all 0.3s linear;
+        position: relative;
+        transform-origin: 1px;
+      }
+    }
 
-     &.open {
-       span:nth-child(1) {
-         transform: rotate(45deg);
-       }
-       span:nth-child(2) {
-         opacity: 0;
-       }
-       span:nth-child(3) {
-         transform: rotate(-45deg);
-       }
-     }
+    &.open {
+      span:nth-child(1) {
+        transform: rotate(45deg);
+      }
+      span:nth-child(2) {
+        opacity: 0;
+      }
+      span:nth-child(3) {
+        transform: rotate(-45deg);
+      }
+    }
   }
 
-  .close-icon {
-     display: none;
+ .close-icon {
+    display: none;
 
-     @media (max-width: 480px) {
-       display: block;
-       position: fixed;
-       top: 10px;
-       right: 10px;
-       color: white;
-       font-size: 1.5rem;
-       cursor: pointer;
-       z-index: 1002;
-     }
+    @media (max-width: 480px) {
+      display: block;
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      z-index: 1002;
+    }
   }
+
+  // Add shaking animation
+  @keyframes shake {
+    0%, 100% {
+      transform: translateX(0);
+    }
+    10%, 90% {
+      transform: translateX(-5px);
+    }
+    20%, 80% {
+      transform: translateX(5px);
+    }
+  }
+
+ .logo-link,
+ .company-name {
+    transition: transform 0.3s ease-in-out;
+  }
+
+ .logo-link:hover,
+ .company-name:hover, .logo-link:active,
+ .company-name:active{
+    animation: shake 1s;
+ // Define the shaking animation
+ @keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 80% {
+    transform: translateX(5px);
+  }
+}
+}
 }
