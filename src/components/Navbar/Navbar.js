@@ -30,8 +30,8 @@ const Navbar = () => {
       <div className={`nav-links ${isOpen? 'open' : ''}`}>
         <NavLink to="/" text="Home" toggleMenu={toggleMenu} />
         <NavLink to="/shop" text="Shop" toggleMenu={toggleMenu} />
-        <NavLink to="#" text="Geckopedia" toggleMenu={toggleMenu} />
-        <NavLink to="#" text="Genetic Calculator" toggleMenu={toggleMenu} />
+        <NavLink to="#" text="Learn" toggleMenu={toggleMenu} />
+        <NavLink to="#" text="Contact Us" toggleMenu={toggleMenu} />
       </div>
       <button className={`hamburger ${isOpen? 'open' : ''}`} onClick={toggleMenu}>
         <span></span>
@@ -46,7 +46,7 @@ const NavLink = ({ to, text, toggleMenu }) => {
   const location = useLocation();
 
   const shouldShowBadge = (text) => {
-    return text === "Home" || text === "Genetic Calculator" || text === "Geckopedia";
+    return text === "Home" || text === "Learn" || text === "Contact Us";
   };
 
   const handleClick = () => {

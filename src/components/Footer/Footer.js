@@ -38,9 +38,9 @@ const Footer = () => {
               <span className="mx-2">|</span>
               <a href="/shop" className="footer-link">Shop</a>
               <span className="mx-2">|</span>
-              <a href="/" className="footer-link">Geckopedia</a>
+              <a href="/" className="footer-link">Learn</a>
               <span className="mx-2">|</span>
-              <a href="/" className="footer-link">Genetic Calculator</a>
+              <a href="/" className="footer-link">Contact Us</a>
             </p>
           </div>
         </div>
