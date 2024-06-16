@@ -8,6 +8,7 @@ import Shop from './components/Shop/Shop';
 import Flag from './components/Flag/Flag';
 import Footer from './components/Footer/Footer';
 import Learn from './components/Learn/Learn';
+import Contact from './components/Contact/Contact';
 import AdSenseScript from './components/Adsense/Adsense';
 import { inject } from '@vercel/analytics';
 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/learn" element={<Learn />} />
+        <Route path="/contact" element={<Contact />} />
       </Routes>
       <Footer />
       <AdSenseScript />

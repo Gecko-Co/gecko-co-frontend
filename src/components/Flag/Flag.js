@@ -3,7 +3,6 @@ import './Flag.scss';
 
 const Flag = () => {
     const [isFloating, setIsFloating] = useState(false);
-    console.log("ENV var: ",process.env.NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT)
     const environment = process.env.NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT === 'dev' ? 'DEV' : 'PROD';
     const environmentStyle = environment === 'DEV' ? { color: 'blue', fontWeight: 'bold' } : { color: 'red', fontWeight: 'bold' };
 
