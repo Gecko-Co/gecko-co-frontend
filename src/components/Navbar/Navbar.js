@@ -19,15 +19,20 @@ const Navbar = () => {
       setPrevScrollPos(currentScrollPos);
     };
 
-    if (!isOpen) { // Apply scroll animation only if the mobile menu is closed
+    if (!isOpen) {
+      // Apply scroll animation only if the mobile menu is closed
       window.addEventListener('scroll', handleScroll);
-    } else {
-      // Remove scroll event listener when mobile menu is open
-      window.removeEventListener('scroll', handleScroll);
     }
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [isOpen, prevScrollPos]);
+
+  // Close menu on route change
+  useEffect(() => {
+    setIsOpen(false);
+  }, [location]);
 
   return (
     <nav className={`navbar ${isScrolled && !isOpen ? 'scrolled' : ''}`}>
