@@ -37,7 +37,7 @@ const Learn = () => {
 const Container = styled.div`
   background-color: white;
   padding: 50px 20px;
-  margin-top: 80px;
+  margin-top: 100px;
   padding-bottom: 120px;
 
   @media (min-width: 768px) {
