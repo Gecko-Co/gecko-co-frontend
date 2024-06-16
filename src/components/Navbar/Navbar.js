@@ -31,7 +31,7 @@ const Navbar = () => {
         <NavLink to="/" text="Home" toggleMenu={toggleMenu} />
         <NavLink to="/shop" text="Shop" toggleMenu={toggleMenu} />
         <NavLink to="learn" text="Learn" toggleMenu={toggleMenu} />
-        <NavLink to="#" text="Contact Us" toggleMenu={toggleMenu} />
+        <NavLink to="contact" text="Contact Us" toggleMenu={toggleMenu} />
       </div>
       <button className={`hamburger ${isOpen? 'open' : ''}`} onClick={toggleMenu}>
         <span></span>
