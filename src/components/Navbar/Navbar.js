@@ -30,7 +30,7 @@ const Navbar = () => {
       <div className={`nav-links ${isOpen? 'open' : ''}`}>
         <NavLink to="/" text="Home" toggleMenu={toggleMenu} />
         <NavLink to="/shop" text="Shop" toggleMenu={toggleMenu} />
-        <NavLink to="#" text="Learn" toggleMenu={toggleMenu} />
+        <NavLink to="learn" text="Learn" toggleMenu={toggleMenu} />
         <NavLink to="#" text="Contact Us" toggleMenu={toggleMenu} />
       </div>
       <button className={`hamburger ${isOpen? 'open' : ''}`} onClick={toggleMenu}>
