@@ -61,7 +61,7 @@ const Contact = () => {
 
 const ContactContainer = styled.div`
   background-color: white;
-  padding: 70px 20px;
+  padding: 130px 20px;
   margin-top: 75px;
   padding-bottom: 120px;
   text-align: center;
@@ -70,7 +70,7 @@ const ContactContainer = styled.div`
 
 const Title = styled.h1`
   margin-bottom: 20px;
-  font-size: 24px;
+  font-size: 12px;
 
   @media (min-width: 768px) {
     font-size: 32px;

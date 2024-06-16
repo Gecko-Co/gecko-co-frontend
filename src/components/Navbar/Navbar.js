@@ -4,7 +4,9 @@ import './Navbar.scss';
 
 const Navbar = () => {
   const location = useLocation();
-  const [isOpen, setIsOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [prevScrollPos, setPrevScrollPos] = useState(0);
+  const [isOpen, setIsOpen] = useState(false); // State to manage mobile menu
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -12,28 +14,34 @@ const Navbar = () => {
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50 && isOpen) {
-        toggleMenu();
-      }
+      const currentScrollPos = window.pageYOffset;
+      setIsScrolled(currentScrollPos > 50 && currentScrollPos > prevScrollPos);
+      setPrevScrollPos(currentScrollPos);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    if (!isOpen) { // Apply scroll animation only if the mobile menu is closed
+      window.addEventListener('scroll', handleScroll);
+    } else {
+      // Remove scroll event listener when mobile menu is open
+      window.removeEventListener('scroll', handleScroll);
+    }
+
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [isOpen]);
+  }, [isOpen, prevScrollPos]);
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isScrolled && !isOpen ? 'scrolled' : ''}`}>
       <Link to="/" className="logo-link">
         <img src="/images/geckoco-png.png" alt="Geckoco Logo" className="logo" />
         <span className="company-name">Gecko Co.</span>
       </Link>
-      <div className={`nav-links ${isOpen? 'open' : ''}`}>
+      <div className={`nav-links ${isOpen ? 'open' : ''}`}>
         <NavLink to="/" text="Home" toggleMenu={toggleMenu} />
         <NavLink to="/shop" text="Shop" toggleMenu={toggleMenu} />
-        <NavLink to="learn" text="Learn" toggleMenu={toggleMenu} />
-        <NavLink to="contact" text="Contact Us" toggleMenu={toggleMenu} />
+        <NavLink to="/learn" text="Learn" toggleMenu={toggleMenu} />
+        <NavLink to="/contact" text="Contact Us" toggleMenu={toggleMenu} />
       </div>
-      <button className={`hamburger ${isOpen? 'open' : ''}`} onClick={toggleMenu}>
+      <button className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>
         <span></span>
         <span></span>
         <span></span>
@@ -50,7 +58,7 @@ const NavLink = ({ to, text, toggleMenu }) => {
   };
 
   const handleClick = () => {
-    toggleMenu();
+    toggleMenu(); 
   };
 
   return (
