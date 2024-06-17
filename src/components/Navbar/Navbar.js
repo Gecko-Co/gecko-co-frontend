@@ -15,7 +15,7 @@ const Navbar = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollPos = window.pageYOffset;
-      setIsScrolled(currentScrollPos > 50 && currentScrollPos > prevScrollPos);
+      setIsScrolled(currentScrollPos > 50);
       setPrevScrollPos(currentScrollPos);
     };
 
@@ -35,7 +35,7 @@ const Navbar = () => {
   }, [location]);
 
   return (
-    <nav className={`navbar ${isScrolled && !isOpen ? 'scrolled' : ''}`}>
+    <nav className={`navbar ${isScrolled ? 'scrolled' : 'unscrolled'} ${isOpen ? 'open' : ''}`}>
       <Link to="/" className="logo-link">
         <img src="/images/geckoco-png.png" alt="Geckoco Logo" className="logo" />
         <span className="company-name">Gecko Co.</span>

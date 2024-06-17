@@ -3,19 +3,20 @@ body {
 }
 
 .flag-component {
- position: fixed; // Make the flag component fixed
- top: 0;
- left: 0;
- width: 100%;
- z-index: 1000; // Ensure it's above other elements
- height: 45px; // Assuming the flag component's height is 60px
- /* Other styles */
+  position: fixed; // Make the flag component fixed
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; // Ensure it's above other elements
+  height: 45px; // Assuming the flag component's height is 60px
+  /* Other styles */
 }
 
 .content-after-flag {
- margin-top: 45px; // Adjust based on the height of your flag component
- /* Other styles */
+  margin-top: 45px; // Adjust based on the height of your flag component
+  /* Other styles */
 }
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -29,26 +30,26 @@ body {
   z-index: 10000; // Increase z-index to ensure it's above the flag component
   transition: padding 0.5s ease; /* Smooth transition for padding */
 
-  .logo-link {
+ .logo-link {
     text-decoration: none;
     color: white;
     display: flex;
     align-items: center;
 
-    .logo {
+   .logo {
       width: 50px;
       height: auto;
       margin-right: 10px;
     }
 
-    .company-name {
+   .company-name {
       font-size: 1.5rem;
       font-weight: bold;
       color: #bd692d;
     }
   }
 
-  .nav-links {
+ .nav-links {
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -64,7 +65,7 @@ body {
       left: 0;
       width: 100%;
       height: 100vh;
-      background-color: #23283b(35, 40, 59, 0.9);
+      background-color: #23283b; /* Updated background color */
       z-index: 1000;
       padding: 20px 0;
       overflow-y: auto;
@@ -75,7 +76,7 @@ body {
         justify-content: center;
         align-items: center;
 
-        .close-icon {
+       .close-icon {
           position: fixed; // Fixed position for the X icon
           top: 10px;
           right: 10px;
@@ -88,13 +89,13 @@ body {
     }
   }
 
-  .nav-link-container {
+ .nav-link-container {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
 
-    .maintenance-icon {
+   .maintenance-icon {
       margin-left: 5px;
       font-size: 14px;
       position: absolute;
@@ -112,9 +113,9 @@ body {
         animation-delay: 1s;
       }
     }
- }
+  }
 
- @keyframes glowIcon {
+  @keyframes glowIcon {
     0%, 25% {
       text-shadow: none;
     }
@@ -127,40 +128,39 @@ body {
     76%, 100% {
       text-shadow: none;
     }
- }
+  }
 
-    .nav-link {
-      text-decoration: none;
-      color: white;
-      position: relative;
-      font-size: 1.2rem;
-      font-weight: bold;
-      transition: color 0.3s;
-      display: flex;
-      align-items: center;
+ .nav-link {
+    text-decoration: none;
+    color: white;
+    position: relative;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
 
-      &:hover {
-        color: #bd692d;
-      }
+    &:hover {
+      color: #bd692d;
+    }
 
-      &.active::after {
-        content: '';
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: -3px;
-        height: 2px;
-        background-color: #bd692d;
-        width: 100%;
-      }
+    &.active::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -3px;
+      height: 2px;
+      background-color: #bd692d;
+      width: 100%;
+    }
 
-      @media (max-width: 480px) {
-        color: #bd692d;
-      
+    @media (max-width: 480px) {
+      color: #bd692d;
     }
   }
 
-  .hamburger {
+ .hamburger {
     display: none;
 
     @media (max-width: 480px) {
@@ -176,8 +176,9 @@ body {
       padding-right: 49px;
       z-index: 1001;
       position: relative;
-       
-      .nav-link {
+      padding-left: 50px; /* Added to increase space between logo and hamburger menu */
+
+     .nav-link {
         color: #bd692d; // Change color here
       }
 
@@ -191,23 +192,31 @@ body {
         transform-origin: 1px;
       }
     }
-  
-  &.open {
-    span:nth-child(1) {
-      transform: rotate(45deg);
-    }
-    span:nth-child(2) {
-      opacity: 0;
-    }
-    span:nth-child(3) {
-      transform: rotate(-45deg);
+
+    &.open {
+      span:nth-child(1) {
+        transform: rotate(45deg);
+      }
+      span:nth-child(2) {
+        opacity: 0;
+      }
+      span:nth-child(3) {
+        transform: rotate(-45deg);
+      }
     }
   }
-}
 
   &.scrolled {
     padding: 10px 20px; /* Adjusted padding for scrolled state */
     transition: padding 0.5s ease; /* Smooth transition for scrolled state */
+  }
+  &.unscrolled {
+    padding: 40px 200px; /* Original padding */
+    transition: padding 0.5s ease; /* Smooth transition for unscrolled state */
+  }
+
+  &.open {
+    padding: 40px 200px; /* Original padding for open state */
   }
 
   @media screen and (max-width: 768px) {
@@ -220,8 +229,7 @@ body {
     transition: padding 0.5s ease; /* Smooth transition for smallest screens */
   }
 
-
-  .close-icon {
+ .close-icon {
     display: none;
 
     @media (max-width: 480px) {
@@ -234,32 +242,33 @@ body {
       cursor: pointer;
       z-index: 1002;
     }
- }
+  }
 }
 
- // Add shaking animation
- @keyframes shake {
-   0%, 100% {
-     transform: translateX(0);
-   }
-   10%, 90% {
-     transform: translateX(-5px);
-   }
-   20%, 80% {
-     transform: translateX(5px);
-   }
- }
+/* Add shaking animation */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 80% {
+    transform: translateX(5px);
+  }
+}
 
 .logo-link,
 .company-name {
-   transition: transform 0.3s ease-in-out;
- }
+  transition: transform 0.3s ease-in-out;
+}
 
 .logo-link:hover,
-.company-name:hover, .logo-link:active,
-.company-name:active{
-   animation: shake 1s;
-// Define the shaking animation
+.company-name:hover,
+.logo-link:active,
+.company-name:active {
+  animation: shake 1s;
+  // Define the shaking animation
 @keyframes shake {
  0%, 100% {
    transform: translateX(0);
