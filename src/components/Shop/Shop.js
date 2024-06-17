@@ -97,7 +97,7 @@ function Shop() {
           />
           <div className="col-lg-8 col-12">
             <div className="row mb-3">
-              <div className="col" style={{ paddingTop: '10px' }}>
+              <div className="col" style={{ paddingTop: '70px' }}>
                 <span style={{ color: '#23283b' }}>Sort by Price:</span>
                 <button onClick={toggleSortOrder} className={`btn btn-link ${sortOrder === 'asc' ? 'active' : ''}`} style={{ color: '#23283b' }}>
                  <i className="fas fa-arrow-up"></i>
