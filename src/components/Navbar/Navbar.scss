@@ -8,7 +8,7 @@ body {
   left: 0;
   width: 100%;
   z-index: 1000; // Ensure it's above other elements
-  height: 45px; // Assuming the flag component's height is 60px
+  height: 45px; // Assuming the flag component's height is 45px
   /* Other styles */
 }
 
@@ -30,26 +30,26 @@ body {
   z-index: 10000; // Increase z-index to ensure it's above the flag component
   transition: padding 0.5s ease; /* Smooth transition for padding */
 
- .logo-link {
+  .logo-link {
     text-decoration: none;
     color: white;
     display: flex;
     align-items: center;
 
-   .logo {
+    .logo {
       width: 50px;
       height: auto;
       margin-right: 10px;
     }
 
-   .company-name {
+    .company-name {
       font-size: 1.5rem;
       font-weight: bold;
       color: #bd692d;
     }
   }
 
- .nav-links {
+  .nav-links {
     display: flex;
     flex-direction: row;
     gap: 20px;
@@ -76,7 +76,7 @@ body {
         justify-content: center;
         align-items: center;
 
-       .close-icon {
+        .close-icon {
           position: fixed; // Fixed position for the X icon
           top: 10px;
           right: 10px;
@@ -89,13 +89,13 @@ body {
     }
   }
 
- .nav-link-container {
+  .nav-link-container {
     position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
 
-   .maintenance-icon {
+    .maintenance-icon {
       margin-left: 5px;
       font-size: 14px;
       position: absolute;
@@ -130,7 +130,7 @@ body {
     }
   }
 
- .nav-link {
+  .nav-link {
     text-decoration: none;
     color: white;
     position: relative;
@@ -160,7 +160,7 @@ body {
     }
   }
 
- .hamburger {
+  .hamburger {
     display: none;
 
     @media (max-width: 480px) {
@@ -176,9 +176,9 @@ body {
       padding-right: 49px;
       z-index: 1001;
       position: relative;
-      padding-left: 50px; /* Added to increase space between logo and hamburger menu */
+      padding-left: 20px; /* Adjust space between logo and hamburger menu */
 
-     .nav-link {
+      .nav-link {
         color: #bd692d; // Change color here
       }
 
@@ -210,6 +210,7 @@ body {
     padding: 10px 20px; /* Adjusted padding for scrolled state */
     transition: padding 0.5s ease; /* Smooth transition for scrolled state */
   }
+
   &.unscrolled {
     padding: 40px 200px; /* Original padding */
     transition: padding 0.5s ease; /* Smooth transition for unscrolled state */
@@ -222,14 +223,38 @@ body {
   @media screen and (max-width: 768px) {
     padding: 20px 100px; /* Adjusted padding for smaller screens */
     transition: padding 0.5s ease; /* Smooth transition for smaller screens */
+
+    &.scrolled {
+      padding: 10px 50px; /* Adjusted padding for scrolled state on smaller screens */
+    }
+
+    &.unscrolled {
+      padding: 20px 100px; /* Adjusted padding for unscrolled state on smaller screens */
+    }
+
+    &.open {
+      padding: 20px 100px; /* Adjusted padding for open state on smaller screens */
+    }
   }
 
   @media screen and (max-width: 480px) {
-    padding: 30px 50px; /* Further adjusted padding for smallest screens */
+    padding: 20px 50px; /* Further adjusted padding for smallest screens */
     transition: padding 0.5s ease; /* Smooth transition for smallest screens */
+
+    &.scrolled {
+      padding: 10px 20px; /* Adjusted padding for scrolled state on smallest screens */
+    }
+
+    &.unscrolled {
+      padding: 20px 50px; /* Adjusted padding for unscrolled state on smallest screens */
+    }
+
+    &.open {
+      padding: 20px 50px; /* Adjusted padding for open state on smallest screens */
+    }
   }
 
- .close-icon {
+  .close-icon {
     display: none;
 
     @media (max-width: 480px) {
@@ -268,16 +293,16 @@ body {
 .logo-link:active,
 .company-name:active {
   animation: shake 1s;
-  // Define the shaking animation
+    // Define the shaking animation
 @keyframes shake {
- 0%, 100% {
-   transform: translateX(0);
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 80% {
+    transform: translateX(5px);
+    }
+  }
  }
- 10%, 90% {
-   transform: translateX(-5px);
- }
- 20%, 80% {
-   transform: translateX(5px);
-   }
- }
-}
