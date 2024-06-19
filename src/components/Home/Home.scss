@@ -37,63 +37,42 @@ h1 {
     margin-top: -10px;
 }
 
-.second-section {
-    background-color: white;
-    padding: 300px;
-    text-align: center;
-    color: black;
-}
-
-.shop-now-button {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #bd692d;
-    color: white;
-    text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
-    position: static;
-    transform: none;
-    left: auto;
-    top: auto;
-    margin: 10px auto;
-
-    &:hover {
-        background-color: #af5210;
-    }
-}
-
 .image-container {
     padding: 50px;
     flex: 1;
     text-align: center;
     position: relative;
-    height: 450px; // Fixed height to maintain consistency
+    height: 450px; /* Fixed height to maintain consistency */
     overflow: hidden;
     width: 100%;
-}
 
-.background-image {
-    object-fit: cover; // Maintain aspect ratio
-    width: 100%;
-    height: 100%;
-    display: block;
-    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+    .background-image {
+        object-fit: cover; /* Maintain aspect ratio */
+        width: 100%;
+        height: 100%;
+        display: block;
+        filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+    }
+
+    @media (max-width: 767px) {
+        .background-image {
+            /* Adjust dimensions for smaller screens */
+            height: 300px; /* Increase height for smaller screens */
+        }
+    }
 }
 
 .slideshowDots {
     position: absolute;
-    bottom: 0; // Position directly below the image container
-    right: 0; // Center the dots
-    left: 0; // Ensure the dots span the full width of the image container
+    bottom: 0;
+    right: 0;
+    left: 0;
     transform: translateX(0);
     display: flex;
-    justify-content: center; // Center the dots horizontally
+    justify-content: center;
     align-items: center;
     width: 100%;
 }
-
 
 .slideshowDot {
     display: inline-block;
@@ -107,6 +86,95 @@ h1 {
 
 .slideshowDot.active {
     background-color: #bd692d;
+}
+
+.second-section {
+    background-color: white;
+    padding: 50px;
+    text-align: center;
+    color: black;
+
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
+
+    .image-gallery-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .main-image-container {
+            width: 100%;
+            max-width: 600px;
+            height: 400px; /* Fixed height for consistency */
+            overflow: hidden;
+            margin-bottom: 20px;
+            position: relative;
+
+            .main-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+                border: 2px solid #23283b; /* Add border with color */
+            }
+        }
+
+        .species-info {
+            
+            text-align: left;
+            margin-bottom: 20px;
+        
+            h2 {
+                text-align: center;
+                font-size: 1.8rem;
+                margin-bottom: 10px;
+            }
+        
+            .description {
+                font-style: italic;
+                margin-bottom: 10px;
+            }
+        
+            ul {
+                list-style-type: none;
+                padding: 0;
+                columns: 2; /* Distribute list items into two columns */
+                column-gap: 20px; /* Add gap between columns */
+        
+                li {
+                    margin-bottom: 10px; /* Adjust spacing between list items */
+        
+                    strong {
+                        margin-right: 5px;
+                    }
+                }
+            }
+        }
+
+        .thumbnail-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            margin-bottom: 25px; /* Add margin bottom for space */
+
+            .thumbnail {
+                width: 80px;
+                height: 80px;
+                object-fit: cover;
+                margin: 5px;
+                cursor: pointer;
+                border: 2px solid #23283b; /* Add border with color */
+                transition: border-color 0.3s ease;
+
+                &.active {
+                    border-color: #bd692d;
+                }
+            }
+        }
+    }
 }
 
 /* Responsive adjustments for larger screens */
@@ -134,12 +202,32 @@ h1 {
     }
 
     .slideshowDots {
-        bottom: 0; // Position directly below the image container
-        right: 0; // Center the dots
-        left: 0; // Ensure the dots span the full width of the image container
+        bottom: 0; /* Position directly below the image container */
+        right: 0; /* Center the dots */
+        left: 0; /* Ensure the dots span the full width of the image container */
     }
 }
 
 .red-text {
     color: red;
+}
+
+.shop-now-button {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #bd692d;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+    position: static;
+    transform: none;
+    left: auto;
+    top: auto;
+    margin: 10px auto;
+
+    &:hover {
+        background-color: #af5210;
+    }
 }
