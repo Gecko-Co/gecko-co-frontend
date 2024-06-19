@@ -7,23 +7,30 @@ import featuredData from '../../featured';
 function Home() {
     const typedRef = useRef(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [currentSecondSectionIndex, setCurrentSecondSectionIndex] = useState(0); // State for the second section
+    const [currentSecondSectionIndex, setCurrentSecondSectionIndex] = useState(0);
 
     const first_section_images = [
         "images/home1-resize.png",
         "images/home2-resize.png",
         "images/home3-resize.png",
     ];
+
     const second_section_images = featuredData.images;
 
-    // Slideshow functionality for the first section
     useEffect(() => {
-        const interval = setInterval(() => {
+        // Function to handle slideshow interval
+        const handleSlideshow = () => {
             setCurrentImageIndex((prevIndex) => (prevIndex + 1) % first_section_images.length);
-        }, 3000); // Change image every 3 seconds
+        };
 
-        return () => clearInterval(interval);
-    }, []);
+        // Set interval only if screen width is greater than or equal to 768px
+        const screenWidth = window.innerWidth;
+        if (screenWidth >= 768) {
+            const interval = setInterval(handleSlideshow, 3000); // Change image every 3 seconds
+
+            return () => clearInterval(interval);
+        }
+    }, []); // Empty dependency array ensures it only runs once on component mount
 
     const goToSlide = (index) => {
         setCurrentImageIndex(index);
