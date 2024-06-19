@@ -29,6 +29,32 @@ function Home() {
         setCurrentImageIndex(index);
     };
 
+    const handleTouchStart = (e) => {
+        touchStartX = e.touches[0].clientX;
+    };
+
+    const handleTouchMove = (e) => {
+        touchEndX = e.touches[0].clientX;
+        handleGesture();
+    };
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    const handleGesture = () => {
+        if (touchStartX - touchEndX > 50) {
+            // Swipe left
+            const nextIndex = (currentImageIndex + 1) % first_section_images.length;
+            setCurrentImageIndex(nextIndex);
+        }
+
+        if (touchEndX - touchStartX > 50) {
+            // Swipe right
+            const prevIndex = (currentImageIndex - 1 + first_section_images.length) % first_section_images.length;
+            setCurrentImageIndex(prevIndex);
+        }
+    };
+
     const words = ["love?"];
     const [changingWordIndex, setChangingWordIndex] = useState(0);
 
@@ -69,7 +95,7 @@ function Home() {
                 </div>
                 <div className="image-container">
                     <img src={first_section_images[currentImageIndex]} alt="Background" className="background-image" />
-                    <div className="slideshowDots">
+                    <div className="slideshowDots" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
                         {first_section_images.map((_, index) => (
                             <div
                                 key={index}
