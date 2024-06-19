@@ -133,6 +133,7 @@ h1 {
             }
         
             .description {
+                text-align: center;
                 font-style: italic;
                 margin-bottom: 10px;
             }
@@ -166,11 +167,11 @@ h1 {
                 object-fit: cover;
                 margin: 5px;
                 cursor: pointer;
-                border: 2px solid #23283b; /* Add border with color */
+                border: 2px solid transparent;
                 transition: border-color 0.3s ease;
 
                 &.active {
-                    border-color: #bd692d;
+                    border-color: #23283b;
                 }
             }
         }
@@ -225,7 +226,6 @@ h1 {
     transform: none;
     left: auto;
     top: auto;
-    margin: 10px auto;
 
     &:hover {
         background-color: #af5210;
