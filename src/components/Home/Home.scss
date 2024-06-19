@@ -47,31 +47,30 @@ h1 {
     width: 100%;
 
     .background-image {
-        object-fit: cover; /* Maintain aspect ratio */
         width: 100%;
         height: 100%;
-        display: block;
+        object-fit: cover; /* Ensure the image covers the container */
         filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
     }
 
-    @media (max-width: 767px) {
-        .background-image {
-            /* Adjust dimensions for smaller screens */
-            height: 300px; /* Increase height for smaller screens */
-        }
+    .slideshowDots {
+        position: absolute;
+        bottom: 10px; /* Adjust bottom spacing as needed */
+        left: 50%; /* Center horizontally */
+        transform: translateX(-50%); /* Center using translate */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
     }
 }
 
-.slideshowDots {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    transform: translateX(0);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 100%;
+@media (max-width: 767px) {
+    .image-container {
+        .slideshowDots {
+            bottom: 5px; /* Adjust spacing for smaller screens */
+        }
+    }
 }
 
 .slideshowDot {
@@ -82,11 +81,12 @@ h1 {
     cursor: pointer;
     margin: 0 5px;
     background-color: white;
+
+    &.active {
+        background-color: #bd692d;
+    }
 }
 
-.slideshowDot.active {
-    background-color: #bd692d;
-}
 
 .second-section {
     background-color: white;
