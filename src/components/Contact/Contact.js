@@ -16,7 +16,7 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData);
+    console.error(formData);
     setShowSuccess(true);
     setTimeout(() => {
       setShowSuccess(false);
