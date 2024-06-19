@@ -3,19 +3,20 @@ body {
 }
 
 .flag-component {
- position: fixed; // Make the flag component fixed
- top: 0;
- left: 0;
- width: 100%;
- z-index: 1000; // Ensure it's above other elements
- height: 45px; // Assuming the flag component's height is 60px
- /* Other styles */
+  position: fixed; // Make the flag component fixed
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000; // Ensure it's above other elements
+  height: 45px; // Assuming the flag component's height is 45px
+  /* Other styles */
 }
 
 .content-after-flag {
- margin-top: 45px; // Adjust based on the height of your flag component
- /* Other styles */
+  margin-top: 45px; // Adjust based on the height of your flag component
+  /* Other styles */
 }
+
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -64,7 +65,7 @@ body {
       left: 0;
       width: 100%;
       height: 100vh;
-      background-color: #23283b(35, 40, 59, 0.9);
+      background-color: #23283b; /* Updated background color */
       z-index: 1000;
       padding: 20px 0;
       overflow-y: auto;
@@ -112,9 +113,9 @@ body {
         animation-delay: 1s;
       }
     }
- }
+  }
 
- @keyframes glowIcon {
+  @keyframes glowIcon {
     0%, 25% {
       text-shadow: none;
     }
@@ -127,36 +128,35 @@ body {
     76%, 100% {
       text-shadow: none;
     }
- }
+  }
 
-    .nav-link {
-      text-decoration: none;
-      color: white;
-      position: relative;
-      font-size: 1.2rem;
-      font-weight: bold;
-      transition: color 0.3s;
-      display: flex;
-      align-items: center;
+  .nav-link {
+    text-decoration: none;
+    color: white;
+    position: relative;
+    font-size: 1.2rem;
+    font-weight: bold;
+    transition: color 0.3s;
+    display: flex;
+    align-items: center;
 
-      &:hover {
-        color: #bd692d;
-      }
+    &:hover {
+      color: #bd692d;
+    }
 
-      &.active::after {
-        content: '';
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-        bottom: -3px;
-        height: 2px;
-        background-color: #bd692d;
-        width: 100%;
-      }
+    &.active::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -3px;
+      height: 2px;
+      background-color: #bd692d;
+      width: 100%;
+    }
 
-      @media (max-width: 480px) {
-        color: #bd692d;
-      
+    @media (max-width: 480px) {
+      color: #bd692d;
     }
   }
 
@@ -176,7 +176,8 @@ body {
       padding-right: 49px;
       z-index: 1001;
       position: relative;
-       
+      padding-left: 20px; /* Adjust space between logo and hamburger menu */
+
       .nav-link {
         color: #bd692d; // Change color here
       }
@@ -191,35 +192,67 @@ body {
         transform-origin: 1px;
       }
     }
-  
-  &.open {
-    span:nth-child(1) {
-      transform: rotate(45deg);
-    }
-    span:nth-child(2) {
-      opacity: 0;
-    }
-    span:nth-child(3) {
-      transform: rotate(-45deg);
+
+    &.open {
+      span:nth-child(1) {
+        transform: rotate(45deg);
+      }
+      span:nth-child(2) {
+        opacity: 0;
+      }
+      span:nth-child(3) {
+        transform: rotate(-45deg);
+      }
     }
   }
-}
 
   &.scrolled {
     padding: 10px 20px; /* Adjusted padding for scrolled state */
     transition: padding 0.5s ease; /* Smooth transition for scrolled state */
   }
 
+  &.unscrolled {
+    padding: 40px 200px; /* Original padding */
+    transition: padding 0.5s ease; /* Smooth transition for unscrolled state */
+  }
+
+  &.open {
+    padding: 40px 200px; /* Original padding for open state */
+  }
+
   @media screen and (max-width: 768px) {
     padding: 20px 100px; /* Adjusted padding for smaller screens */
     transition: padding 0.5s ease; /* Smooth transition for smaller screens */
+
+    &.scrolled {
+      padding: 10px 50px; /* Adjusted padding for scrolled state on smaller screens */
+    }
+
+    &.unscrolled {
+      padding: 20px 100px; /* Adjusted padding for unscrolled state on smaller screens */
+    }
+
+    &.open {
+      padding: 20px 100px; /* Adjusted padding for open state on smaller screens */
+    }
   }
 
   @media screen and (max-width: 480px) {
-    padding: 30px 50px; /* Further adjusted padding for smallest screens */
+    padding: 20px 50px; /* Further adjusted padding for smallest screens */
     transition: padding 0.5s ease; /* Smooth transition for smallest screens */
-  }
 
+    &.scrolled {
+      padding: 10px 20px; /* Adjusted padding for scrolled state on smallest screens */
+    }
+
+    &.unscrolled {
+      padding: 20px 50px; /* Adjusted padding for unscrolled state on smallest screens */
+    }
+
+    &.open {
+      padding: 20px 50px; /* Adjusted padding for open state on smallest screens */
+    }
+  }
 
   .close-icon {
     display: none;
@@ -234,41 +267,42 @@ body {
       cursor: pointer;
       z-index: 1002;
     }
- }
+  }
 }
 
- // Add shaking animation
- @keyframes shake {
-   0%, 100% {
-     transform: translateX(0);
-   }
-   10%, 90% {
-     transform: translateX(-5px);
-   }
-   20%, 80% {
-     transform: translateX(5px);
-   }
- }
+/* Add shaking animation */
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 80% {
+    transform: translateX(5px);
+  }
+}
 
 .logo-link,
 .company-name {
-   transition: transform 0.3s ease-in-out;
- }
+  transition: transform 0.3s ease-in-out;
+}
 
 .logo-link:hover,
-.company-name:hover, .logo-link:active,
-.company-name:active{
-   animation: shake 1s;
-// Define the shaking animation
+.company-name:hover,
+.logo-link:active,
+.company-name:active {
+  animation: shake 1s;
+    // Define the shaking animation
 @keyframes shake {
- 0%, 100% {
-   transform: translateX(0);
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 90% {
+    transform: translateX(-5px);
+  }
+  20%, 80% {
+    transform: translateX(5px);
+    }
+  }
  }
- 10%, 90% {
-   transform: translateX(-5px);
- }
- 20%, 80% {
-   transform: translateX(5px);
-   }
- }
-}
