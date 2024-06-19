@@ -7,33 +7,52 @@ import featuredData from '../../featured';
 function Home() {
     const typedRef = useRef(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [currentSecondSectionIndex, setCurrentSecondSectionIndex] = useState(0);
+    const [currentSecondSectionIndex, setCurrentSecondSectionIndex] = useState(0); // State for the second section
 
     const first_section_images = [
         "images/home1-resize.png",
         "images/home2-resize.png",
         "images/home3-resize.png",
     ];
-
     const second_section_images = featuredData.images;
 
+    // Slideshow functionality for the first section
     useEffect(() => {
-        // Function to handle slideshow interval
-        const handleSlideshow = () => {
+        const interval = setInterval(() => {
             setCurrentImageIndex((prevIndex) => (prevIndex + 1) % first_section_images.length);
-        };
+        }, 3000); // Change image every 3 seconds
 
-        // Set interval only if screen width is greater than or equal to 768px
-        const screenWidth = window.innerWidth;
-        if (screenWidth >= 768) {
-            const interval = setInterval(handleSlideshow, 3000); // Change image every 3 seconds
-
-            return () => clearInterval(interval);
-        }
-    }, []); // Empty dependency array ensures it only runs once on component mount
+        return () => clearInterval(interval);
+    }, []);
 
     const goToSlide = (index) => {
         setCurrentImageIndex(index);
+    };
+
+    const handleTouchStart = (e) => {
+        touchStartX = e.touches[0].clientX;
+    };
+
+    const handleTouchMove = (e) => {
+        touchEndX = e.touches[0].clientX;
+        handleGesture();
+    };
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    const handleGesture = () => {
+        if (touchStartX - touchEndX > 50) {
+            // Swipe left
+            const nextIndex = (currentImageIndex + 1) % first_section_images.length;
+            setCurrentImageIndex(nextIndex);
+        }
+
+        if (touchEndX - touchStartX > 50) {
+            // Swipe right
+            const prevIndex = (currentImageIndex - 1 + first_section_images.length) % first_section_images.length;
+            setCurrentImageIndex(prevIndex);
+        }
     };
 
     const words = ["love?"];
@@ -76,7 +95,7 @@ function Home() {
                 </div>
                 <div className="image-container">
                     <img src={first_section_images[currentImageIndex]} alt="Background" className="background-image" />
-                    <div className="slideshowDots">
+                    <div className="slideshowDots" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
                         {first_section_images.map((_, index) => (
                             <div
                                 key={index}
