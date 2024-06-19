@@ -7,12 +7,27 @@ import featuredData from '../../featured';
 function Home() {
     const typedRef = useRef(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [currentSecondSectionIndex, setCurrentSecondSectionIndex] = useState(0); // State for the second section
+
     const first_section_images = [
         "images/home1-resize.png",
         "images/home2-resize.png",
         "images/home3-resize.png",
     ];
     const second_section_images = featuredData.images;
+
+    // Slideshow functionality for the first section
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % first_section_images.length);
+        }, 3000); // Change image every 3 seconds
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const goToSlide = (index) => {
+        setCurrentImageIndex(index);
+    };
 
     const words = ["love?"];
     const [changingWordIndex, setChangingWordIndex] = useState(0);
@@ -43,18 +58,6 @@ function Home() {
         };
     }, [changingWordIndex]); // Depend on the changing word index to reset the Typed.js instance
 
-    const goToSlide = (index) => {
-        setCurrentImageIndex(index);
-    };
-
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % first_section_images.length);
-        }, 3000);
-
-        return () => clearInterval(interval);
-    }, [first_section_images.length]);
-
     return (
         <div className="App">
             <div className="first-section">
@@ -78,20 +81,34 @@ function Home() {
                 </div>
             </div>
             <div className="second-section">
+                <h1 className="section-title">Featured Species</h1>
                 <div className="image-gallery-container">
                     <div className="main-image-container">
-                        <img src={second_section_images[currentImageIndex]} alt="Main Display" className="main-image" />
+                        <img src={second_section_images[currentSecondSectionIndex]} alt="Main Display" className="main-image" />
                     </div>
+
                     <div className="thumbnail-container">
                         {second_section_images.map((image, index) => (
                             <img
                                 key={index}
                                 src={image}
                                 alt={`Thumbnail ${index + 1}`}
-                                className={`thumbnail ${currentImageIndex === index ? 'active' : ''}`}
-                                onClick={() => goToSlide(index)}
+                                className={`thumbnail ${currentSecondSectionIndex === index ? 'active' : ''}`}
+                                onClick={() => setCurrentSecondSectionIndex(index)}
                             />
                         ))}
+                    </div>
+                    <div className="species-info">
+                        <h2>{featuredData.name}</h2>
+                        <p className="description">{featuredData.description}</p>
+                        <ul className="bullets">
+                            <li><strong>Species:</strong> {featuredData.species}</li>
+                            <li><strong>Origin:</strong> {featuredData.origin}</li>
+                            <li><strong>Size:</strong> {featuredData.size}</li>
+                            <li><strong>Range:</strong> {featuredData.range}</li>
+                            <li><strong>Diet:</strong> {featuredData.diet}</li>
+                            <li><strong>Lifespan:</strong> {featuredData.lifespan}</li>
+                        </ul>
                     </div>
                 </div>
             </div>

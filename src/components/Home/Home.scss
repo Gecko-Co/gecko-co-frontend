@@ -36,6 +36,7 @@ body {
 h1 {
     margin-top: -10px;
 }
+
 .image-container {
     padding: 50px;
     flex: 1;
@@ -46,46 +47,50 @@ h1 {
     width: 100%;
 }
 
-        .background-image {
-            object-fit: cover; /* Maintain aspect ratio */
-            width: 100%;
-            height: 100%;
-            display: block;
-            filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
-        }
+.background-image {
+    object-fit: cover; /* Maintain aspect ratio */
+    width: 100%;
+    height: 100%;
+    display: block;
+    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+}
 
-        .slideshowDots {
-            position: absolute;
-            bottom: 0;
-            right: 0;
-            left: 0;
-            transform: translateX(0);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 100%;
-        }
+.slideshowDots {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    transform: translateX(0);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
 
-        .slideshowDot {
-            display: inline-block;
-            height: 10px;
-            width: 10px;
-            border-radius: 50%;
-            cursor: pointer;
-            margin: 0 5px;
-            background-color: white;
-        }
+.slideshowDot {
+    display: inline-block;
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 0 5px;
+    background-color: white;
+}
 
-        .slideshowDot.active {
-            background-color: #bd692d;
-        }
-    
+.slideshowDot.active {
+    background-color: #bd692d;
+}
 
 .second-section {
     background-color: white;
     padding: 50px;
     text-align: center;
     color: black;
+
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 20px;
+    }
 
     .image-gallery-container {
         display: flex;
@@ -95,14 +100,50 @@ h1 {
         .main-image-container {
             width: 100%;
             max-width: 600px;
+            height: 400px; /* Fixed height for consistency */
+            overflow: hidden;
             margin-bottom: 20px;
+            position: relative;
+
+            .main-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+                border: 2px solid #23283b; /* Add border with color */
+            }
         }
 
-        .main-image {
-            width: 100%;
-            height: auto;
-            max-height: 450px;
-            filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+        .species-info {
+            
+            text-align: left;
+            margin-bottom: 20px;
+        
+            h2 {
+                text-align: center;
+                font-size: 1.8rem;
+                margin-bottom: 10px;
+            }
+        
+            .description {
+                font-style: italic;
+                margin-bottom: 10px;
+            }
+        
+            ul {
+                list-style-type: none;
+                padding: 0;
+                columns: 2; /* Distribute list items into two columns */
+                column-gap: 20px; /* Add gap between columns */
+        
+                li {
+                    margin-bottom: 10px; /* Adjust spacing between list items */
+        
+                    strong {
+                        margin-right: 5px;
+                    }
+                }
+            }
         }
 
         .thumbnail-container {
@@ -110,6 +151,7 @@ h1 {
             justify-content: center;
             flex-wrap: wrap;
             margin-top: 20px;
+            margin-bottom: 25px; /* Add margin bottom for space */
 
             .thumbnail {
                 width: 80px;
@@ -117,7 +159,7 @@ h1 {
                 object-fit: cover;
                 margin: 5px;
                 cursor: pointer;
-                border: 2px solid transparent;
+                border: 2px solid #23283b; /* Add border with color */
                 transition: border-color 0.3s ease;
 
                 &.active {
@@ -151,7 +193,7 @@ h1 {
     .text-container, .image-container {
         width: 200%; /* Ensure these containers take full width on smaller screens */
     }
-    
+
     .slideshowDots {
         bottom: 0; /* Position directly below the image container */
         right: 0; /* Center the dots */
