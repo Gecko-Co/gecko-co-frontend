@@ -87,42 +87,45 @@ function Home() {
     return (
         <div className="App">
             <div className="first-section">
-                <div className="text-container">
-                    <h1 className="text-center mb-3">Looking for a new pet </h1>
-                    <h1 className="text-center mb-3">you will </h1>
-                    <h1 className="text-center mb-3">surely <span className="red-text" ref={typedRef}></span></h1>
-                    <Link to="/shop" className="shop-now-button">SHOP NOW!</Link>
-                </div>
-                <div className="image-container">
-                    <img src={first_section_images[currentImageIndex]} alt="Background" className="background-image" />
-                    <div className="slideshowDots" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
-                        {first_section_images.map((_, index) => (
-                            <div
-                                key={index}
-                                className={`slideshowDot${currentImageIndex === index ? " active" : ""}`}
-                                onClick={() => goToSlide(index)}
-                            ></div>
-                        ))}
+                <div className="content-wrapper">
+                    <div className="text-container">
+                        <h1 className="text-center mb-3">Looking for a new pet</h1>
+                        <h1 className="text-center mb-3">you will</h1>
+                        <h1 className="text-center mb-3">surely <span className="red-text" ref={typedRef}></span></h1>
+                        <Link to="/shop" className="shop-now-button">SHOP NOW!</Link>
+                    </div>
+                    <div className="image-container">
+                        <img src={first_section_images[currentImageIndex]} alt="Background" className="background-image" />
+                        <div className="slideshowDots" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
+                            {first_section_images.map((_, index) => (
+                                <div
+                                    key={index}
+                                    className={`slideshowDot${currentImageIndex === index ? " active" : ""}`}
+                                    onClick={() => goToSlide(index)}
+                                ></div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             </div>
             <div className="second-section">
                 <h1 className="section-title">Featured Species</h1>
-                <div className="image-gallery-container">
-                    <div className="main-image-container">
-                        <img src={second_section_images[currentSecondSectionIndex]} alt="Main Display" className="main-image" />
-                    </div>
-
-                    <div className="thumbnail-container">
-                        {second_section_images.map((image, index) => (
-                            <img
-                                key={index}
-                                src={image}
-                                alt={`Thumbnail ${index + 1}`}
-                                className={`thumbnail ${currentSecondSectionIndex === index ? 'active' : ''}`}
-                                onClick={() => setCurrentSecondSectionIndex(index)}
-                            />
-                        ))}
+                <div className="content-wrapper">
+                    <div className="image-gallery">
+                        <div className="main-image-container">
+                            <img src={second_section_images[currentSecondSectionIndex]} alt="Main Display" className="main-image" />
+                        </div>
+                        <div className="thumbnail-container">
+                            {second_section_images.map((image, index) => (
+                                <img
+                                    key={index}
+                                    src={image}
+                                    alt={`Thumbnail ${index + 1}`}
+                                    className={`thumbnail ${currentSecondSectionIndex === index ? 'active' : ''}`}
+                                    onClick={() => setCurrentSecondSectionIndex(index)}
+                                />
+                            ))}
+                        </div>
                     </div>
                     <div className="species-info">
                         <h2>{featuredData.name}</h2>
