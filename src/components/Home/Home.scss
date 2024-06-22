@@ -1,6 +1,7 @@
 body {
     background-color: #23283b;
     transition: background-color 1s ease;
+    font-family: Arial, sans-serif; /* Example font-family, adjust as needed */
 }
 
 .navbar {
@@ -24,68 +25,112 @@ body {
     background-color: #23283b;
     padding: 110px;
     color: white;
-}
 
-.text-container {
-    padding: 30px;
-    width: 100%;
-    text-align: center;
-    min-width: 300px; /* Ensure the container does not shrink below this width */
-}
-
-h1 {
-    margin-top: -10px;
-}
-
-.image-container {
-    padding: 50px;
-    flex: 1;
-    text-align: center;
-    position: relative;
-    height: 450px; /* Fixed height to maintain consistency */
-    overflow: hidden;
-    width: 100%;
-
-    .background-image {
+    .text-container {
+        padding: 30px;
         width: 100%;
-        height: 100%;
-        object-fit: cover; /* Ensure the image covers the container */
-        filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+        text-align: center;
+        min-width: 300px; /* Ensure the container does not shrink below this width */
     }
 
-    .slideshowDots {
-        position: absolute;
-        bottom: 10px; /* Adjust bottom spacing as needed */
-        left: 50%; /* Center horizontally */
-        transform: translateX(-50%); /* Center using translate */
+    h1 {
+        margin-top: 0; /* Adjust margin as needed */
+        font-size: 3rem; /* Example font size adjustment */
+    }
+
+    .content-wrapper {
         display: flex;
-        justify-content: center;
-        align-items: center;
+        justify-content: space-between; /* Align content to the left and right */
+        align-items: flex-start; /* Align items at the top */
         width: 100%;
-    }
-}
+        max-width: 1200px; /* Adjust maximum width for larger screens */
+        margin-top: 30px; /* Adjust margin as needed */
 
-@media (max-width: 767px) {
-    .image-container {
-        .slideshowDots {
-            bottom: 5px; /* Adjust spacing for smaller screens */
+        .text-content {
+            width: 50%; /* Take up half of the container width */
+            padding-right: 20px; /* Add spacing between text and image container */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .image-container {
+            width: 50%; /* Take up half of the container width */
+            max-width: 800px; /* Adjust maximum width for larger screens */
+            margin-left: auto; /* Push to the right */
+            position: relative;
+            height: 450px; /* Fixed height to maintain consistency */
+            overflow: hidden;
+
+            .background-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover; /* Ensure the image covers the container */
+                filter: drop-shadow(0 0 20px #23283b);
+            }
+
+            .slideshowDots {
+                position: absolute;
+                bottom: 10px; /* Adjust bottom spacing as needed */
+                left: 50%; /* Center horizontally */
+                transform: translateX(-50%); /* Center using translate */
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                z-index: 1; /* Ensure dots are above image */
+
+                .slideshowDot {
+                    display: inline-block;
+                    height: 10px;
+                    width: 10px;
+                    border-radius: 50%;
+                    cursor: pointer;
+                    margin: 0 5px;
+                    background-color: white;
+
+                    &.active {
+                        background-color: #bd692d;
+                    }
+                }
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .text-content,
+            .image-container {
+                width: 45%; /* Adjust width for medium-sized screens */
+            }
+        }
+
+        @media (max-width: 992px) {
+            flex-direction: column; /* Stack elements vertically on smaller screens */
+
+            .text-content,
+            .image-container {
+                width: 100%; /* Take full width on smaller screens */
+                margin: 0; /* Remove margin for stacking */
+                margin-top: 20px; /* Adjust margin for smaller screens */
+            }
+
+            .slideshowDots {
+                position: static; /* Reset position for smaller screens */
+                transform: none; /* Reset transform for smaller screens */
+                margin-top: 10px; /* Add margin for smaller screens */
+            }
+        }
+    }
+
+    @media (max-width: 767px) {
+        padding: 80px 20px; /* Adjust padding for smaller screens */
+
+        .text-container {
+            padding: 20px;
         }
     }
 }
 
-.slideshowDot {
-    display: inline-block;
-    height: 10px;
-    width: 10px;
-    border-radius: 50%;
-    cursor: pointer;
-    margin: 0 5px;
-    background-color: white;
 
-    &.active {
-        background-color: #bd692d;
-    }
-}
 
 
 .second-section {
@@ -99,113 +144,105 @@ h1 {
         margin-bottom: 20px;
     }
 
-    .image-gallery-container {
+    .content-wrapper {
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        justify-content: space-around;
+        align-items: flex-start; /* Adjust alignment as needed */
 
-        .main-image-container {
-            width: 100%;
-            max-width: 600px;
-            height: 400px; /* Fixed height for consistency */
-            overflow: hidden;
-            margin-bottom: 20px;
-            position: relative;
+        .image-gallery {
+            flex: 1;
+            max-width: 600px; /* Adjust max-width to your design */
+            margin-right: 20px; /* Add spacing between image gallery and species info */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
 
-            .main-image {
+            .main-image-container {
                 width: 100%;
-                height: 100%;
-                object-fit: cover;
-                filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
-                border: 2px solid #23283b; /* Add border with color */
+                height: 400px; /* Fixed height for consistency */
+                overflow: hidden;
+                position: relative;
+
+                .main-image {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
+                    border: 2px solid #23283b; /* Add border with color */
+                }
+            }
+
+            .thumbnail-container {
+                display: flex;
+                justify-content: center;
+                flex-wrap: wrap;
+                margin-top: 20px;
+                margin-bottom: 25px; /* Add margin bottom for space */
+
+                .thumbnail {
+                    width: 80px;
+                    height: 80px;
+                    object-fit: cover;
+                    margin: 5px;
+                    cursor: pointer;
+                    border: 2px solid transparent;
+                    transition: border-color 0.3s ease;
+
+                    &.active {
+                        border-color: #23283b;
+                    }
+                }
             }
         }
 
         .species-info {
-            
+            flex: 1;
             text-align: left;
-            margin-bottom: 20px;
-        
+            max-width: 600px; /* Adjust max-width to your design */
+            margin-left: 20px; /* Add spacing between image gallery and species info */
+
             h2 {
                 text-align: center;
                 font-size: 1.8rem;
                 margin-bottom: 10px;
             }
-        
+
             .description {
                 text-align: center;
                 font-style: italic;
                 margin-bottom: 10px;
             }
-        
+
             ul {
                 list-style-type: none;
                 padding: 0;
                 columns: 2; /* Distribute list items into two columns */
                 column-gap: 20px; /* Add gap between columns */
-        
+
                 li {
                     margin-bottom: 10px; /* Adjust spacing between list items */
-        
+
                     strong {
                         margin-right: 5px;
                     }
                 }
             }
         }
+    }
 
-        .thumbnail-container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 20px;
-            margin-bottom: 25px; /* Add margin bottom for space */
+    @media (max-width: 767px) {
+        .content-wrapper {
+            flex-direction: column; /* Stack elements vertically on smaller screens */
+            
+            .image-gallery, .species-info {
+                max-width: 100%; /* Full width for smaller screens */
+                margin: 0; /* Remove margins for stacking */
+            }
 
-            .thumbnail {
-                width: 80px;
-                height: 80px;
-                object-fit: cover;
-                margin: 5px;
-                cursor: pointer;
-                border: 2px solid transparent;
-                transition: border-color 0.3s ease;
-
-                &.active {
-                    border-color: #23283b;
-                }
+            .image-gallery {
+                margin-bottom: 20px; /* Add margin between sections on smaller screens */
             }
         }
-    }
-}
-
-/* Responsive adjustments for larger screens */
-@media (min-width: 768px) {
-    .first-section {
-        flex-direction: row;
-        justify-content: space-between;
-    }
-
-    .text-container, .image-container {
-        width: 45%;
-    }
-}
-
-/* Additional responsive adjustments for smaller screens */
-@media (max-width: 767px) {
-    .first-section {
-        padding-top: 50%;
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .text-container, .image-container {
-        width: 200%; /* Ensure these containers take full width on smaller screens */
-    }
-
-    .slideshowDots {
-        bottom: 0; /* Position directly below the image container */
-        right: 0; /* Center the dots */
-        left: 0; /* Ensure the dots span the full width of the image container */
     }
 }
 
@@ -222,10 +259,6 @@ h1 {
     text-decoration: none;
     border-radius: 5px;
     transition: background-color 0.3s ease;
-    position: static;
-    transform: none;
-    left: auto;
-    top: auto;
 
     &:hover {
         background-color: #af5210;
