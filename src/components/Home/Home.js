@@ -55,7 +55,7 @@ function Home() {
         }
     };
 
-    const words = ["adore?", "treasure?", "admire?", "value?", "embrace?", "delight in?", "appreciate?"];
+    const words = ["adore?", "admire?", "love?"];
     const [changingWordIndex, setChangingWordIndex] = useState(0);
 
     useEffect(() => {
