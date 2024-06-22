@@ -10,6 +10,7 @@ import Footer from './components/Footer/Footer';
 import Learn from './components/Learn/Learn';
 import Contact from './components/Contact/Contact';
 import AdSenseScript from './components/Adsense/Adsense';
+import Scroll from './components/Scroll/Scroll';
 import { inject } from '@vercel/analytics';
 
 inject();
@@ -20,7 +21,7 @@ function App() {
       <div className="App">
         <Flag />
         <Navbar />
-      
+        <Scroll />
       </div>
       <Routes>
         <Route path="/" element={<Home />} />
