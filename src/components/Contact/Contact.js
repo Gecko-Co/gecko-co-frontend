@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 
-const API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 
 const Contact = () => {
   const [formData, setFormData] = useState({
