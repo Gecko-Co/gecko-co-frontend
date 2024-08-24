@@ -2,24 +2,21 @@ import React, { useEffect } from 'react';
 
 const Messenger = () => {
   useEffect(() => {
-    // Create and append the Tawk.to script dynamically
+    // Load the external script
     const script = document.createElement('script');
-    script.src = 'https://embed.tawk.to/66c9b60f50c10f7a009ff2de/1i61uubjo';
-    script.async = true;
-    script.charset = 'UTF-8';
-    script.setAttribute('crossorigin', '*');
+    script.src = 'https://static.elfsight.com/platform/platform.js';
+    script.defer = true;
+    script.setAttribute('data-use-service-core', '');
     document.body.appendChild(script);
 
-    // Clean up the script when the component unmounts
+    // Cleanup script on component unmount
     return () => {
       document.body.removeChild(script);
     };
   }, []);
 
   return (
-    <>
-
-    </>
+    <div className="elfsight-app-189e32c9-44b7-4ec1-9d1d-0a85f9dca870" data-elfsight-app-lazy></div>
   );
 };
 

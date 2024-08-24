@@ -1,5 +1,22 @@
+/* app.scss */
+
+/* Enforce light theme colors */
+body {
+  background-color: #ffffff !important; /* Light background */
+  color: #000000 !important; /* Dark text */
+}
+
+/* Ensure dark theme media query does not affect your styles */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+  }
+}
+
+/* Example of specific styling for active elements */
 .active {
-  color: #0b5ed7 !important;
+  color: #0b5ed7 !important; /* Active color */
   font-weight: bold;
-  border-bottom: 3px solid #0b5ed7;
+  border-bottom: 3px solid #0b5ed7; /* Active underline */
 }
