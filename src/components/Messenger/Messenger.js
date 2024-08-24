@@ -18,10 +18,7 @@ const Messenger = () => {
 
   return (
     <>
-      {/* Floating Button */}
-      <button className="messenger-button" onClick={() => window.Tawk_API.toggle()}>
-        💬 Chat with us
-      </button>
+
     </>
   );
 };
