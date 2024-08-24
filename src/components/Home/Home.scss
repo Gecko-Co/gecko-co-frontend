@@ -79,7 +79,7 @@ body {
                 align-items: center;
                 width: 100%;
                 z-index: 1; /* Ensure dots are above image */
-
+            
                 .slideshowDot {
                     display: inline-block;
                     height: 10px;
@@ -87,10 +87,13 @@ body {
                     border-radius: 50%;
                     cursor: pointer;
                     margin: 0 5px;
-                    background-color: white;
-
+                    background-color: white; /* Default dot color */
+                    border: none; /* Ensure no border */
+                    box-shadow: none; /* Remove any shadow */
+                    transition: background-color 0.3s ease; /* Smooth color transition */
+            
                     &.active {
-                        background-color: #bd692d;
+                        background-color: #bd692d; /* Active dot color */
                     }
                 }
             }
@@ -117,6 +120,7 @@ body {
                 position: static; /* Reset position for smaller screens */
                 transform: none; /* Reset transform for smaller screens */
                 margin-top: 10px; /* Add margin for smaller screens */
+                
             }
         }
     }

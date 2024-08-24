@@ -16,14 +16,14 @@ function Home() {
     ];
     const second_section_images = featuredData.images;
 
-    // Slideshow functionality for the first section
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setCurrentImageIndex((prevIndex) => (prevIndex + 1) % first_section_images.length);
-        }, 3000); // Change image every 3 seconds
+    // // Slideshow functionality for the first section
+    // useEffect(() => {
+    //     const interval = setInterval(() => {
+    //         setCurrentImageIndex((prevIndex) => (prevIndex + 1) % first_section_images.length);
+    //     }, 3000); // Change image every 3 seconds
 
-        return () => clearInterval(interval);
-    }, []);
+    //     return () => clearInterval(interval);
+    // }, []);
 
     const goToSlide = (index) => {
         setCurrentImageIndex(index);
@@ -55,7 +55,7 @@ function Home() {
         }
     };
 
-    const words = ["adore?","love?"];
+    const words = ["love?"];
     const [changingWordIndex, setChangingWordIndex] = useState(0);
 
     useEffect(() => {
