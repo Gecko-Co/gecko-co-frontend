@@ -1,7 +1,7 @@
 body {
     background-color: #23283b;
     transition: background-color 1s ease;
-    font-family: Arial, sans-serif; /* Example font-family, adjust as needed */
+    font-family: Arial, sans-serif;
 }
 
 .navbar {
@@ -23,62 +23,62 @@ body {
     flex-direction: column;
     align-items: center;
     background-color: #23283b;
-    padding: 110px;
+    padding: 110px 110px 100px; // Added bottom padding
     color: white;
 
     .text-container {
         padding: 30px;
         width: 100%;
         text-align: center;
-        min-width: 300px; /* Ensure the container does not shrink below this width */
+        min-width: 300px;
     }
 
     h1 {
-        margin-top: 0; /* Adjust margin as needed */
-        font-size: 3rem; /* Example font size adjustment */
+        margin-top: 0;
+        font-size: 3rem;
     }
 
     .content-wrapper {
         display: flex;
-        justify-content: space-between; /* Align content to the left and right */
-        align-items: flex-start; /* Align items at the top */
+        justify-content: space-between;
+        align-items: flex-start;
         width: 100%;
-        max-width: 1200px; /* Adjust maximum width for larger screens */
-        margin-top: 30px; /* Adjust margin as needed */
+        max-width: 1200px;
+        margin-top: 30px;
 
         .text-content {
-            width: 50%; /* Take up half of the container width */
-            padding-right: 20px; /* Add spacing between text and image container */
+            width: 50%;
+            padding-right: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
         }
 
         .image-container {
-            width: 50%; /* Take up half of the container width */
-            max-width: 800px; /* Adjust maximum width for larger screens */
-            margin-left: auto; /* Push to the right */
+            width: 50%;
+            max-width: 800px;
+            margin-left: auto;
             position: relative;
-            height: 450px; /* Fixed height to maintain consistency */
+            height: 450px;
             overflow: hidden;
 
             .background-image {
                 width: 100%;
                 height: 100%;
-                object-fit: cover; /* Ensure the image covers the container */
+                object-fit: cover;
                 filter: drop-shadow(0 0 20px #23283b);
             }
 
             .slideshowDots {
                 position: absolute;
-                bottom: 10px; /* Adjust bottom spacing as needed */
-                left: 50%; /* Center horizontally */
-                transform: translateX(-50%); /* Center using translate */
+                bottom: 10px;
+                left: 50%;
+                transform: translateX(-50%);
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 width: 100%;
-                z-index: 1; /* Ensure dots are above image */
+                z-index: 1;
             
                 .slideshowDot {
                     display: inline-block;
@@ -87,13 +87,13 @@ body {
                     border-radius: 50%;
                     cursor: pointer;
                     margin: 0 5px;
-                    background-color: white; /* Default dot color */
-                    border: none; /* Ensure no border */
-                    box-shadow: none; /* Remove any shadow */
-                    transition: background-color 0.3s ease; /* Smooth color transition */
+                    background-color: white;
+                    border: none;
+                    box-shadow: none;
+                    transition: background-color 0.3s ease;
             
                     &.active {
-                        background-color: #bd692d; /* Active dot color */
+                        background-color: #bd692d;
                     }
                 }
             }
@@ -102,31 +102,30 @@ body {
         @media (max-width: 1200px) {
             .text-content,
             .image-container {
-                width: 45%; /* Adjust width for medium-sized screens */
+                width: 45%;
             }
         }
 
         @media (max-width: 992px) {
-            flex-direction: column; /* Stack elements vertically on smaller screens */
+            flex-direction: column;
 
             .text-content,
             .image-container {
-                width: 100%; /* Take full width on smaller screens */
-                margin: 0; /* Remove margin for stacking */
-                margin-top: 20px; /* Adjust margin for smaller screens */
+                width: 100%;
+                margin: 0;
+                margin-top: 20px;
             }
 
             .slideshowDots {
-                position: static; /* Reset position for smaller screens */
-                transform: none; /* Reset transform for smaller screens */
-                margin-top: 10px; /* Add margin for smaller screens */
-                
+                position: static;
+                transform: none;
+                margin-top: 10px;
             }
         }
     }
 
     @media (max-width: 767px) {
-        padding: 80px 20px; /* Adjust padding for smaller screens */
+        padding: 80px 20px 60px; // Adjusted bottom padding for mobile
 
         .text-container {
             padding: 20px;
@@ -134,45 +133,68 @@ body {
     }
 }
 
-
-
+.wave-transition {
+    position: relative;
+    height: 150px; // Set a fixed height for the wave
+    margin-top: -150px; // Pull the wave up to overlap with the first section
+    
+    svg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+}
 
 .second-section {
     background-color: white;
-    padding: 50px;
+    padding: 80px 50px 50px;
     text-align: center;
-    color: black;
+    color: #333;
+    position: relative;
+    z-index: 1;
 
     .section-title {
-        font-size: 2rem;
-        margin-bottom: 20px;
+        font-size: 3rem;
+        margin-bottom: 40px;
+        color: #23283b;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .content-wrapper {
         display: flex;
         justify-content: space-around;
-        align-items: flex-start; /* Adjust alignment as needed */
+        align-items: flex-start;
+        max-width: 1200px;
+        margin: 0 auto;
 
         .image-gallery {
             flex: 1;
-            max-width: 600px; /* Adjust max-width to your design */
-            margin-right: 20px; /* Add spacing between image gallery and species info */
+            max-width: 600px;
+            margin-right: 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
 
             .main-image-container {
                 width: 100%;
-                height: 400px; /* Fixed height for consistency */
+                height: 400px;
                 overflow: hidden;
                 position: relative;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 
                 .main-image {
                     width: 100%;
                     height: 100%;
                     object-fit: cover;
-                    filter: drop-shadow(0 0 20px rgba(0, 0, 0, 0.5));
-                    border: 2px solid #23283b; /* Add border with color */
+                    transition: transform 0.3s ease;
+
+                    &:hover {
+                        transform: scale(1.05);
+                    }
                 }
             }
 
@@ -181,7 +203,7 @@ body {
                 justify-content: center;
                 flex-wrap: wrap;
                 margin-top: 20px;
-                margin-bottom: 25px; /* Add margin bottom for space */
+                margin-bottom: 25px;
 
                 .thumbnail {
                     width: 80px;
@@ -190,10 +212,16 @@ body {
                     margin: 5px;
                     cursor: pointer;
                     border: 2px solid transparent;
-                    transition: border-color 0.3s ease;
+                    border-radius: 8px;
+                    transition: all 0.3s ease;
+
+                    &:hover {
+                        transform: translateY(-5px);
+                    }
 
                     &.active {
-                        border-color: #23283b;
+                        border-color: #bd692d;
+                        box-shadow: 0 5px 15px rgba(189, 105, 45, 0.3);
                     }
                 }
             }
@@ -202,69 +230,86 @@ body {
         .species-info {
             flex: 1;
             text-align: left;
-            max-width: 600px; /* Adjust max-width to your design */
-            margin-left: 20px; /* Add spacing between image gallery and species info */
+            max-width: 600px;
+            margin-left: 20px;
+            background-color: #f8f8f8;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 
             h2 {
                 text-align: center;
-                font-size: 1.8rem;
-                margin-bottom: 10px;
+                font-size: 2.2rem;
+                margin-bottom: 20px;
+                color: #23283b;
+                font-weight: 700;
             }
 
             .description {
                 text-align: center;
                 font-style: italic;
-                margin-bottom: 10px;
+                margin-bottom: 30px;
+                font-size: 1.1rem;
+                color: #555;
+                line-height: 1.6;
             }
 
             ul {
                 list-style-type: none;
                 padding: 0;
-                columns: 2; /* Distribute list items into two columns */
-                column-gap: 20px; /* Add gap between columns */
+                columns: 2;
+                column-gap: 30px;
 
                 li {
-                    margin-bottom: 10px; /* Adjust spacing between list items */
+                    margin-bottom: 15px;
+                    font-size: 1rem;
+                    color: #444;
 
                     strong {
                         margin-right: 5px;
+                        color: #23283b;
+                        font-weight: 600;
                     }
                 }
             }
         }
     }
 
-    @media (max-width: 767px) {
+    @media (max-width: 992px) {
         .content-wrapper {
-            flex-direction: column; /* Stack elements vertically on smaller screens */
+            flex-direction: column;
             
             .image-gallery, .species-info {
-                max-width: 100%; /* Full width for smaller screens */
-                margin: 0; /* Remove margins for stacking */
-            }
-
-            .image-gallery {
-                margin-bottom: 20px; /* Add margin between sections on smaller screens */
+                max-width: 100%;
+                margin: 0 0 40px 0;
             }
         }
     }
 }
 
 .red-text {
-    color: red;
+    color: #ff4d4d;
+    font-weight: 700;
 }
 
 .shop-now-button {
     display: inline-block;
-    margin-top: 20px;
-    padding: 10px 20px;
+    margin-top: 30px;
+    padding: 15px 30px;
     background-color: #bd692d;
     color: white;
     text-decoration: none;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(189, 105, 45, 0.3);
 
     &:hover {
         background-color: #af5210;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(189, 105, 45, 0.4);
     }
 }

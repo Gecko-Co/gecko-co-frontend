@@ -4,10 +4,10 @@ import Typed from 'typed.js';
 import { Link } from 'react-router-dom';
 import featuredData from '../../featured';
 
-function Home() {
+export default function Home() {
     const typedRef = useRef(null);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [currentSecondSectionIndex, setCurrentSecondSectionIndex] = useState(0); // State for the second section
+    const [currentSecondSectionIndex, setCurrentSecondSectionIndex] = useState(0);
 
     const first_section_images = [
         "images/home1-resize.png",
@@ -15,15 +15,6 @@ function Home() {
         "images/home3-resize.png",
     ];
     const second_section_images = featuredData.images;
-
-    // // Slideshow functionality for the first section
-    // useEffect(() => {
-    //     const interval = setInterval(() => {
-    //         setCurrentImageIndex((prevIndex) => (prevIndex + 1) % first_section_images.length);
-    //     }, 3000); // Change image every 3 seconds
-
-    //     return () => clearInterval(interval);
-    // }, []);
 
     const goToSlide = (index) => {
         setCurrentImageIndex(index);
@@ -43,13 +34,11 @@ function Home() {
 
     const handleGesture = () => {
         if (touchStartX - touchEndX > 50) {
-            // Swipe left
             const nextIndex = (currentImageIndex + 1) % first_section_images.length;
             setCurrentImageIndex(nextIndex);
         }
 
         if (touchEndX - touchStartX > 50) {
-            // Swipe right
             const prevIndex = (currentImageIndex - 1 + first_section_images.length) % first_section_images.length;
             setCurrentImageIndex(prevIndex);
         }
@@ -61,20 +50,20 @@ function Home() {
     useEffect(() => {
         const interval = setInterval(() => {
             setChangingWordIndex((prevIndex) => (prevIndex + 1) % words.length);
-        }, 3000); // Change word every 3 seconds
+        }, 3000);
 
         return () => clearInterval(interval);
     }, [words]);
 
     useEffect(() => {
         const options = {
-            strings: [words[changingWordIndex]], // Use the current word from the array
+            strings: [words[changingWordIndex]],
             typeSpeed: 40,
             backSpeed: 50,
             loop: true,
             contentType: 'text',
             cursorChar: '',
-            smartBackspace: true, // Enable smart backspacing
+            smartBackspace: true,
         };
 
         const typed = new Typed(typedRef.current, options);
@@ -82,7 +71,7 @@ function Home() {
         return () => {
             typed.destroy();
         };
-    }, [changingWordIndex]); // Depend on the changing word index to reset the Typed.js instance
+    }, [changingWordIndex]);
 
     return (
         <div className="App">
@@ -96,7 +85,7 @@ function Home() {
                     </div>
                     <div className="image-container">
                         <img src={first_section_images[currentImageIndex]} alt="Background" className="background-image" />
-                        <div className="slideshowDots" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
+                        {/* <div className="slideshowDots" onTouchStart={handleTouchStart} onTouchMove={handleTouchMove}>
                             {first_section_images.map((_, index) => (
                                 <div
                                     key={index}
@@ -104,10 +93,17 @@ function Home() {
                                     onClick={() => goToSlide(index)}
                                 ></div>
                             ))}
-                        </div>
+                        </div> */}
                     </div>
                 </div>
             </div>
+
+            <div className="wave-transition">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320" preserveAspectRatio="none">
+                    <path fill="#ffffff" fillOpacity="1" d="M0,96L48,112C96,128,192,160,288,160C384,160,480,128,576,122.7C672,117,768,139,864,149.3C960,160,1056,160,1152,138.7C1248,117,1344,75,1392,53.3L1440,32L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                </svg>
+            </div>
+
             <div className="second-section">
                 <h1 className="section-title">Featured Species</h1>
                 <div className="content-wrapper">
@@ -144,5 +140,3 @@ function Home() {
         </div>
     );
 }
-
-export default Home;
