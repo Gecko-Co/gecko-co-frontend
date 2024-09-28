@@ -101,6 +101,29 @@ export default function Component() {
                     </div>
                 </div>
             </div>
+
+            <div className="diagonal-transition reverse"></div>
+
+            <div className="third-section">
+                <h1 className="section-title">Why Choose Us?</h1>
+                <div className="content-wrapper">
+                    <div className="feature">
+                        <div className="feature-icon">🏆</div>
+                        <h3>Expert Care</h3>
+                        <p>Our team of experienced professionals ensures the best care for your exotic pets.</p>
+                    </div>
+                    <div className="feature">
+                        <div className="feature-icon">🌿</div>
+                        <h3>Sustainable Practices</h3>
+                        <p>We prioritize ethical sourcing and environmental responsibility in all our operations.</p>
+                    </div>
+                    <div className="feature">
+                        <div className="feature-icon">💖</div>
+                        <h3>Lifetime Support</h3>
+                        <p>We provide ongoing guidance and support for the entire lifespan of your pet.</p>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
