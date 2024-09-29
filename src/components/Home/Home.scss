@@ -310,13 +310,16 @@ body {
     .content-wrapper {
         display: flex;
         justify-content: space-around;
-        align-items: flex-start;
+        align-items: stretch;
         max-width: 1200px;
         margin: 0 auto;
 
         .feature {
             flex: 1;
-            max-width: 300px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            max-width: calc(33.333% - 40px);
             margin: 0 20px;
             background-color: rgba(255, 255, 255, 0.1);
             padding: 30px;
@@ -343,6 +346,7 @@ body {
                 font-size: 1rem;
                 color: #f8f8f8;
                 line-height: 1.6;
+                flex-grow: 1;
             }
         }
     }
@@ -354,6 +358,7 @@ body {
 
             .feature {
                 max-width: 100%;
+                width: 100%;
                 margin: 0 0 40px 0;
             }
         }
