@@ -75,7 +75,7 @@ export default function Component() {
             <div className="diagonal-transition"></div>
 
             <div className="second-section">
-                <h1 className="section-title">Featured Species</h1>
+                <h1 className="section-title">Species Highlight</h1>
                 <div className="content-wrapper">
                     <div className="image-gallery">
                         <div className="main-image-container">
