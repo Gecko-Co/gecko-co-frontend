@@ -1,0 +1,282 @@
+.gecko-details-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+  z-index: 1000;
+
+  &.open {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.gecko-details-modal {
+  background-color: #fff;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+  .open & {
+    transform: translateY(0);
+  }
+}
+
+.close-button {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  font-size: 24px;
+  color: #fff;
+  background-color: rgba(35, 40, 59, 0.8);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: background-color 0.3s ease;
+
+  &:hover {
+    background-color: rgba(35, 40, 59, 1);
+  }
+}
+
+.gecko-details-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.gecko-details-image-container {
+  position: relative;
+  width: 100%;
+  padding-top: 75%; // 4:3 aspect ratio
+  overflow: hidden;
+}
+
+.gecko-details-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.gecko-details-image-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 15px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
+  color: #fff;
+
+  h2 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+  }
+}
+
+.gecko-details-status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-top: 8px;
+
+  &.available { background-color: #28a745; }
+  &.sold { background-color: #dc3545; }
+  &.reserved { background-color: #ffc107; color: #000; }
+}
+
+.gecko-details-info {
+  padding: 15px;
+}
+
+.gecko-details-tabs {
+  display: flex;
+  border-bottom: 2px solid #e0e0e0;
+  margin-bottom: 15px;
+
+  button {
+    background: none;
+    border: none;
+    padding: 8px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    color: #666;
+    cursor: pointer;
+    transition: color 0.3s ease;
+
+    &.active {
+      color: #23283b;
+      border-bottom: 2px solid #23283b;
+    }
+  }
+}
+
+.gecko-details-tab-content {
+  animation: fadeIn 0.3s ease;
+}
+
+.gecko-details-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.gecko-details-label {
+  font-weight: bold;
+  color: #23283b;
+}
+
+.gecko-details-value {
+  color: #555;
+}
+
+.gecko-details-actions {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e0e0e0;
+}
+
+.gecko-details-action-button {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.1s ease;
+
+  &:active {
+    transform: translateY(1px);
+  }
+
+  &.primary {
+    background-color: #23283b;
+    color: #fff;
+
+    &:hover {
+      background-color: darken(#23283b, 10%);
+    }
+  }
+
+  &.secondary {
+    background-color: #e0e0e0;
+    color: #23283b;
+
+    &:hover {
+      background-color: darken(#e0e0e0, 10%);
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@media (min-width: 768px) {
+  .gecko-details-content {
+    flex-direction: row;
+  }
+
+  .gecko-details-image-container {
+    width: 50%;
+    padding-top: 37.5%; // Maintain 4:3 aspect ratio for half width
+  }
+
+  .gecko-details-info {
+    width: 50%;
+  }
+
+  .close-button {
+    top: 20px;
+    right: 20px;
+    font-size: 28px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .gecko-details-image-overlay {
+    padding: 20px;
+
+    h2 {
+      font-size: 24px;
+    }
+  }
+
+  .gecko-details-status {
+    padding: 5px 10px;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+
+  .gecko-details-info {
+    padding: 20px;
+  }
+
+  .gecko-details-tabs button {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+
+  .gecko-details-item {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .gecko-details-actions {
+    padding: 20px;
+  }
+
+  .gecko-details-action-button {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .gecko-details-modal {
+    width: 95%;
+    max-height: 95vh;
+    margin-top: 60px; // Add space for the navbar
+  }
+
+  .gecko-details-image-container {
+    padding-top: 75%; // Maintain 4:3 aspect ratio
+  }
+
+  .gecko-details-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .gecko-details-action-button {
+    width: 100%;
+  }
+}
