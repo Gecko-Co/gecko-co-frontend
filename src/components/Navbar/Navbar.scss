@@ -1,34 +1,32 @@
 body {
-  overflow-x: hidden; // Prevent horizontal overflow
+  overflow-x: hidden;
 }
 
 .flag-component {
-  position: fixed; // Make the flag component fixed
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 1000; // Ensure it's above other elements
-  height: 45px; // Assuming the flag component's height is 45px
-  /* Other styles */
+  z-index: 1000;
+  height: 45px;
 }
 
 .content-after-flag {
-  margin-top: 45px; // Adjust based on the height of your flag component
-  /* Other styles */
+  margin-top: 45px;
 }
 
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 40px 200px; /* Initial large padding */
+  padding: 40px 200px;
   background-color: #23283b;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
-  z-index: 10000; // Increase z-index to ensure it's above the flag component
-  transition: padding 0.5s ease; /* Smooth transition for padding */
+  z-index: 10000;
+  transition: padding 0.5s ease;
 
   .logo-link {
     text-decoration: none;
@@ -57,7 +55,7 @@ body {
     align-items: center;
 
     @media (max-width: 480px) {
-      display: none; // Hide by default
+      display: none;
       flex-direction: column;
       gap: 20px;
       position: fixed;
@@ -65,7 +63,7 @@ body {
       left: 0;
       width: 100%;
       height: 100vh;
-      background-color: #23283b; /* Updated background color */
+      background-color: #23283b;
       z-index: 1000;
       padding: 20px 0;
       overflow-y: auto;
@@ -77,7 +75,7 @@ body {
         align-items: center;
 
         .close-icon {
-          position: fixed; // Fixed position for the X icon
+          position: fixed;
           top: 10px;
           right: 10px;
           color: white;
@@ -99,34 +97,24 @@ body {
       margin-left: 5px;
       font-size: 14px;
       position: absolute;
-      right: -5px; // Adjusted to bring the icon closer to the text
-      bottom: 50%;
-      transform: translateY(-25%) rotate(20deg);
-      animation: glowIcon 1s infinite;
+      right: -15px;
+      top: -10px;
+      transform: rotate(20deg);
+      animation: glowIcon 2s infinite;
       display: inline-block;
-
-      &:nth-child(2) {
-        animation-delay: 0.5s;
-      }
-
-      &:nth-child(3) {
-        animation-delay: 1s;
-      }
+      color: #ffd700;
+      text-shadow: 0 0 5px #ffd700;
     }
   }
 
   @keyframes glowIcon {
-    0%, 25% {
-      text-shadow: none;
+    0%, 100% {
+      opacity: 1;
+      transform: rotate(20deg) scale(1);
     }
-    26%, 50% {
-      text-shadow: 0 0 15px #ff0000, 0 0 20px #ff0000, 0 0 25px #ff0000, 0 0 30px #ff0000;
-    }
-    51%, 75% {
-      text-shadow: 0 0 20px #ff0000, 0 0 30px #ff0000, 0 0 40px #ff0000, 0 0 50px #ff0000, 0 0 60px #ff0000, 0 0 70px #ff0000;
-    }
-    76%, 100% {
-      text-shadow: none;
+    50% {
+      opacity: 0.7;
+      transform: rotate(20deg) scale(1.2);
     }
   }
 
@@ -136,23 +124,36 @@ body {
     position: relative;
     font-size: 1.2rem;
     font-weight: bold;
-    transition: color 0.3s;
+    transition: all 0.3s;
     display: flex;
     align-items: center;
+    padding: 5px 10px;
+    border-radius: 5px;
 
     &:hover {
       color: #bd692d;
+      background-color: rgba(255, 255, 255, 0.1);
     }
 
-    &.active::after {
-      content: '';
-      position: absolute;
-      left: 50%;
-      transform: translateX(-50%);
-      bottom: -3px;
-      height: 2px;
-      background-color: #bd692d;
-      width: 100%;
+    &.active {
+      color: #bd692d;
+      background-color: rgba(255, 255, 255, 0.1);
+
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -3px;
+        height: 2px;
+        background-color: #bd692d;
+        width: 100%;
+        transform: scaleX(0);
+        transition: transform 0.3s ease;
+      }
+
+      &:hover::after {
+        transform: scaleX(1);
+      }
     }
 
     @media (max-width: 480px) {
@@ -176,10 +177,10 @@ body {
       padding-right: 49px;
       z-index: 1001;
       position: relative;
-      padding-left: 20px; /* Adjust space between logo and hamburger menu */
+      padding-left: 20px;
 
       .nav-link {
-        color: #bd692d; // Change color here
+        color: #bd692d;
       }
 
       span {
@@ -207,50 +208,50 @@ body {
   }
 
   &.scrolled {
-    padding: 10px 20px; /* Adjusted padding for scrolled state */
-    transition: padding 0.5s ease; /* Smooth transition for scrolled state */
+    padding: 10px 20px;
+    transition: padding 0.5s ease;
   }
 
   &.unscrolled {
-    padding: 40px 200px; /* Original padding */
-    transition: padding 0.5s ease; /* Smooth transition for unscrolled state */
+    padding: 40px 200px;
+    transition: padding 0.5s ease;
   }
 
   &.open {
-    padding: 40px 200px; /* Original padding for open state */
+    padding: 40px 200px;
   }
 
   @media screen and (max-width: 768px) {
-    padding: 20px 100px; /* Adjusted padding for smaller screens */
-    transition: padding 0.5s ease; /* Smooth transition for smaller screens */
+    padding: 20px 100px;
+    transition: padding 0.5s ease;
 
     &.scrolled {
-      padding: 10px 50px; /* Adjusted padding for scrolled state on smaller screens */
+      padding: 10px 50px;
     }
 
     &.unscrolled {
-      padding: 20px 100px; /* Adjusted padding for unscrolled state on smaller screens */
+      padding: 20px 100px;
     }
 
     &.open {
-      padding: 20px 100px; /* Adjusted padding for open state on smaller screens */
+      padding: 20px 100px;
     }
   }
 
   @media screen and (max-width: 480px) {
-    padding: 20px 50px; /* Further adjusted padding for smallest screens */
-    transition: padding 0.5s ease; /* Smooth transition for smallest screens */
+    padding: 20px 50px;
+    transition: padding 0.5s ease;
 
     &.scrolled {
-      padding: 10px 20px; /* Adjusted padding for scrolled state on smallest screens */
+      padding: 10px 20px;
     }
 
     &.unscrolled {
-      padding: 20px 50px; /* Adjusted padding for unscrolled state on smallest screens */
+      padding: 20px 50px;
     }
 
     &.open {
-      padding: 20px 50px; /* Adjusted padding for open state on smallest screens */
+      padding: 20px 50px;
     }
   }
 
@@ -270,7 +271,6 @@ body {
   }
 }
 
-/* Add shaking animation */
 @keyframes shake {
   0%, 100% {
     transform: translateX(0);
@@ -293,16 +293,4 @@ body {
 .logo-link:active,
 .company-name:active {
   animation: shake 1s;
-    // Define the shaking animation
-@keyframes shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  10%, 90% {
-    transform: translateX(-5px);
-  }
-  20%, 80% {
-    transform: translateX(5px);
-    }
-  }
- }
+}
