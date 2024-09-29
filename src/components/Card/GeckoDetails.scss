@@ -39,14 +39,14 @@
 .close-button {
   position: absolute;
   top: 15px;
-  right: 20px;
-  font-size: 28px;
+  right: 15px;
+  font-size: 24px;
   color: #fff;
   background-color: rgba(35, 40, 59, 0.8);
   border: none;
   border-radius: 50%;
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -85,24 +85,24 @@
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 20px;
+  padding: 15px;
   background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
   color: #fff;
 
   h2 {
     margin: 0;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: bold;
   }
 }
 
 .gecko-details-status {
   display: inline-block;
-  padding: 5px 10px;
+  padding: 4px 8px;
   border-radius: 20px;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: bold;
-  margin-top: 10px;
+  margin-top: 8px;
 
   &.available { background-color: #28a745; }
   &.sold { background-color: #dc3545; }
@@ -110,19 +110,19 @@
 }
 
 .gecko-details-info {
-  padding: 20px;
+  padding: 15px;
 }
 
 .gecko-details-tabs {
   display: flex;
   border-bottom: 2px solid #e0e0e0;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 
   button {
     background: none;
     border: none;
-    padding: 10px 20px;
-    font-size: 16px;
+    padding: 8px 15px;
+    font-size: 14px;
     font-weight: bold;
     color: #666;
     cursor: pointer;
@@ -142,8 +142,8 @@
 .gecko-details-item {
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
-  font-size: 16px;
+  margin-bottom: 8px;
+  font-size: 14px;
 }
 
 .gecko-details-label {
@@ -158,16 +158,16 @@
 .gecko-details-actions {
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  padding: 15px;
   background-color: #f8f9fa;
   border-top: 1px solid #e0e0e0;
 }
 
 .gecko-details-action-button {
-  padding: 10px 20px;
+  padding: 8px 15px;
   border: none;
   border-radius: 5px;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.3s ease, transform 0.1s ease;
@@ -213,12 +213,58 @@
   .gecko-details-info {
     width: 50%;
   }
+
+  .close-button {
+    top: 20px;
+    right: 20px;
+    font-size: 28px;
+    width: 40px;
+    height: 40px;
+  }
+
+  .gecko-details-image-overlay {
+    padding: 20px;
+
+    h2 {
+      font-size: 24px;
+    }
+  }
+
+  .gecko-details-status {
+    padding: 5px 10px;
+    font-size: 14px;
+    margin-top: 10px;
+  }
+
+  .gecko-details-info {
+    padding: 20px;
+  }
+
+  .gecko-details-tabs button {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
+
+  .gecko-details-item {
+    font-size: 16px;
+    margin-bottom: 10px;
+  }
+
+  .gecko-details-actions {
+    padding: 20px;
+  }
+
+  .gecko-details-action-button {
+    padding: 10px 20px;
+    font-size: 16px;
+  }
 }
 
 @media (max-width: 767px) {
   .gecko-details-modal {
     width: 95%;
     max-height: 95vh;
+    margin-top: 60px; // Add space for the navbar
   }
 
   .gecko-details-image-container {
@@ -232,22 +278,5 @@
 
   .gecko-details-action-button {
     width: 100%;
-  }
-
-  .gecko-details-tabs button {
-    padding: 10px;
-    font-size: 14px;
-  }
-
-  .gecko-details-item {
-    font-size: 14px;
-  }
-
-  .close-button {
-    top: 10px;
-    right: 10px;
-    font-size: 24px;
-    width: 36px;
-    height: 36px;
   }
 }
