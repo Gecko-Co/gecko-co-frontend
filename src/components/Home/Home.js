@@ -104,6 +104,7 @@ export default function Component() {
                             <li><strong>Diet:</strong> {featuredData.diet}</li>
                             <li><strong>Lifespan:</strong> {featuredData.lifespan}</li>
                         </ul>
+                        <Link to="/learn" className="learn-more-button">Learn More About Geckos</Link>
                     </div>
                 </div>
             </div>

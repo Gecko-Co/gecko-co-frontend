@@ -276,6 +276,26 @@ body {
                     }
                 }
             }
+
+            .learn-more-button {
+                display: inline-block;
+                margin-top: 20px;
+                padding: 12px 24px;
+                background-color: #bd692d;
+                color: white;
+                text-decoration: none;
+                border-radius: 50px;
+                font-size: 1rem;
+                font-weight: 600;
+                transition: all 0.3s ease;
+                box-shadow: 0 5px 15px rgba(189, 105, 45, 0.3);
+
+                &:hover {
+                    background-color: #af5210;
+                    transform: translateY(-3px);
+                    box-shadow: 0 8px 20px rgba(189, 105, 45, 0.4);
+                }
+            }
         }
     }
 
@@ -304,9 +324,7 @@ body {
         margin-bottom: 40px;
         color: white;
         font-weight: 700;
-        text-shadow: 2px 2px 4px rgba(0, 0, 
-
- 0, 0.1);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     .content-wrapper {
