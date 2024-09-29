@@ -142,18 +142,19 @@ body {
 
 .diagonal-transition {
     height: 100px;
-    background: linear-gradient(to bottom right, #23283b 49%, #ffffff 50%);
+    background: linear-gradient(to bottom right, #23283b 49.9%, #ffffff 50.1%);
     position: relative;
     z-index: 2;
     margin-top: -50px;
+    margin-bottom: -50px;
 
     &.reverse {
-        background: linear-gradient(to bottom left, #ffffff 49%, #23283b 50%);
+        background: linear-gradient(to bottom left, #ffffff 49.9%, #23283b 50.1%);
     }
 }
 
-.second-section {
-    background-color: white;
+.second-section, .fourth-section {
+    background-color: #ffffff;
     padding: 80px 50px 50px;
     text-align: center;
     position: relative;
@@ -173,120 +174,153 @@ body {
         align-items: flex-start;
         max-width: 1200px;
         margin: 0 auto;
-
-        .image-gallery {
-            flex: 1;
-            max-width: 600px;
-            margin-right: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-
-            .main-image-container {
-                width: 100%;
-                height: 400px;
-                overflow: hidden;
-                position: relative;
-                border-radius: 15px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-
-                .main-image {
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    transition: transform 0.3s ease;
-
-                    &:hover {
-                        transform: scale(1.05);
-                    }
-                }
-            }
-
-            .thumbnail-container {
-                display: flex;
-                justify-content: center;
-                flex-wrap: wrap;
-                margin-top: 20px;
-                margin-bottom: 25px;
-
-                .thumbnail {
-                    width: 80px;
-                    height: 80px;
-                    object-fit: cover;
-                    margin: 5px;
-                    cursor: pointer;
-                    border: 2px solid transparent;
-                    border-radius: 8px;
-                    transition: all 0.3s ease;
-
-                    &:hover {
-                        transform: translateY(-5px);
-                    }
-
-                    &.active {
-                        border-color: #bd692d;
-                        box-shadow: 0 5px 15px rgba(189, 105, 45, 0.3);
-                    }
-                }
-            }
-        }
-
-        .species-info {
-            flex: 1;
-            text-align: left;
-            max-width: 600px;
-            margin-left: 20px;
-            background-color: #f8f8f8;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-
-            h2 {
-                text-align: center;
-                font-size: 2.2rem;
-                margin-bottom: 20px;
-                color: #23283b;
-                font-weight: 700;
-            }
-
-            .description {
-                text-align: center;
-                font-style: italic;
-                margin-bottom: 30px;
-                font-size: 1.1rem;
-                color: #555;
-                line-height: 1.6;
-            }
-
-            ul {
-                list-style-type: none;
-                padding: 0;
-                columns: 2;
-                column-gap: 30px;
-
-                li {
-                    margin-bottom: 15px;
-                    font-size: 1rem;
-                    color: #444;
-
-                    strong {
-                        margin-right: 5px;
-                        color: #23283b;
-                        font-weight: 600;
-                    }
-                }
-            }
-        }
     }
 
     @media (max-width: 992px) {
         .content-wrapper {
             flex-direction: column;
-            
-            .image-gallery, .species-info {
-                max-width: 100%;
-                margin: 0 0 40px 0;
+            align-items: center;
+        }
+    }
+
+    @media (max-width: 768px) {
+        padding: 60px 20px 40px;
+
+        .section-title {
+            font-size: 2.5rem;
+        }
+    }
+}
+
+.second-section {
+    .image-gallery {
+        flex: 1;
+        max-width: 600px;
+        margin-right: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .main-image-container {
+            width: 100%;
+            height: 400px;
+            overflow: hidden;
+            position: relative;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+            .main-image {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+
+                &:hover {
+                    transform: scale(1.05);
+                }
             }
+        }
+
+        .thumbnail-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 20px;
+            margin-bottom: 25px;
+
+            .thumbnail {
+                width: 80px;
+                height: 80px;
+                object-fit: cover;
+                margin: 5px;
+                cursor: pointer;
+                border: 2px solid transparent;
+                border-radius: 8px;
+                transition: all 0.3s ease;
+
+                &:hover {
+                    transform: translateY(-5px);
+                }
+
+                &.active {
+                    border-color: #bd692d;
+                    box-shadow: 0 5px 15px rgba(189, 105, 45, 0.3);
+                }
+            }
+        }
+    }
+
+    .species-info {
+        flex: 1;
+        text-align: left;
+        max-width: 600px;
+        margin-left: 20px;
+        background-color: #f8f8f8;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+
+        h2 {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 20px;
+            color: #23283b;
+            font-weight: 700;
+        }
+
+        .description {
+            text-align: center;
+            font-style: italic;
+            margin-bottom: 30px;
+            font-size: 1.1rem;
+            color: #555;
+            line-height: 1.6;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+            columns: 2;
+            column-gap: 30px;
+
+            li {
+                margin-bottom: 15px;
+                font-size: 1rem;
+                color: #444;
+
+                strong {
+                    margin-right: 5px;
+                    color: #23283b;
+                    font-weight: 600;
+                }
+            }
+        }
+
+        .learn-more-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 24px;
+            background-color: #bd692d;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(189, 105, 45, 0.3);
+
+            &:hover {
+                background-color: #af5210;
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(189, 105, 45, 0.4);
+            }
+        }
+    }
+
+    @media (max-width: 992px) {
+        .image-gallery, .species-info {
+            max-width: 100%;
+            margin: 0 0 40px 0;
         }
     }
 }
@@ -310,65 +344,135 @@ body {
     .content-wrapper {
         display: flex;
         justify-content: space-around;
-        align-items: stretch;
+        flex-wrap: wrap;
         max-width: 1200px;
         margin: 0 auto;
+    }
 
-        .feature {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            max-width: calc(33.333% - 40px);
-            margin: 0 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.3s ease;
+    .gecko-card {
+        width: calc(33.333% - 20px);
+        margin: 10px;
+        background-color: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        transition: transform 0.3s ease;
 
-            &:hover {
-                transform: translateY(-10px);
-            }
+        &:hover {
+            transform: translateY(-10px);
+        }
 
-            .feature-icon {
-                font-size: 3rem;
-                margin-bottom: 20px;
-            }
+        .gecko-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .gecko-info {
+            padding: 20px;
+            background-color: white;
 
             h3 {
                 font-size: 1.5rem;
-                margin-bottom: 15px;
-                color: #feca57;
+                color: #23283b;
+                margin-bottom: 10px;
             }
 
             p {
-                font-size: 1rem;
-                color: #f8f8f8;
-                line-height: 1.6;
-                flex-grow: 1;
+                color: #555;
+                margin-bottom: 5px;
             }
+
+            .gecko-price {
+                font-weight: bold;
+                color: #4cd137;
+                font-size: 1.2rem;
+            }
+        }
+    }
+
+    .view-all-btn {
+        display: inline-block;
+        margin-top: 40px;
+        padding: 15px 30px;
+        background-color: #bd692d;
+        color: white;
+        text-decoration: none;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(189, 105, 45, 0.3);
+
+        &:hover {
+            background-color: #af5210;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(189, 105, 45, 0.4);
         }
     }
 
     @media (max-width: 992px) {
-        .content-wrapper {
-            flex-direction: column;
-            align-items: center;
-
-            .feature {
-                max-width: 100%;
-                width: 100%;
-                margin: 0 0 40px 0;
-            }
+        .gecko-card {
+            width: calc(50% - 20px);
         }
     }
 
-    @media (max-width: 767px) {
+    @media (max-width: 768px) {
         padding: 60px 20px 40px;
 
         .section-title {
             font-size: 2.5rem;
+        }
+
+        .gecko-card {
+            width: 100%;
+            margin: 10px 0;
+        }
+    }
+}
+.fourth-section {
+    .feature {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        max-width: calc(33.333% - 40px);
+        margin: 0 20px;
+        background-color: #23283b;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        color: #ffffff;
+
+        &:hover {
+            transform: translateY(-10px);
+        }
+
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: #feca57;
+        }
+
+        p {
+            font-size: 1rem;
+            color: #f8f8f8;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+    }
+
+    @media (max-width: 992px) {
+        .feature {
+            max-width: 100%;
+            width: 100%;
+            margin: 0 0 40px 0;
         }
     }
 }
@@ -404,15 +508,10 @@ body {
     .diagonal-transition {
         height: 50px;
         margin-top: -25px;
+        margin-bottom: -25px;
     }
 
     .second-section {
-        padding: 60px 20px 40px;
-
-        .section-title {
-            font-size: 2.5rem;
-        }
-
         .species-info {
             h2 {
                 font-size: 1.8rem;
@@ -442,5 +541,6 @@ body {
     .diagonal-transition {
         height: 30px;
         margin-top: -15px;
+        margin-bottom: -15px;
     }
 }

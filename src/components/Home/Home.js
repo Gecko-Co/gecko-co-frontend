@@ -3,6 +3,7 @@ import './Home.scss';
 import Typed from 'typed.js';
 import { Link } from 'react-router-dom';
 import featuredData from '../../featured';
+import placeholderData from "../../data";
 
 export default function Component() {
     const typedRef = useRef(null);
@@ -17,6 +18,11 @@ export default function Component() {
 
     const words = ["love?"];
     const [changingWordIndex, setChangingWordIndex] = useState(0);
+
+    // Filter available geckos and select up to 3 for featuring
+    const featuredGeckos = placeholderData.results
+        .filter(gecko => gecko.status === "Available")
+        .slice(0, 3);
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -69,7 +75,7 @@ export default function Component() {
             <div className="diagonal-transition"></div>
 
             <div className="second-section">
-                <h1 className="section-title">Featured Species</h1>
+                <h1 className="section-title">Species Highlight</h1>
                 <div className="content-wrapper">
                     <div className="image-gallery">
                         <div className="main-image-container">
@@ -98,6 +104,7 @@ export default function Component() {
                             <li><strong>Diet:</strong> {featuredData.diet}</li>
                             <li><strong>Lifespan:</strong> {featuredData.lifespan}</li>
                         </ul>
+                        <Link to="/learn" className="learn-more-button">Learn More About Geckos</Link>
                     </div>
                 </div>
             </div>
@@ -105,6 +112,25 @@ export default function Component() {
             <div className="diagonal-transition reverse"></div>
 
             <div className="third-section">
+                <h1 className="section-title">Featured Geckos</h1>
+                <div className="content-wrapper">
+                    {featuredGeckos.map((gecko) => (
+                        <div key={gecko.id} className="gecko-card">
+                            <img src={gecko.images} alt={gecko.name} className="gecko-image" />
+                            <div className="gecko-info">
+                                <h3>{gecko.name}</h3>
+                                <p>{gecko.species}</p>
+                                <p className="gecko-price">₱{parseInt(gecko.price).toLocaleString()}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+                <Link to="/shop" className="view-all-btn">View All Geckos</Link>
+            </div>
+
+            <div className="diagonal-transition"></div>
+
+            <div className="fourth-section">
                 <h1 className="section-title">Why Choose Us?</h1>
                 <div className="content-wrapper">
                     <div className="feature">
