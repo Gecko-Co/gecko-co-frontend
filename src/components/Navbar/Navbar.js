@@ -6,7 +6,7 @@ const Navbar = () => {
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
-  const [isOpen, setIsOpen] = useState(false); // State to manage mobile menu
+  const [isOpen, setIsOpen] = useState(false);
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -20,7 +20,6 @@ const Navbar = () => {
     };
 
     if (!isOpen) {
-      // Apply scroll animation only if the mobile menu is closed
       window.addEventListener('scroll', handleScroll);
     }
 
@@ -29,7 +28,6 @@ const Navbar = () => {
     };
   }, [isOpen, prevScrollPos]);
 
-  // Close menu on route change
   useEffect(() => {
     setIsOpen(false);
   }, [location]);
@@ -44,9 +42,11 @@ const Navbar = () => {
         <NavLink to="/" text="Home" toggleMenu={toggleMenu} />
         <NavLink to="/shop" text="Shop" toggleMenu={toggleMenu} />
         <NavLink to="/learn" text="Learn" toggleMenu={toggleMenu} />
+        <NavLink to="/genetic-calculator" text="Genetic Calculator" toggleMenu={toggleMenu} />
         <NavLink to="/contact" text="Contact Us" toggleMenu={toggleMenu} />
+        
       </div>
-      <button className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleMenu}>
+      <button className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleMenu} aria-label="Toggle menu">
         <span></span>
         <span></span>
         <span></span>
@@ -59,7 +59,7 @@ const NavLink = ({ to, text, toggleMenu }) => {
   const location = useLocation();
 
   const shouldShowBadge = (text) => {
-    return text === "Home" || text === "Learn" || text === "Contact Us";
+    return text === "Home" || text === "Learn" || text === "Contact Us"|| text === "Genetic Calculator"|| text === "Shop";
   };
 
   const handleClick = () => {
@@ -70,13 +70,13 @@ const NavLink = ({ to, text, toggleMenu }) => {
     <div className="nav-link-container">
       <Link
         to={to}
-        className={`nav-link ${location.pathname === to? 'active' : ''}`}
+        className={`nav-link ${location.pathname === to ? 'active' : ''}`}
         onClick={handleClick}
       >
         {text}
       </Link>
       {shouldShowBadge(text) && (
-        <span className="maintenance-icon">&#x1F6A7;</span>
+        <span className="maintenance-icon" aria-label="Under maintenance">&#x1F6A7;</span>
       )}
     </div>
   );

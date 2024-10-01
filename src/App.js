@@ -10,6 +10,7 @@ import Flag from './components/Flag/Flag';
 import Footer from './components/Footer/Footer';
 import Learn from './components/Learn/Learn';
 import Contact from './components/Contact/Contact';
+import GeneticCalculator from './components/GeneticCalculator/GeneticCalculator';
 import AdSenseScript from './components/Adsense/Adsense';
 import Scroll from './components/Scroll/Scroll';
 import Messenger from './components/Messenger/Messenger';
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/learn" element={<Learn />} />
+        <Route path="/genetic-calculator" element={<GeneticCalculator />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
       <Footer />

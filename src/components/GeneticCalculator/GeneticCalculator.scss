@@ -1,0 +1,454 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+.genetic-calculator-wrapper {
+  padding-top: 180px;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+  font-family: 'Poppins', sans-serif;
+}
+
+.genetic-calculator {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: #ffffff;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+
+  h1 {
+    text-align: center;
+    color: #23283b;
+    margin-bottom: 2rem;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .parents-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 2rem;
+
+    @media (max-width: 768px) {
+      flex-direction: column;
+    }
+  }
+
+  .gene-selector {
+    flex: 1;
+    background-color: #f8f8f8;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: translateY(-5px);
+    }
+
+    h2 {
+      color: #bd692d;
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+      font-weight: 600;
+    }
+
+    .gene-input {
+      display: flex;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+
+      select {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-family: 'Poppins', sans-serif;
+        background-color: #fff;
+        transition: border-color 0.3s ease, opacity 0.3s ease;
+
+        &:focus {
+          outline: none;
+          border-color: #bd692d;
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          background-color: #e9ecef;
+        }
+
+        option:disabled {
+          color: #6c757d;
+        }
+      }
+
+      button {
+        padding: 0.75rem 1.5rem;
+        background-color: #bd692d;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
+        font-family: 'Poppins', sans-serif;
+        font-weight: 600;
+
+        &:hover:not(:disabled) {
+          background-color: #af5210;
+          transform: translateY(-2px);
+        }
+
+        &:disabled {
+          opacity: 0.6;
+          cursor: not-allowed;
+          background-color: #6c757d;
+        }
+      }
+    }
+
+    .selected-genes {
+      background-color: #ffffff;
+      border-radius: 8px;
+      padding: 1rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+
+      h3 {
+        font-size: 1.2rem;
+        color: #23283b;
+        margin-bottom: 0.5rem;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+
+        li {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          background-color: #e9ecef;
+          padding: 0.5rem 1rem;
+          margin-bottom: 0.5rem;
+          border-radius: 6px;
+          font-size: 0.9rem;
+          transition: background-color 0.3s ease;
+
+          &:hover {
+            background-color: #dee2e6;
+          }
+
+          &.wild-type {
+            background-color: #d4edda;
+            color: #155724;
+            font-weight: 600;
+          }
+
+          button {
+            background-color: transparent;
+            border: none;
+            color: #e74c3c;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+
+            &:hover {
+              color: #c0392b;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .calculate-btn,
+  .share-btn,
+  .clear-btn {
+    padding: 0.75rem 1.5rem;
+    font-size: 1.1rem;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    box-shadow: 0 5px 15px rgba(189, 105, 45, 0.3);
+
+    &:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(189, 105, 45, 0.4);
+    }
+  }
+
+  .calculate-btn {
+    background-color: #bd692d;
+
+    &:hover {
+      background-color: #af5210;
+    }
+  }
+
+  .share-btn {
+    background-color: #23283b;
+
+    &:hover {
+      background-color: #1a1e2d;
+    }
+
+    svg {
+      width: 1.2rem;
+      height: 1.2rem;
+    }
+  }
+
+  .clear-btn {
+    background-color: #e74c3c;
+
+    &:hover {
+      background-color: #c0392b;
+    }
+  }
+
+  .offspring-results {
+    margin-top: 2rem;
+    background-color: #f8f8f8;
+    border-radius: 15px;
+    padding: 2rem;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+
+    h2 {
+      color: #23283b;
+      margin-bottom: 1rem;
+      font-size: 2rem;
+      font-weight: 600;
+    }
+
+    .gene-type-legend {
+      margin-bottom: 1rem;
+
+      h3 {
+        font-size: 1.2rem;
+        color: #23283b;
+        margin-bottom: 0.5rem;
+      }
+
+      ul {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+
+        li {
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      background-color: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      border-radius: 8px;
+      overflow: hidden;
+
+      th, td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      th {
+        background-color: #23283b;
+        color: white;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+      }
+
+      tr:last-child td {
+        border-bottom: none;
+      }
+
+      tr:nth-child(even) {
+        background-color: #f8f9fa;
+      }
+
+      tr:hover {
+        background-color: #e9ecef;
+      }
+    }
+  }
+}
+
+.gene-type {
+  padding: 2px 5px;
+  border-radius: 3px;
+  font-size: 0.9em;
+  margin-right: 3px;
+
+  &.dominant {
+    background-color: #e6f3ff;
+    color: #0066cc;
+  }
+
+  &.recessive {
+    background-color: #fff0f0;
+    color: #cc0000;
+  }
+
+  &.line-bred {
+    background-color: #f0fff0;
+    color: #006600;
+  }
+
+  &.incomplete-dominant {
+    background-color: #fff5e6;
+    color: #cc6600;
+  }
+
+  &.co-dominant {
+    background-color: #f5e6ff;
+    color: #6600cc;
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  padding: 2rem;
+  border-radius: 15px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 90%;
+  font-family: 'Poppins', sans-serif;
+
+  h2 {
+    color: #bd692d;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+    font-weight: 600;
+  }
+
+  p {
+    margin-bottom: 1rem;
+    line-height: 1.6;
+    color: #23283b;
+  }
+}
+
+.modal-close {
+  display: block;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #bd692d;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1rem;
+  margin-top: 1rem;
+  box-shadow: 0 5px 15px rgba(189, 105, 45, 0.3);
+
+  &:hover {
+    background-color: #af5210;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(189, 105, 45, 0.4);
+  }
+}
+
+@media (max-width: 768px) {
+  .genetic-calculator-wrapper {
+    padding-top: 120px;
+  }
+
+  .genetic-calculator {
+    padding: 1.5rem;
+
+    h1 {
+      font-size: 2rem;
+    }
+
+    .gene-selector {
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+
+    .offspring-results {
+      h2 {
+        font-size: 1.8rem;
+      }
+    }
+
+    .button-container {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .calculate-btn,
+    .share-btn,
+    .clear-btn {
+      width: 100%;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .genetic-calculator-wrapper {
+    padding-top: 100px;
+  }
+
+  .genetic-calculator {
+    h1 {
+      font-size: 1.8rem;
+    }
+
+    .gene-selector {
+      h2 {
+        font-size: 1.3rem;
+      }
+    }
+
+    .offspring-results {
+      h2 {
+        font-size: 1.5rem;
+      }
+    }
+  }
+}
