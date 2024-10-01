@@ -1,0 +1,92 @@
+[
+    { "name": "Wild Type (Normal)", "type": "Dominant" },
+    { "name": "Tremper Albino", "type": "Recessive" },
+    { "name": "Bell Albino", "type": "Recessive" },
+    { "name": "Rainwater Albino", "type": "Recessive" },
+    { "name": "Blizzard", "type": "Recessive" },
+    { "name": "Patternless", "type": "Recessive" },
+    { "name": "Eclipse", "type": "Recessive" },
+    { "name": "Murphy Patternless", "type": "Recessive" },
+    { "name": "Marble Eye", "type": "Recessive" },
+    { "name": "Hypo", "type": "Line-bred" },
+    { "name": "Super Hypo", "type": "Line-bred" },
+    { "name": "Tangerine", "type": "Line-bred" },
+    { "name": "Carrot Tail", "type": "Line-bred" },
+    { "name": "Carrot Head", "type": "Line-bred" },
+    { "name": "Mack Snow", "type": "Incomplete-Dominant" },
+    { "name": "Super Mack Snow", "type": "Incomplete-Dominant" },
+    { "name": "Enigma", "type": "Dominant" },
+    { "name": "Giant", "type": "Incomplete-Dominant" },
+    { "name": "Super Giant", "type": "Incomplete-Dominant" },
+    { "name": "Ghost", "type": "Line-bred" },
+    { "name": "Lavender", "type": "Line-bred" },
+    { "name": "High Yellow", "type": "Line-bred" },
+    { "name": "Firewater", "type": "Line-bred" },
+    { "name": "White and Yellow", "type": "Dominant" },
+    { "name": "Bold Stripe", "type": "Line-bred" },
+    { "name": "Jungle", "type": "Line-bred" },
+    { "name": "Emerine", "type": "Line-bred" },
+    { "name": "Nova", "type": "Dominant" },
+    { "name": "Black Night", "type": "Line-bred" },
+    { "name": "Snow Glow", "type": "Incomplete-Dominant" },
+    {
+        "name": "Diablo Blanco",
+        "type": "Combination",
+        "genes": ["Tremper Albino", "Blizzard", "Eclipse"]
+    },
+    {
+        "name": "Black Night",
+        "type": "Combination",
+        "genes": ["Blizzard", "Midnight"]
+    },
+    {
+        "name": "RAPTOR",
+        "type": "Combination",
+        "genes": ["Tremper Albino", "Eclipse", "Patternless"]
+    },
+    {
+        "name": "Blazing Blizzard",
+        "type": "Combination",
+        "genes": ["Tremper Albino", "Blizzard"]
+    },
+    {
+        "name": "TUG Snow",
+        "type": "Combination",
+        "genes": ["Tremper Albino", "Mack Snow"]
+    },
+    {
+        "name": "Midnight Blizzard",
+        "type": "Combination",
+        "genes": ["Blizzard", "Midnight"]
+    },
+    {
+        "name": "Mack Blizzard",
+        "type": "Combination",
+        "genes": ["Mack Snow", "Blizzard"]
+    },
+    {
+        "name": "Tangerine Blizzard",
+        "type": "Combination",
+        "genes": ["Tangerine", "Blizzard"]
+    },
+    {
+        "name": "Hypo Eclipse",
+        "type": "Combination",
+        "genes": ["Hypo", "Eclipse"]
+    },
+    {
+        "name": "Super Hypo Enigma",
+        "type": "Combination",
+        "genes": ["Super Hypo", "Enigma"]
+    },
+    {
+        "name": "Lavender Bell",
+        "type": "Combination",
+        "genes": ["Lavender", "Bell Albino"]
+    },
+    {
+        "name": "Emerine Patternless",
+        "type": "Combination",
+        "genes": ["Emerine", "Patternless"]
+    }
+]
