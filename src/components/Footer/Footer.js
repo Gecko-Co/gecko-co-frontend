@@ -23,7 +23,9 @@ const Footer = () => {
               <FooterLink href="/shop">Shop</FooterLink>
               <FooterLink href="/learn">Learn</FooterLink>
               <FooterLink href="/genetic-calculator">Genetic Calculator</FooterLink>
+              <FooterLink href="/policies">Policies</FooterLink>
               <FooterLink href="/contact">Contact Us</FooterLink>
+
             </ExploreLinks>
           </FooterSection>
           <FooterSection>
@@ -37,7 +39,7 @@ const Footer = () => {
             </FooterText>
           </FooterSection>
           <FooterSection>
-          <FooterLogo src="/images/geckoco-png.png" alt="Geckoco Logo" />
+            <FooterLogo src="/images/geckoco-png.png" alt="Geckoco Logo" />
           </FooterSection>
         </FooterTop>
         <FooterBottom>
@@ -61,6 +63,7 @@ const CompanyName = styled.span`
   font-weight: bold;
   color: #bd692d;
 `;
+
 const StyledFooter = styled.footer`
   background-color: #23283b;
   color: white;

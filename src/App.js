@@ -14,6 +14,7 @@ import GeneticCalculator from './components/GeneticCalculator/GeneticCalculator'
 import AdSenseScript from './components/Adsense/Adsense';
 import Scroll from './components/Scroll/Scroll';
 import Messenger from './components/Messenger/Messenger';
+import PolicyPage from './components/Policy/Policy';
 import { inject } from '@vercel/analytics';
 
 inject();
@@ -32,6 +33,7 @@ function App() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/learn" element={<Learn />} />
         <Route path="/genetic-calculator" element={<GeneticCalculator />} />
+        <Route path="/policies" element={<PolicyPage />} />
         <Route path="/contact" element={<Contact />} />
       </Routes>
       <Footer />
