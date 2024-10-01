@@ -22,6 +22,7 @@ const Footer = () => {
               <FooterLink href="/">Home</FooterLink>
               <FooterLink href="/shop">Shop</FooterLink>
               <FooterLink href="/learn">Learn</FooterLink>
+              <FooterLink href="/genetic-calculator">Genetic Calculator</FooterLink>
               <FooterLink href="/contact">Contact Us</FooterLink>
             </ExploreLinks>
           </FooterSection>

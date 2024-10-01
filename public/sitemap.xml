@@ -24,6 +24,12 @@
     </url>
     
     <url>
+        <loc>https://geckoco.ph/genetic-calculator</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
         <loc>https://geckoco.ph/contact</loc>
         <changefreq>monthly</changefreq>
         <priority>0.6</priority>
