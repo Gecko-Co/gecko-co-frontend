@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import './Contact.scss';
 
 const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+
+const mapContainerStyle = {
+  width: '100%',
+  height: '100%',
+  minHeight: '300px', // Ensure a minimum height
+};
+
+const center = {
+  lat: 14.68651,
+  lng: 121.05180,
+};
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -40,6 +51,18 @@ export default function Contact() {
     { question: "How do I care for my exotic pet?", answer: "Care instructions vary by species. We provide detailed care guides with every purchase and offer ongoing support." },
     { question: "Do you ship internationally?", answer: "We currently ship within the Philippines only, to ensure the safety and well-being of our animals." },
   ];
+
+  const renderMap = useCallback(() => {
+    return (
+      <GoogleMap
+        mapContainerStyle={mapContainerStyle}
+        center={center}
+        zoom={15}
+      >
+        <Marker position={center} />
+      </GoogleMap>
+    );
+  }, []);
 
   return (
     <div className="contact-container">
@@ -116,13 +139,7 @@ export default function Contact() {
           </div>
           <div className="map-container">
             <LoadScript googleMapsApiKey={API_KEY}>
-              <GoogleMap
-                mapContainerStyle={{ height: '100%', width: '100%' }}
-                center={{ lat: 14.68651, lng: 121.05180 }}
-                zoom={15}
-              >
-                <Marker position={{ lat: 14.68651, lng: 121.05180 }} />
-              </GoogleMap>
+              {renderMap()}
             </LoadScript>
           </div>
         </div>

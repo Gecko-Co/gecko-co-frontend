@@ -266,6 +266,16 @@
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+  
+  // Ensure the map takes up the full height of its container
+  & > div {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+  }
 }
 
 @media (max-width: 991px) {
@@ -298,5 +308,23 @@
 
   .newsletter-signup form {
     flex-direction: column;
+  }
+
+  .map-container {
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .contact-container {
+    padding: 80px 15px;
+  }
+
+  .info-section, .additional-info > div {
+    padding: 20px;
+  }
+
+  .map-container {
+    height: 250px;
   }
 }
