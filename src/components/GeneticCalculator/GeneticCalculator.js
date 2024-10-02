@@ -73,108 +73,137 @@ const GeneticCalculator = () => {
 
   const calculateGeneProbabilities = useCallback((parent1Genes, parent2Genes, genesByType) => {
     const getGeneCount = (genes, targetGene) => genes.filter(g => g === targetGene).length;
-  
+
+    const dominantGenes = genesByType.Dominant || [];
     const recessiveGenes = genesByType.Recessive || [];
-    const lineBredGenes = genesByType['Line-bred'] || [];
+    const coDominantGenes = genesByType['Co-Dominant'] || [];
     const incompleteDominantGenes = genesByType['Incomplete-Dominant'] || [];
-  
-    const hetGenes = [...new Set([...parent1Genes, ...parent2Genes])]
-      .filter(gene => recessiveGenes.includes(gene));
-  
-    const allLineBredGenes = [...new Set([...parent1Genes, ...parent2Genes])]
-      .filter(gene => lineBredGenes.includes(gene));
-  
-    const incompleteDominantResults = incompleteDominantGenes.reduce((acc, gene) => {
+    const lineBredGenes = genesByType['Line-bred'] || [];
+
+    let offspringResults = [{ probability: 1, genesInvolved: [], homozygousCoDominantAndIncompleteDominant: [], hetRecessiveGenes: [], coDominantGenesInvolved: [] }];
+
+    // Handle dominant genes
+    [...new Set([...parent1Genes, ...parent2Genes])]
+      .filter(gene => dominantGenes.includes(gene) && gene !== 'Wild Type (Normal)')
+      .forEach(gene => {
+        const parent1Count = getGeneCount(parent1Genes, gene);
+        const parent2Count = getGeneCount(parent2Genes, gene);
+        const probability = 1 - 0.5 ** (parent1Count + parent2Count);
+        
+        offspringResults = offspringResults.flatMap(offspring => [
+          { ...offspring, probability: offspring.probability * probability, genesInvolved: [...offspring.genesInvolved, gene] },
+          { ...offspring, probability: offspring.probability * (1 - probability) }
+        ]);
+      });
+
+    // Handle co-dominant and incomplete dominant genes
+    [...coDominantGenes, ...incompleteDominantGenes].forEach(gene => {
       const parent1Count = getGeneCount(parent1Genes, gene);
       const parent2Count = getGeneCount(parent2Genes, gene);
-  
-      if (parent1Count + parent2Count === 0) return acc;
-  
       const totalGenes = parent1Count + parent2Count;
-      
-      let wildTypeProbability = 0;
-      let heterozygousProbability = 0;
-      let homozygousProbability = 0;
-  
+
+      let wildTypeProbability, heterozygousProbability, homozygousProbability;
+
       if (totalGenes === 0) {
         wildTypeProbability = 1;
+        heterozygousProbability = 0;
+        homozygousProbability = 0;
       } else if (totalGenes === 1) {
         wildTypeProbability = 0.5;
         heterozygousProbability = 0.5;
+        homozygousProbability = 0;
       } else if (totalGenes === 2) {
         wildTypeProbability = 0.25;
         heterozygousProbability = 0.5;
         homozygousProbability = 0.25;
       } else if (totalGenes === 3) {
+        wildTypeProbability = 0;
         heterozygousProbability = 0.5;
         homozygousProbability = 0.5;
       } else if (totalGenes === 4) {
+        wildTypeProbability = 0;
+        heterozygousProbability = 0;
         homozygousProbability = 1;
       }
-  
-      acc[gene] = {
-        wildType: wildTypeProbability,
-        heterozygous: heterozygousProbability,
-        homozygous: homozygousProbability,
-      };
-  
-      return acc;
-    }, {});
-    
-    const visibleGenes = [...new Set([...parent1Genes, ...parent2Genes])]
-      .filter(gene => 
-        !hetGenes.includes(gene) &&
-        !allLineBredGenes.includes(gene) &&
-        gene !== 'Wild Type (Normal)' &&
-        !incompleteDominantGenes.includes(gene)
-      );
-  
-    let offspringResults = [{ probability: 1, genesInvolved: [], homozygousIncompleteDominant: [] }];
-  
-    Object.entries(incompleteDominantResults).forEach(([gene, probabilities]) => {
-      const newResults = [];
-      offspringResults.forEach(offspring => {
-        if (probabilities.wildType > 0) {
-          newResults.push({...offspring, probability: offspring.probability * probabilities.wildType});
-        }
-        if (probabilities.heterozygous > 0) {
-          newResults.push({
-            ...offspring,
-            probability: offspring.probability * probabilities.heterozygous,
-            genesInvolved: [...offspring.genesInvolved, gene],
-          });
-        }
-        if (probabilities.homozygous > 0) {
-          newResults.push({
-            ...offspring,
-            probability: offspring.probability * probabilities.homozygous,
-            homozygousIncompleteDominant: [...offspring.homozygousIncompleteDominant, gene],
-          });
-        }
-      });
-      offspringResults = newResults;
+
+      offspringResults = offspringResults.flatMap(offspring => [
+        { ...offspring, probability: offspring.probability * wildTypeProbability },
+        { ...offspring, probability: offspring.probability * heterozygousProbability, coDominantGenesInvolved: [...offspring.coDominantGenesInvolved, gene] },
+        { ...offspring, probability: offspring.probability * homozygousProbability, homozygousCoDominantAndIncompleteDominant: [...offspring.homozygousCoDominantAndIncompleteDominant, gene] }
+      ].filter(o => o.probability > 0));
     });
-  
+
+    // Handle recessive genes
+    recessiveGenes.forEach(gene => {
+      const parent1Count = getGeneCount(parent1Genes, gene);
+      const parent2Count = getGeneCount(parent2Genes, gene);
+
+      let homozygousProbability, heterozygousProbability, wildTypeProbability;
+
+      if (parent1Count === 2 && parent2Count === 2) {
+        homozygousProbability = 1;
+        heterozygousProbability = 0;
+        wildTypeProbability = 0;
+      } else if ((parent1Count === 2 && parent2Count === 1) || (parent1Count === 1 && parent2Count === 2)) {
+        homozygousProbability = 0.5;
+        heterozygousProbability = 0.5;
+        wildTypeProbability = 0;
+      } else if (parent1Count === 1 && parent2Count === 1) {
+        homozygousProbability = 0.25;
+        heterozygousProbability = 0.5;
+        wildTypeProbability = 0.25;
+      } else if ((parent1Count === 1 && parent2Count === 0) || (parent1Count === 0 && parent2Count === 1)) {
+        homozygousProbability = 0;
+        heterozygousProbability = 1;
+        wildTypeProbability = 0;
+      } else {
+        homozygousProbability = 0;
+        heterozygousProbability = 0;
+        wildTypeProbability = 1;
+      }
+
+      offspringResults = offspringResults.flatMap(offspring => [
+        { ...offspring, probability: offspring.probability * wildTypeProbability },
+        { ...offspring, probability: offspring.probability * heterozygousProbability, hetRecessiveGenes: [...offspring.hetRecessiveGenes, gene] },
+        { ...offspring, probability: offspring.probability * homozygousProbability, genesInvolved: [...offspring.genesInvolved, gene] }
+      ].filter(o => o.probability > 0));
+    });
+
+    // Handle line-bred genes
+    const allLineBredGenes = [...new Set([...parent1Genes, ...parent2Genes])]
+      .filter(gene => lineBredGenes.includes(gene));
+
     offspringResults.forEach(offspring => {
-      offspring.genesInvolved = [...new Set([...offspring.genesInvolved, ...visibleGenes, ...hetGenes, ...allLineBredGenes])];
-      offspring.genotype = [
-        ...visibleGenes.map(g => `<span class="gene-type dominant" title="Dominant">${g}</span>`),
-        ...offspring.genesInvolved.filter(g => incompleteDominantGenes.includes(g)).map(g => 
-          offspring.homozygousIncompleteDominant.includes(g) 
-            ? `<span class="gene-type incomplete-dominant homozygous" title="Incomplete Dominant (Homozygous)">Super ${g}</span>`
-            : `<span class="gene-type incomplete-dominant" title="Incomplete Dominant (Heterozygous)">${g}</span>`
+      offspring.genesInvolved = [...new Set([...offspring.genesInvolved, ...allLineBredGenes])];
+      
+      const hasSuperForm = offspring.homozygousCoDominantAndIncompleteDominant.length > 0;
+      const hasHeteroForm = offspring.coDominantGenesInvolved.length > 0;
+
+      const genotypeSpans = [
+        ...offspring.genesInvolved.filter(g => dominantGenes.includes(g)).map(g => `<span class="gene-type dominant" title="Dominant">${g}</span>`),
+        ...offspring.homozygousCoDominantAndIncompleteDominant.map(g => 
+          `<span class="gene-type ${coDominantGenes.includes(g) ? 'co-dominant' : 'incomplete-dominant'} homozygous" title="${coDominantGenes.includes(g) ? 'Co-Dominant' : 'Incomplete Dominant'} (Homozygous)">Super ${g}</span>`
         ),
-        ...hetGenes.map(g => `<span class="gene-type recessive" title="Recessive (Heterozygous)">Het ${g}</span>`),
+        ...offspring.coDominantGenesInvolved.map(g => 
+          `<span class="gene-type ${coDominantGenes.includes(g) ? 'co-dominant' : 'incomplete-dominant'}" title="${coDominantGenes.includes(g) ? 'Co-Dominant' : 'Incomplete Dominant'} (Heterozygous)">${g}</span>`
+        ),
+        ...offspring.genesInvolved.filter(g => recessiveGenes.includes(g)).map(g => `<span class="gene-type recessive" title="Recessive (Homozygous)">${g}</span>`),
+        ...offspring.hetRecessiveGenes.map(g => `<span class="gene-type recessive" title="Recessive (Heterozygous)">Het ${g}</span>`),
         ...allLineBredGenes.map(g => `<span class="gene-type line-bred" title="Line-bred">${g}</span>`)
-      ].filter(Boolean).join(', ') || '<span class="gene-type dominant" title="Dominant">Wild Type (Normal)</span>';
-      offspring.geneCount = offspring.genesInvolved.length + offspring.homozygousIncompleteDominant.length;
+      ];
+
+      offspring.genotype = genotypeSpans.length > 0 
+        ? genotypeSpans.join(', ') 
+        : '<span class="gene-type dominant" title="Dominant">Wild Type (Normal)</span>';
+
+      offspring.geneCount = offspring.genesInvolved.length + offspring.homozygousCoDominantAndIncompleteDominant.length + offspring.coDominantGenesInvolved.length + offspring.hetRecessiveGenes.length;
       offspring.probability = Math.round(offspring.probability * 10000) / 100;
     });
-  
-    return offspringResults;
+
+    return offspringResults.filter(offspring => offspring.probability > 0);
   }, []);
 
-  const getMorphName = useCallback((visibleGenes, hetGenes, lineBredGenes, homozygousIncompleteDominant) => {
+  const getMorphName = useCallback((visibleGenes, hetGenes, lineBredGenes, homozygousCoDominantAndIncompleteDominant, coDominantGenesInvolved) => {
     const combinationMorphs = genes.filter(gene => gene.type === "Combination");
     for (const morph of combinationMorphs) {
       if (morph.genes.every(gene => visibleGenes.includes(gene))) {
@@ -182,29 +211,28 @@ const GeneticCalculator = () => {
       }
     }
     
-    if (visibleGenes.length === 0 && hetGenes.length === 0 && lineBredGenes.length === 0 && homozygousIncompleteDominant.length === 0) {
+    if (visibleGenes.length === 0 && hetGenes.length === 0 && lineBredGenes.length === 0 && 
+        homozygousCoDominantAndIncompleteDominant.length === 0 && coDominantGenesInvolved.length === 0) {
       return 'Wild Type (Normal)';
     }
 
     const parts = [
-      ...homozygousIncompleteDominant.map(gene => `Super ${gene}`),
-      ...visibleGenes,
+      ...homozygousCoDominantAndIncompleteDominant.map(gene => `Super ${gene}`),
+      ...coDominantGenesInvolved,
+      ...visibleGenes.filter(gene => !homozygousCoDominantAndIncompleteDominant.includes(gene) && !coDominantGenesInvolved.includes(gene)),
     ];
 
     if (hetGenes.length > 0) {
-      if (parts.length === 0) {
-        parts.push('Wild Type (Normal)');
-      }
       parts.push(`het ${hetGenes.join(', ')}`);
     }
 
-    let morphName = parts.filter(Boolean).join(' ') || 'Wild Type (Normal)';
+    let morphName = parts.filter(Boolean).join(' ');
 
     if (lineBredGenes.length > 0) {
       morphName += ` with possible influence of ${lineBredGenes.join(', ')}`;
     }
 
-    return morphName;
+    return morphName || 'Wild Type (Normal)';
   }, []);
 
   const calculateOffspring = useCallback(() => {
@@ -214,17 +242,18 @@ const GeneticCalculator = () => {
       const visibleGenes = offspring.genesInvolved.filter(g => 
         !genesByType.Recessive.includes(g) && 
         !genesByType['Incomplete-Dominant'].includes(g) &&
-        !genesByType['Line-bred'].includes(g)
+        !genesByType['Line-bred'].includes(g) &&
+        !genesByType['Co-Dominant'].includes(g)
       );
-      const hetGenes = offspring.genesInvolved.filter(g => genesByType.Recessive.includes(g));
+      const hetGenes = offspring.hetRecessiveGenes;
       const lineBredGenes = offspring.genesInvolved.filter(g => genesByType['Line-bred'].includes(g));
-      const incompleteDominantGenes = offspring.genesInvolved.filter(g => genesByType['Incomplete-Dominant'].includes(g));
       
       offspring.morphName = getMorphName(
-        [...visibleGenes, ...incompleteDominantGenes],
+        visibleGenes,
         hetGenes,
         lineBredGenes,
-        offspring.homozygousIncompleteDominant
+        offspring.homozygousCoDominantAndIncompleteDominant,
+        offspring.coDominantGenesInvolved
       );
     });
 
