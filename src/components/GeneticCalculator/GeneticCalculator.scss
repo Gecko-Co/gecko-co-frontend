@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
 .genetic-calculator-wrapper {
-  padding-top: 180px;
+  padding-top: 200px;
   min-height: 100vh;
   background-color: #f0f2f5;
   font-family: 'Poppins', sans-serif;
@@ -394,7 +394,7 @@
 
 @media (max-width: 768px) {
   .genetic-calculator-wrapper {
-    padding-top: 120px;
+    padding-top: 140px;
   }
 
   .genetic-calculator {
@@ -431,7 +431,7 @@
 
 @media (max-width: 480px) {
   .genetic-calculator-wrapper {
-    padding-top: 100px;
+    padding-top: 120px;
   }
 
   .genetic-calculator {
