@@ -241,7 +241,7 @@ const GeneticCalculator = () => {
         genotype = genotype.replace('<span class="gene-type dominant" title="Dominant">Wild Type (Normal)</span>', '').trim();
       }
 
-      console.log('Genotype:', genotype);
+
 
       // Combine results with the same genotype
       const key = genotype + offspring.geneCount; // Include geneCount in the key to differentiate
