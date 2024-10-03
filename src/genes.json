@@ -15,7 +15,6 @@
     { "name": "Mack Snow", "type": "Co-Dominant" },
     { "name": "Enigma", "type": "Dominant" },
     { "name": "Giant", "type": "Incomplete-Dominant" },
-    { "name": "Ghost", "type": "Line-bred" },
     { "name": "Lavender", "type": "Line-bred" },
     { "name": "High Yellow", "type": "Line-bred" },
     { "name": "Firewater", "type": "Line-bred" },
@@ -23,9 +22,7 @@
     { "name": "Bold Stripe", "type": "Line-bred" },
     { "name": "Jungle", "type": "Line-bred" },
     { "name": "Emerine", "type": "Line-bred" },
-    { "name": "Nova", "type": "Dominant" },
     { "name": "Black Night", "type": "Line-bred" },
-    { "name": "Snow Glow", "type": "Incomplete-Dominant" },
     {
         "name": "Diablo Blanco",
         "type": "Combination",

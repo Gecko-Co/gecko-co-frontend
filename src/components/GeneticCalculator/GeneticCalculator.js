@@ -86,7 +86,7 @@ const GeneticCalculator = () => {
   }, []);
 
   const sortGenes = useCallback((genes, genesByType) => {
-    const order = ['Line-bred', 'Dominant', 'Co-Dominant', 'Incomplete-Dominant', 'Recessive'];
+    const order = ['Dominant', 'Co-Dominant', 'Incomplete-Dominant', 'Recessive', 'Line-bred'];
     return genes.sort((a, b) => {
       const aType = Object.entries(genesByType).find(([, genes]) => genes.includes(a.name))[0];
       const bType = Object.entries(genesByType).find(([, genes]) => genes.includes(b.name))[0];
@@ -99,10 +99,19 @@ const GeneticCalculator = () => {
   }, []);
 
   const calculateGeneProbabilities = useCallback((parent1Genes, parent2Genes, genesByType) => {
+    console.log('Parent 1 Genes:', parent1Genes);
+    console.log('Parent 2 Genes:', parent2Genes);
+    console.log('Genes by Type:', genesByType);
+
     const calculateSingleGeneProbability = (gene1, gene2) => {
       const isRecessive = genesByType.Recessive.includes(gene1.name);
       const isCoDominant = genesByType['Co-Dominant'].includes(gene1.name);
       const isIncompleteDominant = genesByType['Incomplete-Dominant'].includes(gene1.name);
+
+      console.log('Calculating probability for:', gene1.name);
+      console.log('Is Recessive:', isRecessive);
+      console.log('Is Co-Dominant:', isCoDominant);
+      console.log('Is Incomplete-Dominant:', isIncompleteDominant);
 
       if (isRecessive) {
         if (gene1.zygosity === 'hom' && gene2.zygosity === 'hom') return { hom: 1, het: 0, none: 0 };
@@ -130,10 +139,23 @@ const GeneticCalculator = () => {
     const allGenes = [...new Set([...parent1Genes, ...parent2Genes].map(g => g.name))];
     let offspringResults = [{ probability: 1, genesInvolved: {}, geneCount: 0 }];
 
+    // Identify line-bred traits in parents
+    const lineBredTraits = new Set([
+      ...parent1Genes.filter(g => genesByType['Line-bred'].includes(g.name)).map(g => g.name),
+      ...parent2Genes.filter(g => genesByType['Line-bred'].includes(g.name)).map(g => g.name)
+    ]);
+
+    console.log('All Genes:', allGenes);
+    console.log('Line-bred Traits:', lineBredTraits);
+
     allGenes.forEach(geneName => {
+      if (genesByType['Line-bred'].includes(geneName)) return; // Skip line-bred genes in probability calculation
+
       const gene1 = parent1Genes.find(g => g.name === geneName) || { name: geneName, zygosity: 'none' };
       const gene2 = parent2Genes.find(g => g.name === geneName) || { name: geneName, zygosity: 'none' };
       const probabilities = calculateSingleGeneProbability(gene1, gene2);
+
+      console.log(`Probabilities for ${geneName}:`, probabilities);
 
       offspringResults = offspringResults.flatMap(offspring => [
         { ...offspring, probability: offspring.probability * probabilities.hom, genesInvolved: { ...offspring.genesInvolved, [geneName]: 'hom' }, geneCount: offspring.geneCount + 1 },
@@ -142,6 +164,11 @@ const GeneticCalculator = () => {
       ].filter(o => o.probability > 0));
     });
 
+    console.log('Offspring Results:', offspringResults);
+
+    // Combine results with the same genotype
+    const combinedResults = {};
+
     offspringResults.forEach(offspring => {
       const genotypeGenes = Object.entries(offspring.genesInvolved)
         .filter(([, zygosity]) => zygosity !== 'none')
@@ -149,7 +176,31 @@ const GeneticCalculator = () => {
 
       const sortedGenes = sortGenes(genotypeGenes, genesByType);
 
-      const genotypeDisplay = sortedGenes.map(({ name, zygosity }) => {
+      console.log('Sorted Genes:', sortedGenes);
+
+      const genotypeDisplay = [];
+
+      // Check if there are only heterozygous recessive genes or line-bred genes
+      const onlyHetRecessiveOrLineBred = sortedGenes.every(gene => 
+        (genesByType.Recessive.includes(gene.name) && gene.zygosity === 'het') ||
+        genesByType['Line-bred'].includes(gene.name)
+      );
+
+      // Check if there are any non-recessive and non-line-bred genes
+      const hasNonRecessiveNonLineBred = sortedGenes.some(gene => 
+        !genesByType.Recessive.includes(gene.name) && !genesByType['Line-bred'].includes(gene.name)
+      );
+
+      // Check if either parent is Wild Type (Normal)
+      const isParent1WildType = parent1Genes.length === 1 && parent1Genes[0].name === 'Wild Type (Normal)';
+      const isParent2WildType = parent2Genes.length === 1 && parent2Genes[0].name === 'Wild Type (Normal)';
+
+      console.log('Only Het Recessive or Line-bred:', onlyHetRecessiveOrLineBred);
+      console.log('Has Non-Recessive Non-Line-bred:', hasNonRecessiveNonLineBred);
+      console.log('Parent 1 is Wild Type:', isParent1WildType);
+      console.log('Parent 2 is Wild Type:', isParent2WildType);
+
+      sortedGenes.forEach(({ name, zygosity }) => {
         const geneType = Object.entries(genesByType).find(([, genes]) => genes.includes(name))[0];
         let displayName = name;
         if (geneType === 'Recessive' && zygosity === 'het') {
@@ -157,20 +208,79 @@ const GeneticCalculator = () => {
         } else if ((geneType === 'Co-Dominant' || geneType === 'Incomplete-Dominant') && zygosity === 'hom') {
           displayName = `Super ${name}`;
         }
-        return `<span class="gene-type ${geneType.toLowerCase()}" title="${geneType}">${displayName}</span>`;
+        genotypeDisplay.push(`<span class="gene-type ${geneType.toLowerCase()}" title="${geneType}">${displayName}</span>`);
       });
 
-      offspring.genotype = genotypeDisplay.length > 0 
-        ? genotypeDisplay.join(' ')
-        : '<span class="gene-type dominant" title="Dominant">Wild Type (Normal)</span>';
+      // Determine genotype display
+      let genotype = '';
+      if (onlyHetRecessiveOrLineBred && !hasNonRecessiveNonLineBred) {
+        genotype = '<span class="gene-type dominant" title="Dominant">Wild Type (Normal)</span>';
+        if (genotypeDisplay.length > 0) {
+          genotype += ' ' + genotypeDisplay.join(' ');
+        }
+      } else {
+        genotype = genotypeDisplay.join(' ');
+      }
+      // Add line-bred influence at the end
+      if (lineBredTraits.size > 0) {
+        const influenceString = Array.from(lineBredTraits).map(gene => 
+          `<span class="gene-type line-bred" title="Line-bred">(with possible influence of ${gene})</span>`
+        ).join(' ');
+        genotype += (genotype ? ' ' : '') + influenceString;
+      }
 
-      offspring.probability = Math.round(offspring.probability * 10000) / 100;
+      const hasDominantOrHomozygousRecessive = sortedGenes.some(gene => {
+        const geneType = Object.entries(genesByType).find(([, genes]) => genes.includes(gene.name))[0];
+        return (geneType === 'Dominant' && gene.name !== 'Wild Type (Normal)') || 
+               geneType === 'Co-Dominant' || 
+               geneType === 'Incomplete-Dominant' ||
+               (geneType === 'Recessive' && gene.zygosity === 'hom');
+      });
+      
+      if (hasDominantOrHomozygousRecessive) {
+        genotype = genotype.replace('<span class="gene-type dominant" title="Dominant">Wild Type (Normal)</span>', '').trim();
+      }
+
+      console.log('Genotype:', genotype);
+
+      // Combine results with the same genotype
+      const key = genotype + offspring.geneCount; // Include geneCount in the key to differentiate
+      if (combinedResults[key]) {
+        combinedResults[key].probability += offspring.probability;
+      } else {
+        combinedResults[key] = {
+          genotype,
+          probability: offspring.probability,
+          geneCount: offspring.geneCount
+        };
+      }
     });
 
-    return offspringResults;
+    // Convert combined results back to an array and round probabilities
+    const finalResults = Object.values(combinedResults).map(result => ({
+      ...result,
+      probability: Math.round(result.probability * 10000) / 100
+    }));
+
+    console.log('Final Results:', finalResults);
+
+    return finalResults;
   }, [sortGenes]);
 
   const calculateOffspring = useCallback(() => {
+    if (parent1Genes.length === 0 || parent2Genes.length === 0) {
+      toast.error('Both parents must have at least one gene selected.', {
+        style: {
+          background: '#23283b',
+          color: '#fff',
+        },
+        iconTheme: {
+          primary: '#bd692d',
+          secondary: '#fff',
+        },
+      });
+      return;
+    }
     const offspringResults = calculateGeneProbabilities(parent1Genes, parent2Genes, genesByType);
     setOffspring(offspringResults);
   }, [parent1Genes, parent2Genes, genesByType, calculateGeneProbabilities]);
@@ -198,6 +308,8 @@ const GeneticCalculator = () => {
       toast.error('Failed to copy share link. Please try again.');
     });
   }, [parent1Genes, parent2Genes, offspring]);
+
+  const isCalculateDisabled = parent1Genes.length === 0 || parent2Genes.length === 0;
 
   return (
     <div className="genetic-calculator-wrapper">
@@ -240,7 +352,11 @@ const GeneticCalculator = () => {
           />
         </div>
         <div className="button-container">
-          <button onClick={calculateOffspring} className="calculate-btn">
+          <button 
+            onClick={calculateOffspring} 
+            className={`calculate-btn ${isCalculateDisabled ? 'disabled' : ''}`}
+            disabled={isCalculateDisabled}
+          >
             Calculate Offspring
           </button>
           <button onClick={handleShare} className="share-btn">

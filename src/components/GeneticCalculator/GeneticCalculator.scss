@@ -200,6 +200,17 @@
     &:hover {
       background-color: #af5210;
     }
+
+    &.disabled {
+      background-color: #ccc;
+      color: #666;
+      cursor: not-allowed;
+      box-shadow: none;
+
+      &:hover {
+        transform: none;
+      }
+    }
   }
 
   .share-btn {
@@ -451,4 +462,18 @@
       }
     }
   }
+}
+
+// Adjust the toast position
+:root {
+  --toastify-toast-min-height: 64px;
+  --toastify-toast-max-height: 800px;
+}
+
+.Toastify__toast-container--bottom-right {
+  bottom: 1em;
+}
+
+.Toastify__toast {
+  margin-bottom: 30px;
 }
