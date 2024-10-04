@@ -44,7 +44,6 @@ const Navbar = () => {
         <NavLink to="/learn" text="Learn" toggleMenu={toggleMenu} />
         <NavLink to="/genetic-calculator" text="Genetic Calculator" toggleMenu={toggleMenu} />
         <NavLink to="/contact" text="Contact Us" toggleMenu={toggleMenu} />
-        
       </div>
       <button className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleMenu} aria-label="Toggle menu">
         <span></span>
@@ -59,7 +58,7 @@ const NavLink = ({ to, text, toggleMenu }) => {
   const location = useLocation();
 
   const shouldShowBadge = (text) => {
-    return text === "Home" || text === "Learn" || text === "Contact Us"|| text === "Genetic Calculator"|| text === "Shop";
+    return text === "Add name of the navlink to show maintenance" ;
   };
 
   const handleClick = () => {
