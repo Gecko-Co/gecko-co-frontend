@@ -9,6 +9,7 @@ import Shop from './components/Shop/Shop';
 import Flag from './components/Flag/Flag';
 import Footer from './components/Footer/Footer';
 import Learn from './components/Learn/Learn';
+import GeckoSpecies from './components/GeckoSpecies/GeckoSpecies';
 import Contact from './components/Contact/Contact';
 import GeneticCalculator from './components/GeneticCalculator/GeneticCalculator';
 import AdSenseScript from './components/Adsense/Adsense';
@@ -32,6 +33,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/shop" element={<Shop />} />
         <Route path="/learn" element={<Learn />} />
+        <Route path="/learn/:species" element={<GeckoSpecies />} />
         <Route path="/genetic-calculator" element={<GeneticCalculator />} />
         <Route path="/policies" element={<PolicyPage />} />
         <Route path="/contact" element={<Contact />} />

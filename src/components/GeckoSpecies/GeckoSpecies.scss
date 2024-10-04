@@ -1,0 +1,136 @@
+.gecko-species-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 140px 20px 40px; // Increased top padding
+  font-family: 'Poppins', sans-serif;
+  position: relative;
+
+  .back-button {
+    display: inline-block;
+    position: absolute;
+    top: 200px; // Increased this value to move the button lower
+    left: 20px;
+    color: #23283b;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 5px 10px;
+    border-radius: 5px;
+    z-index: 10;
+
+    &:hover {
+      color: #bd692d;
+    }
+  }
+
+  h1 {
+    font-size: 36px;
+    color: #23283b;
+    margin-bottom: 10px;
+    padding-top: 100px; // Increased to create more space for the back button
+  }
+
+  h2 {
+    font-size: 24px;
+    color: #bd692d;
+    margin-bottom: 30px;
+    font-style: italic;
+  }
+
+  .gecko-info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+  }
+
+  .info-section {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    h3 {
+      font-size: 20px;
+      color: #23283b;
+      margin-bottom: 15px;
+      border-bottom: 2px solid #bd692d;
+      padding-bottom: 5px;
+    }
+
+    h4 {
+      font-size: 18px;
+      color: #23283b;
+      margin-top: 15px;
+      margin-bottom: 10px;
+    }
+
+    p, li {
+      margin-bottom: 10px;
+      line-height: 1.6;
+    }
+
+    ul {
+      padding-left: 20px;
+    }
+  }
+
+  .fun-facts {
+    background-color: #23283b;
+    color: #ffffff;
+
+    h3 {
+      color: #bd692d;
+      border-bottom-color: #ffffff;
+    }
+
+    ul {
+      list-style-type: none;
+      padding-left: 0;
+
+      li {
+        margin-bottom: 15px;
+        position: relative;
+        padding-left: 25px;
+
+        &:before {
+          content: '🦎';
+          position: absolute;
+          left: 0;
+          top: 2px;
+        }
+      }
+    }
+  }
+
+  .morph-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    list-style-type: none;
+    padding-left: 0;
+
+    li {
+      background-color: #e0e0e0;
+      color: #23283b;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 14px;
+    }
+  }
+}
+
+// Media query for smaller screens
+@media (max-width: 768px) {
+  .gecko-species-container {
+    padding-top: 120px;
+
+    .back-button {
+      top: 80px;
+    }
+
+    h1 {
+      padding-top: 40px;
+    }
+  }
+}

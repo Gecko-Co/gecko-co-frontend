@@ -1,0 +1,168 @@
+{
+    "Knob-Tailed Gecko": {
+      "scientificName": "Nephrurus cinctus",
+      "origin": "Australia",
+      "discovery": "First described by De Vis in 1886",
+      "habitat": "Arid and semi-arid regions of Australia",
+      "size": "Adult length: 4-5 inches (10-13 cm)",
+      "lifespan": "10-15 years in captivity",
+      "diet": "Insects (crickets, roaches, mealworms)",
+      "temperament": "Docile and easy to handle",
+      "activity": "Nocturnal",
+      "husbandry": {
+        "temperature": "Basking spot: 88-95°F (31-35°C), Cool side: 75-80°F (24-27°C)",
+        "humidity": "30-40%",
+        "substrate": "Sand or sand/soil mix",
+        "enclosureSize": "20-gallon tank for an adult",
+        "lighting": "Low-level UVB lighting beneficial",
+        "hidingSpots": "Multiple hiding spots and caves"
+      },
+      "breeding": {
+        "maturityAge": "1-2 years",
+        "breedingSeason": "Spring to early summer",
+        "clutchSize": "1-2 eggs per clutch",
+        "incubationPeriod": "60-80 days",
+        "specialNotes": "Females can store sperm and produce multiple clutches from one mating"
+      },
+      "morphs": [
+        "Normal",
+        "Patternless",
+        "Striped",
+        "Albino",
+        "Hypomelanistic",
+        "Red Line"
+      ],
+      "funFacts": [
+        "Knob-tailed geckos get their name from the knob-like shape at the end of their tails, which they can detach to escape predators.",
+        "They have large, vertical pupils that give them excellent night vision.",
+        "These geckos don't have eyelids and use their tongue to clean their eyes.",
+        "They are known for their 'barking' vocalizations used for communication."
+      ],
+      "conservation": "Not currently threatened, but habitat loss is a concern in some areas."
+    },
+    "Leopard Gecko": {
+      "scientificName": "Eublepharis macularius",
+      "origin": "Afghanistan, Pakistan, parts of India, and Iran",
+      "discovery": "First described by Blyth in 1854",
+      "habitat": "Arid, rocky areas and grasslands",
+      "size": "Adult length: 8-10 inches (20-25 cm)",
+      "lifespan": "15-20 years in captivity",
+      "diet": "Insects (crickets, mealworms, dubia roaches)",
+      "temperament": "Docile and handleable",
+      "activity": "Crepuscular (active at dawn and dusk)",
+      "husbandry": {
+        "temperature": "Basking spot: 88-90°F (31-32°C), Cool side: 75-80°F (24-27°C)",
+        "humidity": "30-40%",
+        "substrate": "Paper towels, reptile carpet, or slate tiles",
+        "enclosureSize": "20-30 gallon tank for an adult",
+        "lighting": "No special lighting required, but low-level UVB can be beneficial",
+        "hidingSpots": "Multiple hides, including a moist hide for shedding"
+      },
+      "breeding": {
+        "maturityAge": "1-2 years",
+        "breedingSeason": "January to September",
+        "clutchSize": "2 eggs per clutch",
+        "incubationPeriod": "45-60 days",
+        "specialNotes": "Temperature-dependent sex determination in eggs"
+      },
+      "morphs": [
+        "Normal",
+        "Albino",
+        "Blizzard",
+        "Tangerine",
+        "Giant",
+        "Jungle",
+        "Mack Snow",
+        "Eclipse"
+      ],
+      "funFacts": [
+        "Leopard geckos are one of the few gecko species with eyelids, allowing them to blink and sleep with their eyes closed.",
+        "They store fat in their tails, which can be used as an energy reserve during times of food scarcity.",
+        "Unlike many other geckos, leopard geckos cannot climb smooth surfaces as they lack toe pads.",
+        "They are known for their docile nature and are often recommended as beginner reptile pets."
+      ],
+      "conservation": "Not threatened in the wild, but captive breeding is common for the pet trade."
+    },
+    "African Fat-tailed Gecko": {
+      "scientificName": "Hemitheconyx caudicinctus",
+      "origin": "West Africa",
+      "discovery": "First described by Duméril in 1851",
+      "habitat": "Savannah and tropical forests",
+      "size": "Adult length: 7-9 inches (18-23 cm)",
+      "lifespan": "15-20 years in captivity",
+      "diet": "Insects (crickets, mealworms, waxworms)",
+      "temperament": "Docile and slow-moving",
+      "activity": "Nocturnal",
+      "husbandry": {
+        "temperature": "Basking spot: 88-92°F (31-33°C), Cool side: 75-80°F (24-27°C)",
+        "humidity": "50-70%",
+        "substrate": "Coconut fiber or reptile carpet",
+        "enclosureSize": "20-30 gallon tank for an adult",
+        "lighting": "Low-level UVB lighting can be beneficial",
+        "hidingSpots": "Multiple hides, including a moist hide for shedding"
+      },
+      "breeding": {
+        "maturityAge": "1-2 years",
+        "breedingSeason": "Spring to summer",
+        "clutchSize": "1-2 eggs per clutch",
+        "incubationPeriod": "50-70 days",
+        "specialNotes": "Females can store sperm for multiple clutches"
+      },
+      "morphs": [
+        "Normal",
+        "Albino",
+        "White Out",
+        "Oreo",
+        "Caramel",
+        "Striped"
+      ],
+      "funFacts": [
+        "African fat-tailed geckos can store fat in their tails, which helps them survive during periods of food scarcity in the wild.",
+        "They have a specialized toe structure that allows them to climb vertical surfaces.",
+        "These geckos are known for their calm temperament and are often considered easier to handle than some other gecko species.",
+        "They have a unique defensive behavior where they may wag their tails to distract predators."
+      ],
+      "conservation": "Not currently threatened, but habitat loss is a concern in some areas."
+    },
+    "Crested Gecko": {
+      "scientificName": "Correlophus ciliatus",
+      "origin": "New Caledonia",
+      "discovery": "Rediscovered in 1994 after being thought extinct",
+      "habitat": "Tropical forests",
+      "size": "Adult length: 6-8 inches (15-20 cm)",
+      "lifespan": "15-20 years in captivity",
+      "diet": "Omnivorous (insects and fruit)",
+      "temperament": "Docile and easy to handle",
+      "activity": "Nocturnal",
+      "husbandry": {
+        "temperature": "72-80°F (22-27°C)",
+        "humidity": "60-80%",
+        "substrate": "Coconut fiber or reptile bark",
+        "enclosureSize": "20-gallon tall tank for an adult",
+        "lighting": "Low-level UVB lighting can be beneficial",
+        "hidingSpots": "Plenty of branches and foliage for climbing and hiding"
+      },
+      "breeding": {
+        "maturityAge": "1-2 years",
+        "breedingSeason": "Year-round in captivity",
+        "clutchSize": "2 eggs per clutch",
+        "incubationPeriod": "60-90 days",
+        "specialNotes": "Can reproduce via parthenogenesis in rare cases"
+      },
+      "morphs": [
+        "Normal",
+        "Harlequin",
+        "Dalmatian",
+        "Pinstripe",
+        "Tiger",
+        "Flame"
+      ],
+      "funFacts": [
+        "Crested geckos were once thought to be extinct until they were rediscovered in 1994 on the island of New Caledonia.",
+        "They have a prehensile tail that can assist in climbing, but it does not regenerate if lost.",
+        "These geckos have small hair-like projections called cilia around their eyes, giving them their 'crested' appearance.",
+        "They can change color slightly to blend in with their surroundings."
+      ],
+      "conservation": "Vulnerable due to habitat loss and collection for the pet trade."
+    }
+  }
