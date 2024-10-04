@@ -27,6 +27,7 @@ const geckoInfo = {
 
 export default function Learn() {
   const [selectedSpecies, setSelectedSpecies] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const uniqueSpecies = Array.from(new Set(placeholderData.results.map(result => result.species)))
     .map(species => {
@@ -35,7 +36,12 @@ export default function Learn() {
     });
 
   const handleSpeciesClick = (species) => {
-    setSelectedSpecies(species === selectedSpecies ? null : species);
+    setSelectedSpecies(species);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -48,7 +54,7 @@ export default function Learn() {
         {uniqueSpecies.map((item, index) => (
           <div 
             key={index} 
-            className={`species-card ${selectedSpecies === item.species ? 'active' : ''}`}
+            className="species-card"
             onClick={() => handleSpeciesClick(item.species)}
           >
             <div className="image-container">
@@ -59,25 +65,28 @@ export default function Learn() {
           </div>
         ))}
       </div>
-      {selectedSpecies && (
-        <div className="species-info">
-          <h2>{selectedSpecies}</h2>
-          <div className="info-grid">
-            <div className="info-section">
-              <h3>Husbandry</h3>
-              <p>{geckoInfo[selectedSpecies].husbandry}</p>
-            </div>
-            <div className="info-section">
-              <h3>Known Morphs</h3>
-              <ul className="morph-list">
-                {geckoInfo[selectedSpecies].morphs.map((morph, index) => (
-                  <li key={index}>{morph}</li>
-                ))}
-              </ul>
-            </div>
-            <div className="info-section fun-fact">
-              <h3>Fun Fact</h3>
-              <p>{geckoInfo[selectedSpecies].funFact}</p>
+      {isModalOpen && selectedSpecies && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button className="close-modal" onClick={closeModal}>&times;</button>
+            <h2>{selectedSpecies}</h2>
+            <div className="info-grid">
+              <div className="info-section">
+                <h3>Husbandry</h3>
+                <p>{geckoInfo[selectedSpecies].husbandry}</p>
+              </div>
+              <div className="info-section">
+                <h3>Known Morphs</h3>
+                <ul className="morph-list">
+                  {geckoInfo[selectedSpecies].morphs.map((morph, index) => (
+                    <li key={index}>{morph}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="info-section fun-fact">
+                <h3>Fun Fact</h3>
+                <p>{geckoInfo[selectedSpecies].funFact}</p>
+              </div>
             </div>
           </div>
         </div>
