@@ -24,8 +24,32 @@
     </url>
     
     <url>
+        <loc>https://geckoco.ph/learn/leopard-gecko</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <url>
+        <loc>https://geckoco.ph/learn/crested-gecko</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <url>
+        <loc>https://geckoco.ph/learn/african-fat-tailed-gecko</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <url>
+        <loc>https://geckoco.ph/learn/knobtail-gecko</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.6</priority>
+    </url>
+    
+    <url>
         <loc>https://geckoco.ph/genetic-calculator</loc>
-        <changefreq>weekly</changefreq>
+        <changefreq>monthly</changefreq>
         <priority>0.7</priority>
     </url>
 
