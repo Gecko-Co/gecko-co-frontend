@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import placeholderData from '../../data';
 import './Learn.scss';
 
@@ -28,6 +28,7 @@ const geckoInfo = {
 export default function Learn() {
   const [selectedSpecies, setSelectedSpecies] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const modalRef = useRef(null);
 
   const uniqueSpecies = Array.from(new Set(placeholderData.results.map(result => result.species)))
     .map(species => {
@@ -43,6 +44,54 @@ export default function Learn() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (modalRef.current && !modalRef.current.contains(event.target)) {
+        closeModal();
+      }
+    };
+
+    if (isModalOpen) {
+      document.addEventListener('mousedown', handleOutsideClick);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleOutsideClick);
+    };
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    let startY;
+    let currentY;
+
+    const handleTouchStart = (e) => {
+      startY = e.touches[0].clientY;
+    };
+
+    const handleTouchMove = (e) => {
+      currentY = e.touches[0].clientY;
+    };
+
+    const handleTouchEnd = () => {
+      if (startY && currentY && currentY - startY > 50) {
+        closeModal();
+      }
+    };
+
+    if (isModalOpen && modalRef.current) {
+      const modalElement = modalRef.current;
+      modalElement.addEventListener('touchstart', handleTouchStart);
+      modalElement.addEventListener('touchmove', handleTouchMove);
+      modalElement.addEventListener('touchend', handleTouchEnd);
+
+      return () => {
+        modalElement.removeEventListener('touchstart', handleTouchStart);
+        modalElement.removeEventListener('touchmove', handleTouchMove);
+        modalElement.removeEventListener('touchend', handleTouchEnd);
+      };
+    }
+  }, [isModalOpen]);
 
   return (
     <div className="learn-container">
@@ -66,8 +115,9 @@ export default function Learn() {
         ))}
       </div>
       {isModalOpen && selectedSpecies && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        <div className="modal-overlay">
+          <div className="modal-content" ref={modalRef}>
+            <div className="modal-handle"></div>
             <button className="close-modal" onClick={closeModal}>&times;</button>
             <h2>{selectedSpecies}</h2>
             <div className="info-grid">

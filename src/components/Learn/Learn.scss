@@ -118,29 +118,35 @@
   background-color: rgba(0, 0, 0, 0.7);
   display: flex;
   justify-content: center;
-  align-items: flex-start;
-  z-index: 10001; // Increased z-index to be above the navbar
-  padding-top: 120px; // Increased padding-top to push content down further
+  align-items: flex-end;
+  z-index: 10001;
   overflow-y: auto;
 }
 
 .modal-content {
   background-color: #ffffff;
-  border-radius: 15px;
+  border-radius: 15px 15px 0 0;
   padding: 30px;
-  width: 90%;
+  width: 100%;
   max-width: 800px;
-  max-height: calc(100vh - 140px); // Adjusted max-height
+  max-height: 90vh;
   overflow-y: auto;
   position: relative;
-  animation: fadeIn 0.3s ease;
-  margin-bottom: 20px;
+  animation: slideUp 0.3s ease;
+  margin-bottom: 0;
+
+  @media (min-width: 768px) {
+    border-radius: 15px;
+    margin-bottom: 20px;
+    max-height: 80vh;
+  }
 
   h2 {
     color: #bd692d;
     font-size: 28px;
     margin-bottom: 20px;
     text-align: center;
+    padding-top: 20px;
   }
 
   .close-modal {
@@ -152,6 +158,7 @@
     border: none;
     cursor: pointer;
     color: #23283b;
+    z-index: 1;
   }
 
   .info-grid {
@@ -213,20 +220,20 @@
   }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.modal-handle {
+  width: 40px;
+  height: 5px;
+  background-color: #ccc;
+  border-radius: 3px;
+  margin: 0 auto 15px;
 }
 
-// Media query for smaller screens
-@media (max-width: 480px) {
-  .modal-overlay {
-    padding-top: 80px; // Adjusted padding for smaller screens
-  }
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
 
-  .modal-content {
-    padding: 20px;
-    width: 95%;
-    max-height: calc(100vh - 100px); // Adjusted max-height for smaller screens
-  }
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
