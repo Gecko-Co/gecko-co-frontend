@@ -2,12 +2,12 @@
 
 .learn-container {
   background-color: #f4f4f4;
-  padding: 180px 20px 50px; // Increased top padding from 120px to 180px
+  padding: 180px 20px 50px;
   font-family: 'Poppins', sans-serif;
   color: #333;
 
   @media (min-width: 768px) {
-    padding: 200px 50px 70px; // Increased top padding from 150px to 200px for larger screens
+    padding: 200px 50px 70px;
   }
 }
 
@@ -67,10 +67,6 @@
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
   }
 
-  &.active {
-    border: 2px solid #bd692d;
-  }
-
   h3 {
     margin: 15px 0;
     color: #23283b;
@@ -113,25 +109,55 @@
   }
 }
 
-.species-info {
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; // Changed from center to flex-start
+  z-index: 1000;
+  padding-top: 100px; // Added padding to push content down
+  overflow-y: auto; // Allow scrolling if content is too tall
+}
+
+.modal-content {
   background-color: #ffffff;
   border-radius: 15px;
   padding: 30px;
-  margin-top: 50px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  animation: fadeIn 0.5s ease;
+  width: 90%;
+  max-width: 800px; // Added max-width for larger screens
+  max-height: calc(100vh - 120px); // Adjusted max-height
+  overflow-y: auto;
+  position: relative;
+  animation: fadeIn 0.3s ease;
+  margin-bottom: 20px; // Added margin at the bottom
 
   h2 {
     color: #bd692d;
-    font-size: 32px;
-    margin-bottom: 30px;
+    font-size: 28px;
+    margin-bottom: 20px;
     text-align: center;
+  }
+
+  .close-modal {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #23283b;
   }
 
   .info-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 30px;
+    gap: 20px;
 
     @media (min-width: 768px) {
       grid-template-columns: 1fr 1fr;
@@ -141,17 +167,18 @@
   .info-section {
     background-color: #f9f9f9;
     border-radius: 10px;
-    padding: 20px;
+    padding: 15px;
 
     h3 {
       color: #23283b;
-      font-size: 22px;
-      margin-bottom: 15px;
+      font-size: 20px;
+      margin-bottom: 10px;
     }
 
     p {
       color: #555;
       line-height: 1.6;
+      font-size: 14px;
     }
   }
 
@@ -174,14 +201,14 @@
     padding: 0;
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
 
     li {
       background-color: #e0e0e0;
       color: #23283b;
-      padding: 5px 15px;
+      padding: 4px 12px;
       border-radius: 20px;
-      font-size: 14px;
+      font-size: 12px;
     }
   }
 }
@@ -189,4 +216,17 @@
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
+}
+
+// Add media query for smaller screens
+@media (max-width: 480px) {
+  .modal-overlay {
+    padding-top: 60px; // Reduced padding for smaller screens
+  }
+
+  .modal-content {
+    padding: 20px;
+    width: 95%;
+    max-height: calc(100vh - 80px); // Adjusted max-height for smaller screens
+  }
 }
