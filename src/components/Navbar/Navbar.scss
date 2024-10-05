@@ -1,20 +1,3 @@
-body {
-  overflow-x: hidden;
-}
-
-.flag-component {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  z-index: 1000;
-  height: 45px;
-}
-
-.content-after-flag {
-  margin-top: 45px;
-}
-
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -51,8 +34,54 @@ body {
     display: flex;
     flex-direction: row;
     gap: 20px;
-    background-color: #23283b;
     align-items: center;
+    background-color: #23283b;
+
+    .nav-link-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .nav-link {
+      text-decoration: none;
+      color: white;
+      position: relative;
+      font-size: 1.2rem;
+      font-weight: bold;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      padding: 5px 10px;
+      border-radius: 5px;
+
+      &:hover {
+        color: #bd692d;
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      &.active {
+        color: #bd692d;
+        background-color: rgba(255, 255, 255, 0.1);
+
+        &::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          bottom: -3px;
+          height: 2px;
+          background-color: #bd692d;
+          width: 100%;
+          transform: scaleX(0);
+          transition: transform 0.3s ease;
+        }
+
+        &:hover::after {
+          transform: scaleX(1);
+        }
+      }
+    }
 
     @media (max-width: 480px) {
       display: none;
@@ -71,141 +100,109 @@ body {
       &.open {
         display: flex;
       }
-    }
-  }
 
-  .nav-link-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .maintenance-icon {
-      margin-left: 5px;
-      font-size: 14px;
-      position: absolute;
-      right: -15px;
-      top: -10px;
-      transform: rotate(20deg);
-      animation: glowIcon 2s infinite;
-      display: inline-block;
-      color: #ffd700;
-      text-shadow: 0 0 5px #ffd700;
-    }
-
-    @media (max-width: 480px) {
-      width: 100%;
-    }
-  }
-
-  @keyframes glowIcon {
-    0%, 100% {
-      opacity: 1;
-      transform: rotate(20deg) scale(1);
-    }
-    50% {
-      opacity: 0.7;
-      transform: rotate(20deg) scale(1.2);
-    }
-  }
-
-  .nav-link {
-    text-decoration: none;
-    color: white;
-    position: relative;
-    font-size: 1.2rem;
-    font-weight: bold;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    padding: 5px 10px;
-    border-radius: 5px;
-
-    &:hover {
-      color: #bd692d;
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-
-    &.active {
-      color: #bd692d;
-      background-color: rgba(255, 255, 255, 0.1);
-
-      &::after {
-        content: '';
-        position: absolute;
-        left: 0;
-        bottom: -3px;
-        height: 2px;
-        background-color: #bd692d;
+      .nav-link-container {
         width: 100%;
-        transform: scaleX(0);
-        transition: transform 0.3s ease;
       }
-
-      &:hover::after {
-        transform: scaleX(1);
-      }
-    }
-
-    @media (max-width: 480px) {
-      font-size: 1.4rem;
-      padding: 15px;
-      width: 100%;
-      justify-content: center;
-      background-color: rgba(255, 255, 255, 0.05);
-
-      &:hover, &.active {
-        background-color: rgba(189, 105, 45, 0.2);
-      }
-    }
-  }
-
-  .hamburger {
-    display: none;
-
-    @media (max-width: 480px) {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-around;
-      width: 2rem;
-      height: 2rem;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      padding-right: 49px;
-      z-index: 1001;
-      position: relative;
-      padding-left: 20px;
 
       .nav-link {
-        color: #bd692d;
+        font-size: 1.4rem;
+        padding: 15px;
+        width: 100%;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white; // Set default color to white
+
+        &:hover {
+          color: #bd692d;
+          background-color: rgba(189, 105, 45, 0.2);
+        }
+
+        &.active {
+          color: #bd692d;
+          background-color: rgba(189, 105, 45, 0.2);
+        }
+      }
+    }
+  }
+
+  .menu-icons-container {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    .nav-icons {
+      display: flex;
+      gap: 15px;
+
+      .nav-icon-link {
+        color: white;
+        font-size: 1.5rem;
+        display: flex;
+        align-items: center;
+
+        &:hover {
+          color: #bd692d;
+        }
       }
 
-      span {
+      .icon {
+        font-size: 1.8rem;
+      }
+    }
+
+    .hamburger {
+      display: none;
+    }
+
+    @media (max-width: 480px) {
+      .hamburger {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
         width: 2rem;
-        height: 0.25rem;
-        background: #bd692d;
-        border-radius: 10px;
-        transition: all 0.3s linear;
-        position: relative;
-        transform-origin: 1px;
-      }
-    }
+        height: 2rem;
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        z-index: 1001;
 
-      &.open {
-        span:nth-child(1) {
-          transform: rotate(45deg);
+        span {
+          width: 2rem;
+          height: 0.25rem;
+          background: #bd692d;
+          border-radius: 10px;
+          transition: all 0.3s linear;
+          position: relative;
+          transform-origin: 1px;
         }
-        span:nth-child(2) {
-          opacity: 0;
+
+        &.open {
+          span:nth-child(1) {
+            transform: rotate(45deg);
+          }
+          span:nth-child(2) {
+            opacity: 0;
+          }
+          span:nth-child(3) {
+            transform: rotate(-45deg);
+          }
         }
-        span:nth-child(3) {
-          transform: rotate(-45deg);
+      }
+
+      .nav-icons {
+        .nav-icon-link {
+          font-size: 1.2rem;
+          color: #bd692d;
         }
-         
+
+        .icon {
+          font-size: 1.5rem;
+        }
       }
     }
+  }
 
   &.scrolled {
     padding: 10px 20px;
@@ -219,6 +216,55 @@ body {
 
   &.open {
     padding: 40px 200px;
+
+    @media (max-width: 480px) {
+      .menu-icons-container {
+        .nav-icons {
+          .nav-icon-link {
+            font-size: 1rem;
+            color: #bd692d;
+          }
+
+          .icon {
+            font-size: 1.2rem;
+          }
+        }
+
+        .hamburger {
+          width: 1.5rem;
+          height: 1.5rem;
+
+          span {
+            width: 1.5rem;
+          }
+        }
+      }
+
+      .nav-links {
+        .nav-link-container {
+          width: 100%;
+        }
+
+        .nav-link {
+          font-size: 1.4rem;
+          padding: 15px;
+          width: 100%;
+          justify-content: center;
+          background-color: rgba(255, 255, 255, 0.05);
+          color: white; // Set default color to white
+
+          &:hover {
+            color: #bd692d;
+            background-color: rgba(189, 105, 45, 0.2);
+          }
+
+          &.active {
+            color: #bd692d;
+            background-color: rgba(189, 105, 45, 0.2);
+          }
+        }
+      }
+    }
   }
 
   @media screen and (max-width: 768px) {
@@ -253,44 +299,17 @@ body {
     &.open {
       padding: 20px 50px;
     }
-  }
 
-  .close-icon {
-    display: none;
-
-    @media (max-width: 480px) {
-      display: block;
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      color: white;
-      font-size: 1.5rem;
-      cursor: pointer;
-      z-index: 1002;
+    .menu-icons-container {
+      order: 2;
     }
+
+    .logo-link {
+      order: 1;
+    }
+
+    .nav-links {
+      order: 3;
     }
   }
-
-  @keyframes shake {
-  0%, 100% {
-    transform: translateX(0);
-  }
-  10%, 90% {
-    transform: translateX(-5px);
-  }
-  20%, 80% {
-    transform: translateX(5px);
-  }
-}
-
-.logo-link,
-.company-name {
-  transition: transform 0.3s ease-in-out;
-}
-
-.logo-link:hover,
-.company-name:hover,
-.logo-link:active,
-.company-name:active {
-  animation: shake 1s;
 }

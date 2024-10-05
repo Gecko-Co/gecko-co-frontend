@@ -1,179 +1,121 @@
 .card-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 2rem;
-  padding: 2rem;
+  gap: 20px;
 }
 
 .card {
-  background-color: #ffffff;
-  border-radius: 15px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   position: relative;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
 
-  &:hover, &:focus-within {
+  &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  &.touched {
+    transform: scale(0.98);
   }
 }
 
 .card-image-container {
   position: relative;
-  height: 200px;
+  padding-top: 75%; // 4:3 aspect ratio
   overflow: hidden;
-  border-radius: 15px 15px 0 0;
 }
 
 .card-image {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease, filter 0.3s ease;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
 }
 
 .card-overlay {
   position: absolute;
   top: 0;
   left: 0;
-  right: 0;
-  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(35, 40, 59, 0.7);
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(35, 40, 59, 0.8);
   opacity: 0;
   transition: opacity 0.3s ease;
   cursor: pointer;
-  color: #fff;
-  font-size: 18px;
-  font-weight: bold;
-}
 
-.card-image-container:hover .card-image,
-.card-image-container:focus-within .card-image {
-  transform: scale(1.1);
-  filter: grayscale(100%);
-}
+  &:hover {
+    opacity: 1;
+  }
 
-.card-image-container:hover .card-overlay,
-.card-image-container:focus-within .card-overlay {
-  opacity: 1;
+  span {
+    font-size: 1.1em;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
 }
 
 .card-content {
-  padding: 1.25rem;
-  display: flex;
-  flex-direction: column;
-  flex-grow: 1;
+  padding: 15px;
 }
 
 .card-title {
-  font-size: 1.2rem;
+  margin: 0 0 10px;
+  font-size: 1.2em;
   font-weight: bold;
-  margin-bottom: 0.625rem;
   color: #23283b;
 }
 
-.card-details {
-  font-size: 0.9rem;
-  color: #555;
-
-  p {
-    margin-bottom: 0.3125rem;
-    display: flex;
-    align-items: center;
-  }
-
-  .gender-icon {
-    margin-left: 0.3125rem;
-    font-size: 1rem;
-
-    &.male {
-      color: #007bff;
-    }
-
-    &.female {
-      color: #ff69b4;
-    }
-
-    &.unknown {
-      color: #6c757d;
-    }
-  }
+.card-price {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #23283b;
 }
 
 .card-status {
   position: absolute;
-  top: 0.625rem;
-  right: 0.625rem;
-  padding: 0.3125rem 0.625rem;
+  top: 15px;
+  right: 15px;
+  padding: 6px 12px;
   border-radius: 20px;
-  font-size: 0.8rem;
+  font-size: 0.85em;
   font-weight: bold;
   text-transform: uppercase;
-  color: #fff;
-
-  &.sold {
-    background-color: #dc3545;
-  }
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
   &.available {
     background-color: #28a745;
+    color: #fff;
+  }
+
+  &.sold {
+    background-color: #dc3545;
+    color: #fff;
   }
 
   &.reserved {
     background-color: #007bff;
+    color: #fff;
   }
 }
 
 .no-results {
   text-align: center;
-  padding: 2rem;
-  font-size: 1.5rem;
-  color: #23283b;
-}
-
-@media (max-width: 768px) {
-  .card-grid {
-    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-    gap: 1rem;
-    padding: 1rem;
-  }
-
-  .card-image-container {
-    height: 150px;
-  }
-
-  .card-title {
-    font-size: 1rem;
-  }
-
-  .card-details {
-    font-size: 0.8rem;
-  }
-
-  .card:hover, .card:active {
-    transform: none;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
-
-  .card-image-container:hover .card-image,
-  .card-image-container:active .card-image {
-    transform: none;
-    filter: none;
-  }
-
-  .card-overlay {
-    opacity: 0;
-    background: rgba(35, 40, 59, 0.6);
-  }
-
-  .card.touched .card-overlay {
-    opacity: 1;
-  }
+  font-size: 1.2em;
+  color: #6c757d;
+  margin-top: 50px;
 }

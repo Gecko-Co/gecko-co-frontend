@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import GeckoDetails from "./GeckoDetails";
 import "./Card.scss";
 
-const Card = ({ results }) => {
+const Card = ({ results, addToCart }) => {
   const [selectedGecko, setSelectedGecko] = useState(null);
   const [touchedCard, setTouchedCard] = useState(null);
 
@@ -33,22 +33,13 @@ const Card = ({ results }) => {
   return (
     <div className="card-grid">
       {results.map((gecko, index) => {
-        const { images, breeder, species = "Unknown Species", gender, price, status } = gecko;
-
-        let genderIcon;
-        if (gender === "Male") {
-          genderIcon = <i className="fas fa-mars gender-icon male"></i>;
-        } else if (gender === "Female") {
-          genderIcon = <i className="fas fa-venus gender-icon female"></i>;
-        } else {
-          genderIcon = <i className="fas fa-question-circle gender-icon unknown"></i>;
-        }
+        const { images, species = "Unknown Species", price, status } = gecko;
 
         const priceInPHP = price ? `₱${parseFloat(price).toLocaleString('en-US')}` : "Price not available";
 
         return (
           <div 
-            key={breeder} 
+            key={index} 
             className={`card ${touchedCard === index ? 'touched' : ''}`}
             onTouchStart={() => handleTouchStart(index)}
             onTouchEnd={handleTouchEnd}
@@ -59,16 +50,12 @@ const Card = ({ results }) => {
                 className="card-overlay"
                 onClick={() => handleShowDetails(gecko)}
               >
-                Show more details
+                View Details
               </div>
             </div>
             <div className="card-content">
               <h3 className="card-title">{species}</h3>
-              <div className="card-details">
-                <p><strong>Gender:</strong> {gender} {genderIcon}</p>
-                <p><strong>Price:</strong> {priceInPHP}</p>
-                <p><strong>Breeder:</strong> {breeder}</p>
-              </div>
+              <p className="card-price">{priceInPHP}</p>
             </div>
             <div className={`card-status ${status.toLowerCase()}`}>
               {status}
@@ -80,6 +67,7 @@ const Card = ({ results }) => {
         gecko={selectedGecko}
         isOpen={!!selectedGecko}
         onClose={handleCloseDetails}
+        addToCart={addToCart}
       />
     </div>
   );
