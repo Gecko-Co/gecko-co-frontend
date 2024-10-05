@@ -17,7 +17,7 @@ const PolicyPage = () => {
         const rect = event.target.getBoundingClientRect();
         const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         const targetTop = rect.top + scrollTop;
-        const headerOffset = 100; // Adjust this value based on your navbar height
+        const headerOffset = 100;
         const elementPosition = targetTop - headerOffset;
         window.scrollTo({
           top: elementPosition,
@@ -42,13 +42,18 @@ const PolicyPage = () => {
     <PageWrapper>
       <CenterContainer>
         <PolicyContainer>
-          <PolicyHeader>Policies</PolicyHeader>
-          <PolicyDescription>Please read our policies carefully to understand how we operate and protect your rights.</PolicyDescription>
+          <PolicyHeader>Our Policies</PolicyHeader>
+          <PolicyDescription>
+            At Gecko Co., we value transparency and your rights. Please take a moment to review our policies.
+          </PolicyDescription>
           
-          <StyledAccordion allowZeroExpanded ref={accordionRef}>
-            <AccordionItem>
+          <StyledAccordion allowZeroExpanded preExpanded={['terms-of-service']} ref={accordionRef}>
+            <AccordionItem uuid="terms-of-service">
               <AccordionItemHeading>
-                <StyledAccordionButton>Terms of Service</StyledAccordionButton>
+                <StyledAccordionButton>
+                  <AccordionIcon>📜</AccordionIcon>
+                  Terms of Service
+                </StyledAccordionButton>
               </AccordionItemHeading>
               <StyledAccordionPanel>
                 <PolicySection>
@@ -72,7 +77,10 @@ const PolicyPage = () => {
 
             <AccordionItem>
               <AccordionItemHeading>
-                <StyledAccordionButton>Privacy Policy</StyledAccordionButton>
+                <StyledAccordionButton>
+                  <AccordionIcon>🔒</AccordionIcon>
+                  Privacy Policy
+                </StyledAccordionButton>
               </AccordionItemHeading>
               <StyledAccordionPanel>
                 <PolicySection>
@@ -96,7 +104,10 @@ const PolicyPage = () => {
 
             <AccordionItem>
               <AccordionItemHeading>
-                <StyledAccordionButton>Cookie Policy</StyledAccordionButton>
+                <StyledAccordionButton>
+                  <AccordionIcon>🍪</AccordionIcon>
+                  Cookie Policy
+                </StyledAccordionButton>
               </AccordionItemHeading>
               <StyledAccordionPanel>
                 <PolicySection>
@@ -120,7 +131,10 @@ const PolicyPage = () => {
 
             <AccordionItem>
               <AccordionItemHeading>
-                <StyledAccordionButton>Disclaimer</StyledAccordionButton>
+                <StyledAccordionButton>
+                  <AccordionIcon>⚠️</AccordionIcon>
+                  Disclaimer
+                </StyledAccordionButton>
               </AccordionItemHeading>
               <StyledAccordionPanel>
                 <PolicySection>
@@ -151,10 +165,9 @@ const PolicyPage = () => {
 };
 
 const PageWrapper = styled.div`
-  padding-top: 170px; // Adjust this value based on your navbar height
+  padding-top: 170px;
   min-height: 100vh;
-  background-color: #f4f4f4;
-  background-image: linear-gradient(to bottom right, #f4f4f4, #e0e0e0);
+  background-color: #f8f9fa;
   display: flex;
   justify-content: center;
   align-items: flex-start;
@@ -179,15 +192,14 @@ const PolicyContainer = styled.div`
 
 const PolicyHeader = styled.h1`
   color: #23283b;
-  font-size: 32px;
+  font-size: 36px;
   margin-bottom: 20px;
   text-align: center;
   font-weight: 700;
-  text-transform: uppercase;
   letter-spacing: 1px;
 
   @media (max-width: 768px) {
-    font-size: 24px;
+    font-size: 28px;
   }
 `;
 
@@ -220,6 +232,8 @@ const StyledAccordionButton = styled(AccordionItemButton)`
   transition: all 0.3s ease;
   width: 100%;
   text-align: left;
+  display: flex;
+  align-items: center;
 
   &:hover {
     background-color: #bd692d;
@@ -233,6 +247,11 @@ const StyledAccordionButton = styled(AccordionItemButton)`
     font-size: 16px;
     padding: 12px 16px;
   }
+`;
+
+const AccordionIcon = styled.span`
+  font-size: 24px;
+  margin-right: 15px;
 `;
 
 const StyledAccordionPanel = styled(AccordionItemPanel)`
