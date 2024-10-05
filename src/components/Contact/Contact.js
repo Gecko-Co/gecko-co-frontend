@@ -66,7 +66,7 @@ export default function Contact() {
 
   return (
     <div className="contact-container">
-      <div className="decorative-shape"></div>
+      {/* <div className="decorative-shape"></div> */}
       <div className="content">
         <div className="info-section">
           <h1 className="title">Get in Touch</h1>
