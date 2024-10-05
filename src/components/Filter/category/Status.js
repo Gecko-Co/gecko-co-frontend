@@ -1,7 +1,7 @@
 import React from "react";
 import FilterBTN from "../FilterBTN";
 
-const Status = ({ selectedStatus, setSelectedStatus, updateStatus, updatePageNumber }) => {
+const Status = ({ selectedStatus, updateStatus }) => {
   let status = ["Available", "Sold", "Reserved"];
   
   return (
@@ -30,11 +30,9 @@ const Status = ({ selectedStatus, setSelectedStatus, updateStatus, updatePageNum
               key={index}
               index={index}
               name="status"
-              task={() => updateStatus(item)}
-              updatePageNumber={updatePageNumber}
+              task={updateStatus}
               input={item}
               selectedValue={selectedStatus}
-              setSelectedValue={setSelectedStatus}
             />
           ))}
         </div>

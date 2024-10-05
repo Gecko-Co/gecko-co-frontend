@@ -1,7 +1,7 @@
 import React from "react";
 import FilterBTN from "../FilterBTN";
 
-const Species = ({ selectedSpecies, setSelectedSpecies, updateSpecies, updatePageNumber }) => {
+const Species = ({ selectedSpecies, updateSpecies }) => {
   let species = [
     "Leopard Gecko",
     "Crested Gecko",
@@ -35,11 +35,9 @@ const Species = ({ selectedSpecies, setSelectedSpecies, updateSpecies, updatePag
               name="species"
               index={index}
               key={index}
-              updatePageNumber={updatePageNumber}
-              task={() => updateSpecies(item)}
+              task={updateSpecies}
               input={item}
               selectedValue={selectedSpecies}
-              setSelectedValue={setSelectedSpecies}
             />
           ))}
         </div>

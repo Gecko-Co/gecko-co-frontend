@@ -4,33 +4,28 @@ import Species from './category/Species';
 import Gender from './category/Gender';
 
 const Filter = ({
- pageNumber,
- updatePageNumber,
- updateStatus,
- updateGender,
- updateSpecies,
- clearFilters, // Receive clearFilters as a prop
+  status,
+  species,
+  gender,
+  updateStatus,
+  updateSpecies,
+  updateGender,
+  clearFilters,
 }) => {
- const [selectedStatus, setSelectedStatus] = useState('');
- const [selectedSpecies, setSelectedSpecies] = useState('');
- const [selectedGender, setSelectedGender] = useState('');
- const [isClicked, setIsClicked] = useState(false); // State for animation
+  const [isClicked, setIsClicked] = useState(false);
 
- const handleClearFilters = () => {
-    setIsClicked(true); // Start animation
+  const handleClearFilters = () => {
+    setIsClicked(true);
     setTimeout(() => {
-      setIsClicked(false); // Reset animation
-      setSelectedStatus('');
-      setSelectedSpecies('');
-      setSelectedGender('');
-      clearFilters(); // Call clearFilters directly
-    }, 280); // Reset after 1 second
- };
+      setIsClicked(false);
+      clearFilters();
+    }, 280);
+  };
 
- return (
+  return (
     <div className="col-lg-3 col-12 mb-5">
-      <div className="text-center fw-bold fs-4 mb-2"style={{ paddingTop: '60px' }}>Filters</div>
-      <div className="d-flex justify-content-center" > {/* Center button container */}
+      <div className="text-center fw-bold fs-4 mb-2" style={{ paddingTop: '60px' }}>Filters</div>
+      <div className="d-flex justify-content-center">
         <button
           style={{ 
             cursor: "pointer", 
@@ -46,36 +41,29 @@ const Filter = ({
           onMouseEnter={(e) => {
             e.target.style.backgroundColor = '#23283b';
             e.target.style.color = 'white';
-          }} // Change background and text color on hover
+          }}
           onMouseLeave={(e) => {
             e.target.style.backgroundColor = isClicked ? "#23283b" : "white";
             e.target.style.color = isClicked ? "white" : "#23283b";
-          }} // Reset background and text color on hover out
+          }}
         >
           {isClicked ? 'Clearing...' : 'Clear Filters'}
         </button>
       </div>
       <div className="accordion" id="accordionExample">
         <Status
-          selectedStatus={selectedStatus}
-          setSelectedStatus={setSelectedStatus}
-          updatePageNumber={updatePageNumber}
+          selectedStatus={status}
           updateStatus={updateStatus}
         />
         <Species
-          selectedSpecies={selectedSpecies}
-          setSelectedSpecies={setSelectedSpecies}
-          updatePageNumber={updatePageNumber}
+          selectedSpecies={species}
           updateSpecies={updateSpecies}
         />
         <Gender
-          selectedGender={selectedGender}
-          setSelectedGender={setSelectedGender}
-          updatePageNumber={updatePageNumber}
+          selectedGender={gender}
           updateGender={updateGender}
         />
       </div>
-      {/* Inline styles for the open accordion heading and Clear Filters button */}
       <style jsx>{`
         .accordion-button:not(.collapsed) {
           background-color: #23283b !important; 
@@ -87,7 +75,7 @@ const Filter = ({
         }
       `}</style>
     </div>
- );
+  );
 };
 
 export default Filter;

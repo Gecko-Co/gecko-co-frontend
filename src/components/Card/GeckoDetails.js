@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './GeckoDetails.scss';
 
-const GeckoDetails = ({ gecko, isOpen, onClose }) => {
+const GeckoDetails = ({ gecko, isOpen, onClose, addToCart }) => {
   const [activeTab, setActiveTab] = useState('details');
   const modalRef = useRef(null);
 
@@ -29,6 +29,11 @@ const GeckoDetails = ({ gecko, isOpen, onClose }) => {
 
   const genderIcon = gender === "Male" ? "♂️" : gender === "Female" ? "♀️" : "❓";
   const priceInPHP = price ? `₱${parseFloat(price).toLocaleString('en-US')}` : "Price not available";
+
+  const handleAddToCart = () => {
+    addToCart(gecko);
+    onClose(); // Close the modal after adding to cart
+  };
 
   return (
     <div className={`gecko-details-overlay ${isOpen ? 'open' : ''}`}>
@@ -96,7 +101,7 @@ const GeckoDetails = ({ gecko, isOpen, onClose }) => {
         </div>
         <div className="gecko-details-actions">
           <button className="gecko-details-action-button primary">Contact Breeder</button>
-          <button className="gecko-details-action-button secondary">Add to Wishlist</button>
+          <button className="gecko-details-action-button secondary" onClick={handleAddToCart}>Add to Cart</button>
         </div>
       </div>
     </div>

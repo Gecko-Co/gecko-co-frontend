@@ -1,110 +1,151 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from "react";
+import { useNavigate, useLocation } from 'react-router-dom';
 import Card from "../Card/Card";
 import Pagination from "../Pagination/Pagination";
 import Filter from "../Filter/Filter";
 import placeholderData from "../../data";
 
 function Shop() {
- const history = useNavigate();
- const [filteredResults, setFilteredResults] = useState(placeholderData.results);
- const [pageNumber, updatePageNumber] = useState(1);
- const [status, updateStatus] = useState("");
- const [gender, updateGender] = useState("");
- const [species, updateSpecies] = useState("");
- const [noResults, setNoResults] = useState(false); // State to track no results
- const [sortOrder, setSortOrder] = useState("asc"); // default ascending order
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [filteredResults, setFilteredResults] = useState(placeholderData.results);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [status, setStatus] = useState("");
+  const [gender, setGender] = useState("");
+  const [species, setSpecies] = useState("");
+  const [noResults, setNoResults] = useState(false);
+  const [sortOrder, setSortOrder] = useState("asc");
+  const [cart, setCart] = useState([]);
+  const itemsPerPage = 12;
 
- useEffect(() => {
-    filterResults(status, species, gender);
- }, [status, species, gender, sortOrder]);
+  const updateFiltersFromUrl = useCallback(() => {
+    const params = new URLSearchParams(location.search);
+    setStatus(params.get('status') || "");
+    setGender(params.get('gender') || "");
+    setSpecies(params.get('species') || "");
+    setSortOrder(params.get('sort') || "asc");
+    setPageNumber(parseInt(params.get('page') || "1", 10));
+  }, [location.search]);
 
- const handleStatusChange = (newStatus) => {
-    updateStatus(newStatus);
- };
+  useEffect(() => {
+    updateFiltersFromUrl();
+  }, [updateFiltersFromUrl]);
 
- const handleSpeciesChange = (newSpecies) => {
-    updateSpecies(newSpecies);
- };
+  const updateUrl = useCallback((newParams) => {
+    const params = new URLSearchParams(location.search);
+    Object.entries(newParams).forEach(([key, value]) => {
+      if (value) {
+        params.set(key, value);
+      } else {
+        params.delete(key);
+      }
+    });
+    navigate(`?${params.toString()}`, { replace: true });
+  }, [navigate, location.search]);
 
- const handleGenderChange = (newGender) => {
-    updateGender(newGender);
- };
-
- const filterResults = (status, species, gender) => {
-    let filtered = placeholderData.results;
+  const filterAndSortResults = useCallback(() => {
+    let filtered = [...placeholderData.results];
 
     if (status) {
-      filtered = filtered.filter(result => result.status === status);
+      filtered = filtered.filter(result => result.status.toLowerCase() === status.toLowerCase());
     }
 
     if (species) {
-      filtered = filtered.filter(result => result.species === species);
+      filtered = filtered.filter(result => result.species.toLowerCase() === species.toLowerCase());
     }
 
     if (gender) {
-      filtered = filtered.filter(result => result.gender === gender);
+      filtered = filtered.filter(result => {
+        if (gender.toLowerCase() === 'unknown') {
+          return result.gender.toLowerCase() === 'unknown' || result.gender === '';
+        }
+        return result.gender.toLowerCase() === gender.toLowerCase();
+      });
     }
 
-    if (filtered.length === 0) {
-      setNoResults(true);
-    } else {
-      setNoResults(false);
-    }
-
-    // Apply sorting
-    const sortedResults = [...filtered].sort((a, b) => {
+    filtered.sort((a, b) => {
       const priceA = parseFloat(a.price);
       const priceB = parseFloat(b.price);
-
-      if (sortOrder === "asc") {
-        return priceA - priceB;
-      } else {
-        return priceB - priceA;
-      }
+      return sortOrder === "asc" ? priceA - priceB : priceB - priceA;
     });
 
-    setFilteredResults(sortedResults);
-    updatePageNumber(1);
- };
+    setFilteredResults(filtered);
+    setNoResults(filtered.length === 0);
+  }, [status, species, gender, sortOrder]);
 
- const clearFilters = () => {
-    setFilteredResults(placeholderData.results);
-    updatePageNumber(1);
-    updateStatus("");
-    updateSpecies("");
-    updateGender("");
-    setNoResults(false); // Reset no results state
- };
+  useEffect(() => {
+    filterAndSortResults();
+  }, [filterAndSortResults]);
 
- const toggleSortOrder = () => {
-    setSortOrder((prevOrder) => (prevOrder === "asc" ? "desc" : "asc"));
- };
+  const clearFilters = useCallback(() => {
+    setStatus("");
+    setSpecies("");
+    setGender("");
+    setPageNumber(1);
+    // Remove all filter parameters from the URL, but keep the sort order
+    const params = new URLSearchParams(location.search);
+    ['status', 'species', 'gender', 'page'].forEach(param => params.delete(param));
+    navigate(`?${params.toString()}`, { replace: true });
+  }, [navigate, location.search]);
 
- return (
-    <div className="App"style={{ backgroundColor: 'white' }}>
-      <h1 className="text-center mb-3"></h1>
+  const handleSortChange = (newSortOrder) => {
+    setSortOrder(newSortOrder);
+    // Update only the sort parameter in the URL
+    const params = new URLSearchParams(location.search);
+    params.set('sort', newSortOrder);
+    navigate(`?${params.toString()}`, { replace: true });
+  };
 
+  const addToCart = (gecko) => {
+    setCart(prevCart => [...prevCart, gecko]);
+  };
+
+  const paginatedResults = filteredResults.slice(
+    (pageNumber - 1) * itemsPerPage,
+    pageNumber * itemsPerPage
+  );
+
+  return (
+    <div className="App" style={{ backgroundColor: 'white' }}>
       <div className="container" style={{ marginTop: '130px' }}>
         <div className="row">
           <Filter
-            pageNumber={pageNumber}
-            updatePageNumber={updatePageNumber}
-            updateStatus={handleStatusChange}
-            updateGender={handleGenderChange}
-            updateSpecies={handleSpeciesChange}
-            clearFilters={clearFilters} // Pass clearFilters as a prop
+            status={status}
+            species={species}
+            gender={gender}
+            updateStatus={(newStatus) => { setStatus(newStatus); updateUrl({ status: newStatus }); }}
+            updateSpecies={(newSpecies) => { setSpecies(newSpecies); updateUrl({ species: newSpecies }); }}
+            updateGender={(newGender) => { setGender(newGender); updateUrl({ gender: newGender }); }}
+            clearFilters={clearFilters}
           />
           <div className="col-lg-8 col-12">
-            <div className="row mb-3">
-              <div className="col" style={{ paddingTop: '70px' }}>
-                <span style={{ color: '#23283b' }}>Sort by Price:</span>
-                <button onClick={toggleSortOrder} className={`btn btn-link ${sortOrder === 'asc' ? 'active' : ''}`} style={{ color: '#23283b' }}>
-                 <i className="fas fa-arrow-up"></i>
-                </button>
-                <button onClick={toggleSortOrder} className={`btn btn-link ${sortOrder === 'desc' ? 'active' : ''}`} style={{ color: '#23283b' }}>
-                 <i className="fas fa-arrow-down"></i>
-                </button>
+            <div className="row mb-3" style={{ marginTop: '70px' }}>
+              <div className="col-12 d-flex justify-content-end align-items-center">
+                <span style={{ color: '#23283b', marginRight: '10px' }}>Sort by Price:</span>
+                <div className="btn-group" role="group" aria-label="Sort order">
+                  <button 
+                    onClick={() => handleSortChange("asc")} 
+                    className={`btn ${sortOrder === 'asc' ? 'btn-primary' : 'btn-outline-primary'}`}
+                    style={{
+                      backgroundColor: sortOrder === 'asc' ? '#23283b' : 'white',
+                      color: sortOrder === 'asc' ? 'white' : '#23283b',
+                      borderColor: '#23283b'
+                    }}
+                  >
+                    Low to High
+                  </button>
+                  <button 
+                    onClick={() => handleSortChange("desc")} 
+                    className={`btn ${sortOrder === 'desc' ? 'btn-primary' : 'btn-outline-primary'}`}
+                    style={{
+                      backgroundColor: sortOrder === 'desc' ? '#23283b' : 'white',
+                      color: sortOrder === 'desc' ? 'white' : '#23283b',
+                      borderColor: '#23283b'
+                    }}
+                  >
+                    High to Low
+                  </button>
+                </div>
               </div>
             </div>
 
@@ -113,18 +154,19 @@ function Shop() {
                 <p style={{ fontSize: '24px', fontWeight: 'bold' }}>No Geckos Found 😢</p>
               </div>
             ) : (
-              <Card page="/" results={filteredResults} />
+              <Card results={paginatedResults} addToCart={addToCart} />
             )}
           </div>
         </div>
       </div>
       <Pagination
-        info={placeholderData.info}
-        pageNumber={pageNumber}
-        updatePageNumber={updatePageNumber}
+        itemsPerPage={itemsPerPage}
+        totalItems={filteredResults.length}
+        currentPage={pageNumber}
+        onPageChange={(newPage) => { setPageNumber(newPage); updateUrl({ page: newPage.toString() }); }}
       />
     </div>
- );
+  );
 }
 
 export default Shop;
