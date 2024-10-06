@@ -34,7 +34,6 @@ function App() {
           <Scroll />
           <FacebookMessenger 
         pageId="115629306499727"
-        appId="1762296367911953"
       />
         </div>
         <Routes>

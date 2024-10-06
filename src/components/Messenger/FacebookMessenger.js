@@ -20,7 +20,6 @@ const FacebookMessenger = ({ pageId }) => {
 
     // Cleanup function
     return () => {
-      // Remove the Facebook SDK script if component unmounts
       const facebookScript = document.getElementById('facebook-jssdk');
       if (facebookScript) {
         facebookScript.remove();
