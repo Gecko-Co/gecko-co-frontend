@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-// import { CartProvider } from './components/Cart/CartContext';
+import { CartProvider } from './components/Cart/CartContext';
 import { Toaster } from 'react-hot-toast';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap';
@@ -27,13 +27,14 @@ inject();
 function App() {
   return (
     <Router>
-      {/* <CartProvider> */}
+      <CartProvider>
         <div className="App">
           <Flag />
           <Navbar />
           <Scroll />
           <FacebookMessenger 
         pageId="115629306499727"
+        appId="1762296367911953"
       />
         </div>
         <Routes>
@@ -58,7 +59,7 @@ function App() {
             },
           }}
         />
-      {/* </CartProvider> */}
+      </CartProvider>
     </Router>
   );
 }
