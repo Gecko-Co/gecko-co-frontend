@@ -48,7 +48,7 @@ function App() {
           <Route path="/cart" element={<Cart />} />
         </Routes>
         <Footer />
-        <AdSenseScript />
+        {/* <AdSenseScript /> */}
         <Toaster
           position="bottom-right"
           toastOptions={{
