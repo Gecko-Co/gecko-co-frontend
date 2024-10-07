@@ -1,5 +1,5 @@
 .settings-container {
-    padding-top: 180px; // Adjust this value based on your navbar height
+    padding-top: 160px; // Adjust this value based on your navbar height
     min-height: 100vh;
     background-color: #f4f4f4;
     display: flex;
@@ -98,6 +98,6 @@
   @media (max-width: 768px) {
     .settings-page {
       margin: 1rem;
-      padding: 1.5rem;
+      padding: 1.2rem;
     }
   }
