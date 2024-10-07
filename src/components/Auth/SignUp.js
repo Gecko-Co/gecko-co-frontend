@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
-import { toast } from 'react-hot-toast';
+import customToast from '../../utils/toast';
 import ReCAPTCHA from "react-google-recaptcha";
 import './SignUp.scss';
 
@@ -13,20 +13,23 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [captchaValue, setCaptchaValue] = useState(null);
   const [loading, setLoading] = useState(false);
+  const recaptchaRef = useRef(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
+      customToast.error('Passwords do not match');
       return;
     }
+    
+    const captchaValue = recaptchaRef.current.getValue();
     if (!captchaValue) {
-      toast.error('Please complete the CAPTCHA');
+      customToast.error('Please complete the CAPTCHA');
       return;
     }
+    
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -43,22 +46,22 @@ const SignUp = () => {
         createdAt: new Date().toISOString()
       });
 
-      // Send email verification
       await sendEmailVerification(user);
 
-      toast.success('Account created successfully! Please check your email to verify your account.');
-      navigate('/'); // Redirect to home page or dashboard
+      customToast.success('Account created successfully! Please check your email to verify your account.');
+      navigate('/');
     } catch (error) {
       console.error('Error signing up:', error);
       if (error.code === 'auth/email-already-in-use') {
-        toast.error('An account with this email already exists.');
+        customToast.error('An account with this email already exists.');
       } else if (error.code === 'auth/too-many-requests') {
-        toast.error('Too many sign-up attempts. Please try again later.');
+        customToast.error('Too many sign-up attempts. Please try again later.');
       } else {
-        toast.error('Failed to create account. Please try again.');
+        customToast.error('Failed to create account. Please try again.');
       }
     } finally {
       setLoading(false);
+      recaptchaRef.current.reset();
     }
   };
 
@@ -118,10 +121,10 @@ const SignUp = () => {
             />
           </div>
           <ReCAPTCHA
+            ref={recaptchaRef}
             sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
-            onChange={setCaptchaValue}
           />
-          <button type="submit" disabled={loading || !captchaValue}>
+          <button type="submit" disabled={loading}>
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>

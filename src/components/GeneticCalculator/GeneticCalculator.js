@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useCallback, useEffect } from 'react';
-import { Toaster, toast } from 'react-hot-toast';
+import customToast from '../../utils/toast';
 import genes from '../../genes.json';
 import './GeneticCalculator.scss';
 
@@ -234,7 +234,7 @@ const GeneticCalculator = () => {
 
   const calculateOffspring = useCallback(() => {
     if (parent1Genes.length === 0 || parent2Genes.length === 0) {
-      toast.error('Both parents must have at least one gene selected.');
+      customToast.error('Both parents must have at least one gene selected.');
       return;
     }
     const offspringResults = calculateGeneProbabilities(parent1Genes, parent2Genes, genesByType);
@@ -249,10 +249,10 @@ const GeneticCalculator = () => {
     const shareUrl = `${baseUrl}?p1=${p1}&p2=${p2}&results=${resultsParam}`;
     
     navigator.clipboard.writeText(shareUrl).then(() => {
-      toast.success('Share link copied to clipboard!');
+      customToast.success('Share link copied to clipboard!');
     }).catch(err => {
       console.error('Failed to copy share link: ', err);
-      toast.error('Failed to copy share link. Please try again.');
+      customToast.error('Failed to copy share link. Please try again.');
     });
   }, [parent1Genes, parent2Genes, offspring]);
 
