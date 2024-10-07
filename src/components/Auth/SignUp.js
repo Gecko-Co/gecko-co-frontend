@@ -1,10 +1,10 @@
-// src/components/Auth/SignUp.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 import { toast } from 'react-hot-toast';
+import ReCAPTCHA from "react-google-recaptcha";
 import './SignUp.scss';
 
 const SignUp = () => {
@@ -13,6 +13,7 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [captchaValue, setCaptchaValue] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -20,6 +21,10 @@ const SignUp = () => {
     e.preventDefault();
     if (password !== confirmPassword) {
       toast.error('Passwords do not match');
+      return;
+    }
+    if (!captchaValue) {
+      toast.error('Please complete the CAPTCHA');
       return;
     }
     setLoading(true);
@@ -38,11 +43,20 @@ const SignUp = () => {
         createdAt: new Date().toISOString()
       });
 
-      toast.success('Account created successfully!');
+      // Send email verification
+      await sendEmailVerification(user);
+
+      toast.success('Account created successfully! Please check your email to verify your account.');
       navigate('/'); // Redirect to home page or dashboard
     } catch (error) {
       console.error('Error signing up:', error);
-      toast.error('Failed to create account. Please try again.');
+      if (error.code === 'auth/email-already-in-use') {
+        toast.error('An account with this email already exists.');
+      } else if (error.code === 'auth/too-many-requests') {
+        toast.error('Too many sign-up attempts. Please try again later.');
+      } else {
+        toast.error('Failed to create account. Please try again.');
+      }
     } finally {
       setLoading(false);
     }
@@ -103,7 +117,11 @@ const SignUp = () => {
               required
             />
           </div>
-          <button type="submit" disabled={loading}>
+          <ReCAPTCHA
+            sitekey={process.env.REACT_APP_RECAPTCHA_SITE_KEY}
+            onChange={setCaptchaValue}
+          />
+          <button type="submit" disabled={loading || !captchaValue}>
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
