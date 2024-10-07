@@ -111,7 +111,7 @@
         width: 100%;
         justify-content: center;
         background-color: rgba(255, 255, 255, 0.05);
-        color: white; // Set default color to white
+        color: white;
 
         &:hover {
           color: #bd692d;
@@ -133,21 +133,69 @@
 
     .nav-icons {
       display: flex;
-      gap: 15px;
+      align-items: center;
 
       .nav-icon-link {
         color: white;
         font-size: 1.5rem;
         display: flex;
         align-items: center;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+        transition: color 0.3s ease;
 
         &:hover {
           color: #bd692d;
         }
+
+        &.cart-icon {
+          position: relative;
+          margin-left: 10px;
+        }
+
+        .icon {
+          font-size: 1.8rem;
+        }
+
+        .cart-count {
+          position: absolute;
+          bottom: -5px;
+          right: -5px;
+          background-color: #bd692d;
+          color: white;
+          font-size: 0.7rem;
+          font-weight: bold;
+          min-width: 16px;
+          height: 16px;
+          border-radius: 8px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: 0 3px;
+        }
       }
 
-      .icon {
-        font-size: 1.8rem;
+      .user-email {
+        color: white;
+        font-size: 1rem;
+        margin-right: 10px;
+      }
+
+      .sign-out-button {
+        background-color: #bd692d;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: darken(#bd692d, 10%);
+        }
       }
     }
 
@@ -200,6 +248,15 @@
         .icon {
           font-size: 1.5rem;
         }
+
+        .user-email {
+          font-size: 0.9rem;
+        }
+
+        .sign-out-button {
+          font-size: 0.9rem;
+          padding: 4px 8px;
+        }
       }
     }
   }
@@ -228,6 +285,15 @@
           .icon {
             font-size: 1.2rem;
           }
+
+          .user-email {
+            font-size: 0.8rem;
+          }
+
+          .sign-out-button {
+            font-size: 0.8rem;
+            padding: 3px 6px;
+          }
         }
 
         .hamburger {
@@ -251,7 +317,7 @@
           width: 100%;
           justify-content: center;
           background-color: rgba(255, 255, 255, 0.05);
-          color: white; // Set default color to white
+          color: white;
 
           &:hover {
             color: #bd692d;
@@ -310,6 +376,28 @@
 
     .nav-links {
       order: 3;
+    }
+  }
+}
+
+.nav-icons {
+  .nav-icon-link {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    color: white;
+    font-size: 1.5rem;
+    transition: color 0.3s ease;
+
+    &:hover {
+      color: #bd692d;
+    }
+
+    .icon {
+      font-size: 1.8rem;
     }
   }
 }

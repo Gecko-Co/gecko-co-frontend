@@ -109,7 +109,7 @@ function Shop() {
   return (
 <>
       <Helmet>
-        <title>Shop Exotic Geckos | Gecko Co.</title>
+        <title>Buy Geckos | Gecko Co.</title>
         <meta name="description" content="Browse our selection of high-quality, ethically bred geckos including Leopard Geckos, Crested Geckos, and more. Find your perfect pet today!" />
         <link rel="canonical" href="https://geckoco.ph/shop" />
       </Helmet>

@@ -1,36 +1,49 @@
 import React from 'react';
+import { useCart } from './CartContext';
+import { Link } from 'react-router-dom';
+import { FaTrash } from 'react-icons/fa';
 import './Cart.scss';
 
-const Cart = ({ isOpen, onClose, cartItems, removeFromCart }) => {
-  if (!isOpen) return null;
+const Cart = () => {
+  const { cart, removeFromCart, clearCart } = useCart();
 
-  const total = cartItems.reduce((sum, item) => sum + parseFloat(item.price), 0);
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + parseFloat(item.price), 0).toFixed(2);
+  };
 
   return (
-    <div className="cart-overlay">
-      <div className="cart-content">
-        <h2>Your Cart</h2>
-        <button className="close-cart" onClick={onClose}>&times;</button>
-        {cartItems.length === 0 ? (
-          <p>Your cart is empty.</p>
+    <div className="cart-page">
+      <div className="cart-container">
+        <h1>Your Cart</h1>
+        {cart.length === 0 ? (
+          <div className="empty-cart">
+            <p>Your cart is empty</p>
+            <Link to="/shop" className="continue-shopping">Continue Shopping</Link>
+          </div>
         ) : (
           <>
-            <ul className="cart-items">
-              {cartItems.map((item, index) => (
-                <li key={index} className="cart-item">
-                  <img src={item.images} alt={item.species} className="cart-item-image" />
-                  <div className="cart-item-details">
+            <div className="cart-items">
+              {cart.map((item, index) => (
+                <div key={index} className="cart-item">
+                  <img src={item.images} alt={item.species} className="item-image" />
+                  <div className="item-details">
                     <h3>{item.species}</h3>
-                    <p>Price: ₱{parseFloat(item.price).toLocaleString('en-US')}</p>
+                    <p className="item-price">${item.price}</p>
                   </div>
-                  <button onClick={() => removeFromCart(index)} className="remove-item">&times;</button>
-                </li>
+                  <button onClick={() => removeFromCart(index)} className="remove-button">
+                    <FaTrash />
+                  </button>
+                </div>
               ))}
-            </ul>
-            <div className="cart-total">
-              <strong>Total: ₱{total.toLocaleString('en-US')}</strong>
             </div>
-            <button className="checkout-button">Proceed to Checkout</button>
+            <div className="cart-summary">
+              <div className="cart-total">
+                <span>Total:</span>
+                <span>${calculateTotal()}</span>
+              </div>
+              <button className="checkout-button">Proceed to Checkout</button>
+              <button onClick={clearCart} className="clear-cart-button">Clear Cart</button>
+            </div>
           </>
         )}
       </div>

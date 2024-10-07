@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import './GeckoDetails.scss';
+import { useCart } from '../Cart/CartContext';
 
-const GeckoDetails = ({ gecko, isOpen, onClose, addToCart }) => {
+const GeckoDetails = ({ gecko, isOpen, onClose }) => {
   const [activeTab, setActiveTab] = useState('details');
   const modalRef = useRef(null);
+  const { addToCart } = useCart();
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
