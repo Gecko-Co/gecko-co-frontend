@@ -1,36 +1,40 @@
+// src/components/Cart/Cart.js
 import React from 'react';
+import { useCart } from './CartContext';
 import './Cart.scss';
 
-const Cart = ({ isOpen, onClose, cartItems, removeFromCart }) => {
-  if (!isOpen) return null;
+const Cart = () => {
+  const { cart, removeFromCart, clearCart } = useCart();
 
-  const total = cartItems.reduce((sum, item) => sum + parseFloat(item.price), 0);
+  const calculateTotal = () => {
+    return cart.reduce((total, item) => total + parseFloat(item.price), 0);
+  };
 
   return (
-    <div className="cart-overlay">
-      <div className="cart-content">
+    <div className="cart-page">
+      <div className="cart-container">
         <h2>Your Cart</h2>
-        <button className="close-cart" onClick={onClose}>&times;</button>
-        {cartItems.length === 0 ? (
+        {cart.length === 0 ? (
           <p>Your cart is empty.</p>
         ) : (
           <>
             <ul className="cart-items">
-              {cartItems.map((item, index) => (
-                <li key={index} className="cart-item">
-                  <img src={item.images} alt={item.species} className="cart-item-image" />
-                  <div className="cart-item-details">
+              {cart.map((item, index) => (
+                <li key={item.id} className="cart-item">
+                  <img src={item.images} alt={item.species} className="item-image" />
+                  <div className="item-details">
                     <h3>{item.species}</h3>
-                    <p>Price: ₱{parseFloat(item.price).toLocaleString('en-US')}</p>
+                    <p className="item-price">₱{parseFloat(item.price).toLocaleString('en-US')}</p>
                   </div>
-                  <button onClick={() => removeFromCart(index)} className="remove-item">&times;</button>
+                  <button onClick={() => removeFromCart(index)} className="remove-button">Remove</button>
                 </li>
               ))}
             </ul>
-            <div className="cart-total">
-              <strong>Total: ₱{total.toLocaleString('en-US')}</strong>
+            <div className="cart-summary">
+              <p className="cart-total">Total: ₱{calculateTotal().toLocaleString('en-US')}</p>
+              <button onClick={clearCart} className="clear-cart-button">Clear Cart</button>
+              <button className="checkout-button">Proceed to Checkout</button>
             </div>
-            <button className="checkout-button">Proceed to Checkout</button>
           </>
         )}
       </div>

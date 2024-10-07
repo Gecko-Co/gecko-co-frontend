@@ -234,16 +234,7 @@ const GeneticCalculator = () => {
 
   const calculateOffspring = useCallback(() => {
     if (parent1Genes.length === 0 || parent2Genes.length === 0) {
-      toast.error('Both parents must have at least one gene selected.', {
-        style: {
-          background: '#23283b',
-          color: '#fff',
-        },
-        iconTheme: {
-          primary: '#bd692d',
-          secondary: '#fff',
-        },
-      });
+      toast.error('Both parents must have at least one gene selected.');
       return;
     }
     const offspringResults = calculateGeneProbabilities(parent1Genes, parent2Genes, genesByType);
@@ -258,16 +249,7 @@ const GeneticCalculator = () => {
     const shareUrl = `${baseUrl}?p1=${p1}&p2=${p2}&results=${resultsParam}`;
     
     navigator.clipboard.writeText(shareUrl).then(() => {
-      toast.success('Share link copied to clipboard!', {
-        style: {
-          background: '#23283b',
-          color: '#fff',
-        },
-        iconTheme: {
-          primary: '#bd692d',
-          secondary: '#fff',
-        },
-      });
+      toast.success('Share link copied to clipboard!');
     }).catch(err => {
       console.error('Failed to copy share link: ', err);
       toast.error('Failed to copy share link. Please try again.');
@@ -278,21 +260,6 @@ const GeneticCalculator = () => {
 
   return (
     <div className="genetic-calculator-wrapper">
-      <Toaster 
-        position="bottom-right"
-        toastOptions={{
-          duration: 3000,
-          style: {
-            background: '#23283b',
-            color: '#fff',
-          },
-        }}
-        containerStyle={{
-          bottom: 80,
-          right: 20,
-          fontSize: '14px',
-        }}
-      />
       <Modal isOpen={isModalOpen} onClose={closeModal}>
         <h2>Experimental Feature</h2>
         <p>This genetic calculator is currently in an experimental stage. We're continuously updating and improving its functionality.</p>

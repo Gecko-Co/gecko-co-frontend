@@ -1,3 +1,4 @@
+// src/components/Card/GeckoDetails.js
 import React, { useEffect, useRef, useState } from 'react';
 import './GeckoDetails.scss';
 
@@ -30,9 +31,13 @@ const GeckoDetails = ({ gecko, isOpen, onClose, addToCart }) => {
   const genderIcon = gender === "Male" ? "♂️" : gender === "Female" ? "♀️" : "❓";
   const priceInPHP = price ? `₱${parseFloat(price).toLocaleString('en-US')}` : "Price not available";
 
-  const handleAddToCart = () => {
-    addToCart(gecko);
-    onClose(); // Close the modal after adding to cart
+  const handleAddToCart = async () => {
+    if (!gecko || typeof gecko.id !== 'string' || gecko.id.trim() === '') {
+      console.error("Invalid gecko:", gecko);
+      return;
+    }
+    await addToCart(gecko);
+    onClose();
   };
 
   return (

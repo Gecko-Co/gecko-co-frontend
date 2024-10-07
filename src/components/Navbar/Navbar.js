@@ -1,14 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Navbar.scss';
-import { FaUser, FaShoppingCart } from 'react-icons/fa';
+import { FaUserCircle, FaUserPlus, FaShoppingCart } from 'react-icons/fa';
+import { useCart } from '../Cart/CartContext';
+import { signOut } from 'firebase/auth';
+import { auth } from '../../firebase';
+import LoginPopup from '../LoginPopup/LoginPopup';
 
-const Navbar = () => {
+const Navbar = ({ user }) => {
   const location = useLocation();
+  const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
-
+  const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const { cart } = useCart();
+  
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -31,10 +38,26 @@ const Navbar = () => {
 
   useEffect(() => {
     setIsOpen(false);
+    setShowLoginPopup(false);
   }, [location]);
 
-  const handleIconClick = (e) => {
-    e.preventDefault();
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      navigate('/');
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
+  const handleAccountClick = () => {
+    if (user) {
+      navigate('/account');
+    } else if (location.pathname !== '/signin') {
+      setShowLoginPopup(true);
+    } else {
+      // Do nothing if already on the sign-in page
+    }
   };
 
   return (
@@ -52,11 +75,16 @@ const Navbar = () => {
       </div>
       <div className="menu-icons-container">
         <div className="nav-icons">
-          <Link to="/account" className="nav-icon-link" onClick={handleIconClick}>
-            <FaUser className="icon" aria-label="Account" />
-          </Link>
-          <Link to="/cart" className="nav-icon-link" onClick={handleIconClick}>
+          <button onClick={handleAccountClick} className="nav-icon-link">
+            {user ? (
+              <FaUserCircle className="icon" aria-label="Account" />
+            ) : (
+              <FaUserPlus className="icon" aria-label="Sign In" />
+            )}
+          </button>
+          <Link to="/cart" className="nav-icon-link cart-icon">
             <FaShoppingCart className="icon" aria-label="Cart" />
+            {cart.length > 0 && <span className="cart-count">{cart.length}</span>}
           </Link>
         </div>
         <button className={`hamburger ${isOpen ? 'open' : ''}`} onClick={toggleMenu} aria-label="Toggle menu">
@@ -65,6 +93,7 @@ const Navbar = () => {
           <span></span>
         </button>
       </div>
+      {showLoginPopup && <LoginPopup onClose={() => setShowLoginPopup(false)} />}
     </nav>
   );
 };
