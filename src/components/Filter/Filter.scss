@@ -1,0 +1,42 @@
+.filter-container {
+    width: 100%;
+    max-width: 300px;
+    padding: 1.5rem;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  .filter-title {
+    font-size: 1.75rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    color: #23283b;
+  }
+  
+  .clear-filters-btn {
+    width: 100%;
+    padding: 0.75rem;
+    margin-bottom: 1.5rem;
+    background-color: #fff;
+    border: 2px solid #23283b;
+    color: #23283b;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .clear-filters-btn:hover {
+    background-color: #23283b;
+    color: #fff;
+  }
+  
+  .filter-accordion {
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    overflow: hidden;
+  }
