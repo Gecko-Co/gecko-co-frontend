@@ -1,9 +1,8 @@
-// src/components/SignIn/SignIn.js
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
-import { toast } from 'react-hot-toast';
+import customToast from '../../utils/toast';
 import './SignIn.scss';
 
 const SignIn = () => {
@@ -17,7 +16,7 @@ const SignIn = () => {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast.success('Signed in successfully!');
+      customToast.success('Signed in successfully!');
       navigate('/');
     } catch (error) {
       console.error('Error signing in:', error);
@@ -33,7 +32,7 @@ const SignIn = () => {
         errorMessage = 'Too many failed login attempts. Please try again later or reset your password.';
       }
       
-      toast.error(errorMessage);
+      customToast.error(errorMessage);
     } finally {
       setLoading(false);
     }

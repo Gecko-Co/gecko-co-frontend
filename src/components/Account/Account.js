@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { useCart } from '../Cart/CartContext';
-import { toast } from 'react-hot-toast';
+import customToast from '../../utils/toast';
 import './Account.scss';
 
 const Account = ({ user }) => {
@@ -13,29 +13,11 @@ const Account = ({ user }) => {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
-      toast.success('Signed out successfully', {
-        style: {
-          background: '#23283b',
-          color: '#fff',
-        },
-        iconTheme: {
-          primary: '#bd692d',
-          secondary: '#fff',
-        },
-      });
+      customToast.success('Signed out successfully');
       navigate('/');
     } catch (error) {
       console.error('Error signing out:', error);
-      toast.error('Failed to sign out. Please try again.', {
-        style: {
-          background: '#23283b',
-          color: '#fff',
-        },
-        iconTheme: {
-          primary: '#bd692d',
-          secondary: '#fff',
-        },
-      });
+      customToast.error('Failed to sign out. Please try again.');
     }
   };
 

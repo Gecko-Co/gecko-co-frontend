@@ -1,6 +1,5 @@
-// src/components/Cart/CartContext.js
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
-import { toast } from 'react-hot-toast';
+import customToast from '../../utils/toast';
 import { doc, updateDoc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 
@@ -21,7 +20,7 @@ export const CartProvider = ({ children }) => {
   const addToCart = useCallback(async (item) => {
     if (!item || typeof item.id !== 'string' || item.id.trim() === '') {
       console.error("Invalid item:", item);
-      toast.error('Failed to add item to cart');
+      customToast.error('Failed to add item to cart');
       return false;
     }
 
@@ -32,7 +31,7 @@ export const CartProvider = ({ children }) => {
       
       if (!geckoSnap.exists()) {
         console.error("Gecko document does not exist:", item.id);
-        toast.error('Gecko not found');
+        customToast.error('Gecko not found');
         return false;
       }
 
@@ -51,16 +50,16 @@ export const CartProvider = ({ children }) => {
           return newCart;
         });
         
-        toast.success('Gecko added to cart!');
+        customToast.success('Gecko added to cart!');
         return true;
       } else {
         console.error("Gecko is not available:", geckoData.status);
-        toast.error('Gecko is not available');
+        customToast.error('Gecko is not available');
         return false;
       }
     } catch (error) {
       console.error("Error adding to cart: ", error);
-      toast.error('Failed to add gecko to cart');
+      customToast.error('Failed to add gecko to cart');
       return false;
     }
   }, []);
@@ -70,7 +69,7 @@ export const CartProvider = ({ children }) => {
       const item = cart[index];
       if (!item || typeof item.id !== 'string' || item.id.trim() === '') {
         console.error("Invalid item:", item);
-        toast.error('Failed to remove item from cart');
+        customToast.error('Failed to remove item from cart');
         return;
       }
 
@@ -82,10 +81,10 @@ export const CartProvider = ({ children }) => {
         localStorage.setItem('cart', JSON.stringify(newCart));
         return newCart;
       });
-      toast.success('Item removed from cart');
+      customToast.success('Item removed from cart');
     } catch (error) {
       console.error("Error removing from cart: ", error);
-      toast.error('Failed to remove item from cart');
+      customToast.error('Failed to remove item from cart');
     }
   }, [cart]);
 
@@ -101,10 +100,10 @@ export const CartProvider = ({ children }) => {
       }
       setCart([]);
       localStorage.removeItem('cart');
-      toast.success('Cart cleared');
+      customToast.success('Cart cleared');
     } catch (error) {
       console.error("Error clearing cart: ", error);
-      toast.error('Failed to clear cart');
+      customToast.error('Failed to clear cart');
     }
   }, [cart]);
 

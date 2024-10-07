@@ -464,23 +464,3 @@
   }
 }
 
-.Toastify__toast {
-  font-family: 'Poppins', sans-serif;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
-
-.Toastify__toast-body {
-  font-size: 14px;
-}
-.Toastify__toast-container {
-  z-index: 9999;
-}
-
-.Toastify__close-button {
-  color: #fff;
-  opacity: 0.7;
-  
-  &:hover {
-    opacity: 1;
-  }
-}

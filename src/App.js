@@ -83,11 +83,13 @@ function App() {
               fontSize: '14px',
               maxWidth: '350px',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+              
             },
           }}
           containerStyle={{
             bottom: 20,
             left: 20,
+            zIndex: 9999999,
           }}
         />
       </CartProvider>
