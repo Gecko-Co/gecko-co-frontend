@@ -2,7 +2,15 @@ import React, { useState } from 'react';
 import FilterCategory from './FilterCategory';
 import './Filter.scss';
 
-const Filter = ({ status, species, gender, updateStatus, updateSpecies, updateGender, clearFilters }) => {
+function Filter({ 
+  status, 
+  species, 
+  gender, 
+  updateStatus, 
+  updateSpecies, 
+  updateGender, 
+  clearFilters 
+}) {
   const [activeCategory, setActiveCategory] = useState(null);
 
   const toggleCategory = (category) => {
@@ -43,6 +51,6 @@ const Filter = ({ status, species, gender, updateStatus, updateSpecies, updateGe
       </div>
     </div>
   );
-};
+}
 
 export default Filter;

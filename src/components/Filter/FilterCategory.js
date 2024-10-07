@@ -1,7 +1,14 @@
 import React from 'react';
 import './FilterCategory.scss';
 
-const FilterCategory = ({ title, options, selectedValue, updateValue, isOpen, toggleOpen }) => {
+function FilterCategory({ 
+  title, 
+  options, 
+  selectedValue, 
+  updateValue, 
+  isOpen, 
+  toggleOpen 
+}) {
   return (
     <div className={`filter-category ${isOpen ? 'open' : ''}`}>
       <button 
@@ -27,6 +34,6 @@ const FilterCategory = ({ title, options, selectedValue, updateValue, isOpen, to
       </div>
     </div>
   );
-};
+}
 
 export default FilterCategory;

@@ -1,4 +1,3 @@
-// src/components/Shop/Shop.js
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { collection, getDocs, query, orderBy } from 'firebase/firestore';
@@ -169,18 +168,21 @@ function Shop() {
       <div className="shop-container">
         <div className="container">
           <div className="row">
-            <Filter
-              status={status}
-              species={species}
-              gender={gender}
-              updateStatus={(newStatus) => handleFilterChange('status', newStatus)}
-              updateSpecies={(newSpecies) => handleFilterChange('species', newSpecies)}
-              updateGender={(newGender) => handleFilterChange('gender', newGender)}
-              clearFilters={clearFilters}
-            />
-            <div className="col-lg-8 col-12">
-              <div className="row mb-3">
-                <div className="col-12 d-flex justify-content-end align-items-center">
+            <div className="col-lg-3 col-md-4 col-12">
+              <Filter
+                status={status}
+                species={species}
+                gender={gender}
+                updateStatus={(newStatus) => handleFilterChange('status', newStatus)}
+                updateSpecies={(newSpecies) => handleFilterChange('species', newSpecies)}
+                updateGender={(newGender) => handleFilterChange('gender', newGender)}
+                clearFilters={clearFilters}
+              />
+            </div>
+            <div className="col-lg-9 col-md-8 col-12">
+              <div className="shop-header">
+                <h1 className="shop-title">Geckos for sale</h1>
+                <div className="sort-container">
                   <span className="sort-label">Sort by Price:</span>
                   <div className="btn-group" role="group" aria-label="Sort order">
                     <button 
@@ -200,34 +202,38 @@ function Shop() {
               </div>
 
               {loading ? (
-                <div className="text-center mt-5">
+                <div className="loading-container">
+                  <div className="spinner"></div>
                   <p>Loading geckos...</p>
                 </div>
               ) : noResults ? (
-                <div className="text-center mt-5">
+                <div className="no-results-container">
                   <p className="no-results">No Geckos Found 😢</p>
+                  <button onClick={clearFilters} className="btn btn-primary">Clear Filters</button>
                 </div>
               ) : (
-                <Card results={paginatedResults} addToCart={handleAddToCart} />
+                <div className="shop-content">
+                  <Card results={paginatedResults} addToCart={handleAddToCart} />
+                  <Pagination
+                    itemsPerPage={itemsPerPage}
+                    totalItems={filteredResults.length}
+                    currentPage={pageNumber}
+                    onPageChange={(newPage) => { 
+                      setPageNumber(newPage); 
+                      updateUrl({ 
+                        page: newPage.toString(),
+                        status,
+                        species,
+                        gender,
+                        sort: sortOrder
+                      }); 
+                    }}
+                  />
+                </div>
               )}
             </div>
           </div>
         </div>
-        <Pagination
-          itemsPerPage={itemsPerPage}
-          totalItems={filteredResults.length}
-          currentPage={pageNumber}
-          onPageChange={(newPage) => { 
-            setPageNumber(newPage); 
-            updateUrl({ 
-              page: newPage.toString(),
-              status,
-              species,
-              gender,
-              sort: sortOrder
-            }); 
-          }}
-        />
       </div>
     </>
   );

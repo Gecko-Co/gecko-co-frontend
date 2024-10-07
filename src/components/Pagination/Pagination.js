@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faArrowRight } from "@fortawesome/free-solid-svg-icons";
+import './Pagination.scss';
 
 const Pagination = ({ itemsPerPage, totalItems, currentPage, onPageChange }) => {
   const [width, setWidth] = useState(window.innerWidth);
@@ -22,39 +23,7 @@ const Pagination = ({ itemsPerPage, totalItems, currentPage, onPageChange }) => 
   };
 
   return (
-    <>
-      <style jsx>{`
-        .pagination {
-          background-color: transparent;
-          color: white;
-          padding: 10px;
-        }
-        .pagination a {
-          color: #23283b;
-          cursor: pointer;
-          transition: color 0.3s;
-        }
-        .pagination a:hover {
-          color: orange;
-        }
-        .pagination .active a {
-          background-color: #23283b;
-          color: white;
-        }
-        .custom-prev-next {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          color: #23283b;
-        }
-        .custom-prev-next .icon {
-          margin-right: 8px;
-        }
-        .custom-prev-next:hover {
-          color: orange;
-        }
-      `}</style>
+    <div className="pagination-container">
       <ReactPaginate
         className="pagination justify-content-center my-4 gap-4"
         nextLabel={
@@ -82,7 +51,7 @@ const Pagination = ({ itemsPerPage, totalItems, currentPage, onPageChange }) => 
         pageClassName="page-item"
         pageLinkClassName="page-link"
       />
-    </>
+    </div>
   );
 };
 
