@@ -1,116 +1,82 @@
+// src/components/SignIn/SignIn.js
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '../../firebase'; 
-import styled from 'styled-components';
+import { auth } from '../../firebase';
+import { toast } from 'react-hot-toast';
+import './SignIn.scss';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      // Redirect or update UI upon successful sign-in
+      toast.success('Signed in successfully!');
+      navigate('/');
     } catch (error) {
-      setError(error.message);
+      console.error('Error signing in:', error);
+      let errorMessage = 'Failed to sign in. Please try again.';
+      
+      if (error.code === 'auth/invalid-credential') {
+        errorMessage = 'Invalid email or password. Please check your credentials and try again.';
+      } else if (error.code === 'auth/user-not-found') {
+        errorMessage = 'No account found with this email. Please check your email or sign up.';
+      } else if (error.code === 'auth/wrong-password') {
+        errorMessage = 'Incorrect password. Please try again.';
+      } else if (error.code === 'auth/too-many-requests') {
+        errorMessage = 'Too many failed login attempts. Please try again later or reset your password.';
+      }
+      
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <SignInContainer>
-      <SignInForm onSubmit={handleSubmit}>
-        <h2>Sign In</h2>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
-        <InputGroup>
-          <label htmlFor="email">Email:</label>
-          <Input
-            type="email"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </InputGroup>
-        <InputGroup>
-          <label htmlFor="password">Password:</label>
-          <Input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </InputGroup>
-        <SubmitButton type="submit">Sign In</SubmitButton>
-      </SignInForm>
-    </SignInContainer>
+    <div className="signin-container">
+      <div className="signin-form">
+        <h2>Sign In to Your Account</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="form-group">
+            <label htmlFor="email">Email address</label>
+            <input
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Signing In...' : 'Sign In'}
+          </button>
+        </form>
+        <p className="forgot-password">
+          <Link to="/forgot-password">Forgot Password?</Link>
+        </p>
+        <p className="signup-link">
+          Don't have an account? <Link to="/signup">Sign Up</Link>
+        </p>
+      </div>
+    </div>
   );
 };
-
-const SignInContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f4f4f4;
-`;
-
-const SignInForm = styled.form`
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-
-  h2 {
-    text-align: center;
-    color: #23283b;
-    margin-bottom: 1.5rem;
-  }
-`;
-
-const InputGroup = styled.div`
-  margin-bottom: 1rem;
-
-  label {
-    display: block;
-    margin-bottom: 0.5rem;
-    color: #23283b;
-  }
-`;
-
-const Input = styled.input`
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-`;
-
-const SubmitButton = styled.button`
-  width: 100%;
-  padding: 0.75rem;
-  background-color: #23283b;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: #bd692d;
-  }
-`;
-
-const ErrorMessage = styled.p`
-  color: red;
-  text-align: center;
-  margin-bottom: 1rem;
-`;
 
 export default SignIn;

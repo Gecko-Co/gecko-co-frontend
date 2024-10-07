@@ -24,6 +24,7 @@ import PolicyPage from './components/Policy/Policy';
 import SignIn from './components/SignIn/SignIn';
 import Account from './components/Account/Account';
 import { inject } from '@vercel/analytics';
+import SignUp from './components/Auth/SignUp';
 
 inject();
 
@@ -62,20 +63,31 @@ function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/signin" element={user ? <Navigate to="/account" /> : <SignIn />} />
               <Route path="/account" element={<Account user={user} />} />
+              <Route path="/signup" element={<SignUp />} />
+              
             </Routes>
           </div>
           <Scroll />
           {/* <Messenger/> */}
           <Footer />
         </div>
-        <Toaster
-          position="top-right"
+        <Toaster 
+          position="bottom-left"
           toastOptions={{
             duration: 3000,
             style: {
-              background: '#363636',
+              background: '#23283b',
               color: '#fff',
+              padding: '16px',
+              borderRadius: '8px',
+              fontSize: '14px',
+              maxWidth: '350px',
+              boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
             },
+          }}
+          containerStyle={{
+            bottom: 20,
+            left: 20,
           }}
         />
       </CartProvider>

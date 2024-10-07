@@ -464,16 +464,23 @@
   }
 }
 
-// Adjust the toast position
-:root {
-  --toastify-toast-min-height: 64px;
-  --toastify-toast-max-height: 800px;
-}
-
-.Toastify__toast-container--bottom-right {
-  bottom: 1em;
-}
-
 .Toastify__toast {
-  margin-bottom: 30px;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.Toastify__toast-body {
+  font-size: 14px;
+}
+.Toastify__toast-container {
+  z-index: 9999;
+}
+
+.Toastify__close-button {
+  color: #fff;
+  opacity: 0.7;
+  
+  &:hover {
+    opacity: 1;
+  }
 }

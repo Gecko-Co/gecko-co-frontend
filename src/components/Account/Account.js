@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
 import { useCart } from '../Cart/CartContext';
+import { toast } from 'react-hot-toast';
 import './Account.scss';
 
 const Account = ({ user }) => {
@@ -12,9 +13,29 @@ const Account = ({ user }) => {
   const handleSignOut = async () => {
     try {
       await signOut(auth);
+      toast.success('Signed out successfully', {
+        style: {
+          background: '#23283b',
+          color: '#fff',
+        },
+        iconTheme: {
+          primary: '#bd692d',
+          secondary: '#fff',
+        },
+      });
       navigate('/');
     } catch (error) {
       console.error('Error signing out:', error);
+      toast.error('Failed to sign out. Please try again.', {
+        style: {
+          background: '#23283b',
+          color: '#fff',
+        },
+        iconTheme: {
+          primary: '#bd692d',
+          secondary: '#fff',
+        },
+      });
     }
   };
 
@@ -51,13 +72,13 @@ const Account = ({ user }) => {
                   <img src={item.images} alt={item.species} className="cart-item-image" />
                   <div className="cart-item-details">
                     <h3>{item.species}</h3>
-                    <p>${item.price}</p>
+                    <p>₱{item.price}</p>
                   </div>
                   <button onClick={() => removeFromCart(index)} className="remove-item">Remove</button>
                 </div>
               ))}
               <div className="cart-total">
-                <p>Total: ${calculateTotal()}</p>
+                <p>Total: ₱{calculateTotal()}</p>
               </div>
               <button onClick={() => navigate('/cart')} className="checkout-button">Proceed to Checkout</button>
               <button onClick={clearCart} className="clear-cart-button">Clear Cart</button>
