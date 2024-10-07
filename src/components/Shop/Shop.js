@@ -1,36 +1,38 @@
+// src/components/Shop/Shop.js
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { db } from '../../firebase';
+import { useCart } from '../Cart/CartContext';
 import Card from "../Card/Card";
 import Pagination from "../Pagination/Pagination";
 import Filter from "../Filter/Filter";
-import placeholderData from "../../data";
 import { Helmet } from 'react-helmet';
+import './Shop.scss';
 
 function Shop() {
   const navigate = useNavigate();
   const location = useLocation();
-  const [filteredResults, setFilteredResults] = useState(placeholderData.results);
+  const { addToCart } = useCart();
+  const [geckos, setGeckos] = useState([]);
+  const [filteredResults, setFilteredResults] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [status, setStatus] = useState("");
   const [gender, setGender] = useState("");
   const [species, setSpecies] = useState("");
   const [noResults, setNoResults] = useState(false);
   const [sortOrder, setSortOrder] = useState("asc");
-  const [cart, setCart] = useState([]);
+  const [loading, setLoading] = useState(true);
   const itemsPerPage = 12;
 
   const updateFiltersFromUrl = useCallback(() => {
     const params = new URLSearchParams(location.search);
     setStatus(params.get('status') || "");
-    setGender(params.get('gender') || "");
     setSpecies(params.get('species') || "");
-    setSortOrder(params.get('sort') || "asc");
+    setGender(params.get('gender') || "");
     setPageNumber(parseInt(params.get('page') || "1", 10));
+    setSortOrder(params.get('sort') || "asc");
   }, [location.search]);
-
-  useEffect(() => {
-    updateFiltersFromUrl();
-  }, [updateFiltersFromUrl]);
 
   const updateUrl = useCallback((newParams) => {
     const params = new URLSearchParams(location.search);
@@ -41,65 +43,116 @@ function Shop() {
         params.delete(key);
       }
     });
-    navigate(`?${params.toString()}`, { replace: true });
-  }, [navigate, location.search]);
+    navigate(`${location.pathname}?${params.toString()}`, { replace: true });
+  }, [location.pathname, navigate]);
 
-  const filterAndSortResults = useCallback(() => {
-    let filtered = [...placeholderData.results];
-
-    if (status) {
-      filtered = filtered.filter(result => result.status.toLowerCase() === status.toLowerCase());
+  const fetchGeckos = useCallback(async () => {
+    setLoading(true);
+    try {
+      const geckosCollection = collection(db, 'geckos');
+      const geckosQuery = query(geckosCollection, orderBy("price", sortOrder));
+      const querySnapshot = await getDocs(geckosQuery);
+      const geckosData = querySnapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: doc.id
+      }));
+      setGeckos(geckosData);
+    } catch (error) {
+      console.error("Error fetching geckos:", error);
+    } finally {
+      setLoading(false);
     }
+  }, [sortOrder]);
 
-    if (species) {
-      filtered = filtered.filter(result => result.species.toLowerCase() === species.toLowerCase());
-    }
+  useEffect(() => {
+    updateFiltersFromUrl();
+  }, [updateFiltersFromUrl]);
 
-    if (gender) {
-      filtered = filtered.filter(result => {
-        if (gender.toLowerCase() === 'unknown') {
-          return result.gender.toLowerCase() === 'unknown' || result.gender === '';
-        }
-        return result.gender.toLowerCase() === gender.toLowerCase();
-      });
-    }
-
-    filtered.sort((a, b) => {
-      const priceA = parseFloat(a.price);
-      const priceB = parseFloat(b.price);
-      return sortOrder === "asc" ? priceA - priceB : priceB - priceA;
-    });
-
-    setFilteredResults(filtered);
-    setNoResults(filtered.length === 0);
-  }, [status, species, gender, sortOrder]);
+  useEffect(() => {
+    fetchGeckos();
+  }, [fetchGeckos]);
 
   useEffect(() => {
     filterAndSortResults();
-  }, [filterAndSortResults]);
+  }, [geckos, status, species, gender, sortOrder]);
+
+  const handleAddToCart = useCallback(async (gecko) => {
+    if (!gecko || typeof gecko.id !== 'string' || gecko.id.trim() === '') {
+      console.error("Invalid gecko:", gecko);
+      return;
+    }
+    const success = await addToCart(gecko);
+    if (success) {
+      setGeckos((prevGeckos) =>
+        prevGeckos.map((g) =>
+          g.id === gecko.id ? { ...g, status: 'Reserved' } : g
+        )
+      );
+    }
+  }, [addToCart]);
+
+  const filterAndSortResults = useCallback(() => {
+    let results = [...geckos];
+
+    if (status) {
+      results = results.filter(gecko => gecko.status.toLowerCase() === status.toLowerCase());
+    }
+    if (species) {
+      results = results.filter(gecko => gecko.species.toLowerCase() === species.toLowerCase());
+    }
+    if (gender) {
+      results = results.filter(gecko => gecko.gender.toLowerCase() === gender.toLowerCase());
+    }
+
+    results.sort((a, b) => {
+      const priceA = parseFloat(a.price);
+      const priceB = parseFloat(b.price);
+      return sortOrder === 'asc' ? priceA - priceB : priceB - priceA;
+    });
+
+    setFilteredResults(results);
+    setNoResults(results.length === 0);
+  }, [geckos, status, species, gender, sortOrder]);
 
   const clearFilters = useCallback(() => {
     setStatus("");
     setSpecies("");
     setGender("");
     setPageNumber(1);
-    // Remove all filter parameters from the URL, but keep the sort order
-    const params = new URLSearchParams(location.search);
-    ['status', 'species', 'gender', 'page'].forEach(param => params.delete(param));
-    navigate(`?${params.toString()}`, { replace: true });
-  }, [navigate, location.search]);
+    updateUrl({ status: "", species: "", gender: "", page: "1" });
+  }, [updateUrl]);
 
-  const handleSortChange = (newSortOrder) => {
+  const handleSortChange = useCallback((newSortOrder) => {
     setSortOrder(newSortOrder);
-    // Update only the sort parameter in the URL
-    const params = new URLSearchParams(location.search);
-    params.set('sort', newSortOrder);
-    navigate(`?${params.toString()}`, { replace: true });
-  };
+    updateUrl({ 
+      sort: newSortOrder, 
+      status, 
+      species, 
+      gender, 
+      page: pageNumber.toString() 
+    });
+  }, [updateUrl, status, species, gender, pageNumber]);
 
-  const addToCart = (gecko) => {
-    setCart(prevCart => [...prevCart, gecko]);
-  };
+  const handleFilterChange = useCallback((filterType, value) => {
+    const newFilters = { status, species, gender, sort: sortOrder, page: '1' };
+    newFilters[filterType] = value;
+    setPageNumber(1);
+    updateUrl(newFilters);
+
+    switch (filterType) {
+      case 'status':
+        setStatus(value);
+        break;
+      case 'species':
+        setSpecies(value);
+        break;
+      case 'gender':
+        setGender(value);
+        break;
+      default:
+        break;
+    }
+  }, [status, species, gender, sortOrder, updateUrl]);
 
   const paginatedResults = filteredResults.slice(
     (pageNumber - 1) * itemsPerPage,
@@ -107,72 +160,75 @@ function Shop() {
   );
 
   return (
-<>
+    <>
       <Helmet>
         <title>Buy Geckos | Gecko Co.</title>
         <meta name="description" content="Browse our selection of high-quality, ethically bred geckos including Leopard Geckos, Crested Geckos, and more. Find your perfect pet today!" />
         <link rel="canonical" href="https://geckoco.ph/shop" />
       </Helmet>
-    <div className="App" style={{ backgroundColor: 'white' }}>
-      <div className="container" style={{ marginTop: '130px' }}>
-        <div className="row">
-          <Filter
-            status={status}
-            species={species}
-            gender={gender}
-            updateStatus={(newStatus) => { setStatus(newStatus); updateUrl({ status: newStatus }); }}
-            updateSpecies={(newSpecies) => { setSpecies(newSpecies); updateUrl({ species: newSpecies }); }}
-            updateGender={(newGender) => { setGender(newGender); updateUrl({ gender: newGender }); }}
-            clearFilters={clearFilters}
-          />
-          <div className="col-lg-8 col-12">
-            <div className="row mb-3" style={{ marginTop: '70px' }}>
-              <div className="col-12 d-flex justify-content-end align-items-center">
-                <span style={{ color: '#23283b', marginRight: '10px' }}>Sort by Price:</span>
-                <div className="btn-group" role="group" aria-label="Sort order">
-                  <button 
-                    onClick={() => handleSortChange("asc")} 
-                    className={`btn ${sortOrder === 'asc' ? 'btn-primary' : 'btn-outline-primary'}`}
-                    style={{
-                      backgroundColor: sortOrder === 'asc' ? '#23283b' : 'white',
-                      color: sortOrder === 'asc' ? 'white' : '#23283b',
-                      borderColor: '#23283b'
-                    }}
-                  >
-                    Low to High
-                  </button>
-                  <button 
-                    onClick={() => handleSortChange("desc")} 
-                    className={`btn ${sortOrder === 'desc' ? 'btn-primary' : 'btn-outline-primary'}`}
-                    style={{
-                      backgroundColor: sortOrder === 'desc' ? '#23283b' : 'white',
-                      color: sortOrder === 'desc' ? 'white' : '#23283b',
-                      borderColor: '#23283b'
-                    }}
-                  >
-                    High to Low
-                  </button>
+      <div className="shop-container">
+        <div className="container">
+          <div className="row">
+            <Filter
+              status={status}
+              species={species}
+              gender={gender}
+              updateStatus={(newStatus) => handleFilterChange('status', newStatus)}
+              updateSpecies={(newSpecies) => handleFilterChange('species', newSpecies)}
+              updateGender={(newGender) => handleFilterChange('gender', newGender)}
+              clearFilters={clearFilters}
+            />
+            <div className="col-lg-8 col-12">
+              <div className="row mb-3">
+                <div className="col-12 d-flex justify-content-end align-items-center">
+                  <span className="sort-label">Sort by Price:</span>
+                  <div className="btn-group" role="group" aria-label="Sort order">
+                    <button 
+                      onClick={() => handleSortChange("asc")} 
+                      className={`btn ${sortOrder === 'asc' ? 'btn-primary' : 'btn-outline-primary'}`}
+                    >
+                      Low to High
+                    </button>
+                    <button 
+                      onClick={() => handleSortChange("desc")} 
+                      className={`btn ${sortOrder === 'desc' ? 'btn-primary' : 'btn-outline-primary'}`}
+                    >
+                      High to Low
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
 
-            {noResults ? (
-              <div className="text-center mt-5">
-                <p style={{ fontSize: '24px', fontWeight: 'bold' }}>No Geckos Found 😢</p>
-              </div>
-            ) : (
-              <Card results={paginatedResults} addToCart={addToCart} />
-            )}
+              {loading ? (
+                <div className="text-center mt-5">
+                  <p>Loading geckos...</p>
+                </div>
+              ) : noResults ? (
+                <div className="text-center mt-5">
+                  <p className="no-results">No Geckos Found 😢</p>
+                </div>
+              ) : (
+                <Card results={paginatedResults} addToCart={handleAddToCart} />
+              )}
+            </div>
           </div>
         </div>
+        <Pagination
+          itemsPerPage={itemsPerPage}
+          totalItems={filteredResults.length}
+          currentPage={pageNumber}
+          onPageChange={(newPage) => { 
+            setPageNumber(newPage); 
+            updateUrl({ 
+              page: newPage.toString(),
+              status,
+              species,
+              gender,
+              sort: sortOrder
+            }); 
+          }}
+        />
       </div>
-      <Pagination
-        itemsPerPage={itemsPerPage}
-        totalItems={filteredResults.length}
-        currentPage={pageNumber}
-        onPageChange={(newPage) => { setPageNumber(newPage); updateUrl({ page: newPage.toString() }); }}
-      />
-    </div>
     </>
   );
 }

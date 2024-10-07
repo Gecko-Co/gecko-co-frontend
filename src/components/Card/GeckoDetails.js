@@ -1,11 +1,10 @@
+// src/components/Card/GeckoDetails.js
 import React, { useEffect, useRef, useState } from 'react';
 import './GeckoDetails.scss';
-import { useCart } from '../Cart/CartContext';
 
-const GeckoDetails = ({ gecko, isOpen, onClose }) => {
+const GeckoDetails = ({ gecko, isOpen, onClose, addToCart }) => {
   const [activeTab, setActiveTab] = useState('details');
   const modalRef = useRef(null);
-  const { addToCart } = useCart();
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -32,9 +31,13 @@ const GeckoDetails = ({ gecko, isOpen, onClose }) => {
   const genderIcon = gender === "Male" ? "♂️" : gender === "Female" ? "♀️" : "❓";
   const priceInPHP = price ? `₱${parseFloat(price).toLocaleString('en-US')}` : "Price not available";
 
-  const handleAddToCart = () => {
-    addToCart(gecko);
-    onClose(); // Close the modal after adding to cart
+  const handleAddToCart = async () => {
+    if (!gecko || typeof gecko.id !== 'string' || gecko.id.trim() === '') {
+      console.error("Invalid gecko:", gecko);
+      return;
+    }
+    await addToCart(gecko);
+    onClose();
   };
 
   return (

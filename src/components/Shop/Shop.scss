@@ -1,0 +1,49 @@
+// src/components/Shop/Shop.scss
+
+.shop-container {
+    padding-top: 110px;
+    min-height: 100vh;
+    background-color: #f4f4f4;
+  
+    .sort-label {
+      color: #23283b;
+      margin-right: 10px;
+    }
+  
+    .btn-primary, .btn-outline-primary {
+      background-color: #23283b;
+      color: white;
+      border-color: #23283b;
+  
+      &:hover {
+        background-color: #bd692d;
+        border-color: #bd692d;
+      }
+    }
+  
+    .btn-outline-primary {
+      background-color: white;
+      color: #23283b;
+  
+      &:hover {
+        color: white;
+      }
+    }
+  
+    .no-results {
+      font-size: 24px;
+      font-weight: bold;
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .shop-container {
+      padding-top: 150px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .shop-container {
+      padding-top: 20px;
+    }
+  }

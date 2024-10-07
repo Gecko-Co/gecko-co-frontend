@@ -61,7 +61,7 @@ const Navbar = ({ user }) => {
   };
 
   return (
-<nav className={`navbar ${isScrolled ? 'scrolled' : 'unscrolled'} ${isOpen ? 'open' : ''}`}>
+    <nav className={`navbar ${isScrolled ? 'scrolled' : 'unscrolled'} ${isOpen ? 'open' : ''}`}>
       <Link to="/" className="logo-link">
         <img src="/images/geckoco-png.png" alt="Geckoco Logo" className="logo" />
         <span className="company-name">Gecko Co.</span>
