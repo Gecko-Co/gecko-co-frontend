@@ -21,10 +21,11 @@ import GeneticCalculator from './components/GeneticCalculator/GeneticCalculator'
 import Scroll from './components/Scroll/Scroll';
 import Messenger from './components/Messenger/Messenger';
 import PolicyPage from './components/Policy/Policy';
-import SignIn from './components/SignIn/SignIn';
+import SignIn from './components/Auth/SignIn';
 import Account from './components/Account/Account';
 import { inject } from '@vercel/analytics';
 import SignUp from './components/Auth/SignUp';
+import Settings from './components/Account/Settings';
 
 inject();
 
@@ -63,6 +64,7 @@ function App() {
               <Route path="/cart" element={<Cart />} />
               <Route path="/signin" element={user ? <Navigate to="/account" /> : <SignIn />} />
               <Route path="/account" element={<Account user={user} />} />
+              <Route path="/settings" element={<Settings user={user} />} />
               <Route path="/signup" element={<SignUp />} />
               
             </Routes>

@@ -5,7 +5,7 @@ import { FaUserCircle, FaUserPlus, FaShoppingCart } from 'react-icons/fa';
 import { useCart } from '../Cart/CartContext';
 import { signOut } from 'firebase/auth';
 import { auth } from '../../firebase';
-import LoginPopup from '../LoginPopup/LoginPopup';
+import LoginPopup from '../Auth/LoginPopup';
 
 const Navbar = ({ user }) => {
   const location = useLocation();

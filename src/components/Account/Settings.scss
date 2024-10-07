@@ -1,0 +1,103 @@
+.settings-container {
+    padding-top: 180px; // Adjust this value based on your navbar height
+    min-height: 100vh;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+  
+  .settings-page {
+    max-width: 800px;
+    width: 100%;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  
+    h1 {
+      color: #23283b;
+      margin-bottom: 1.5rem;
+      font-size: 2rem;
+    }
+  
+    .settings-form {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid #e0e0e0;
+  
+      &:last-of-type {
+        border-bottom: none;
+      }
+  
+      h2 {
+        color: #23283b;
+        margin-bottom: 1rem;
+        font-size: 1.5rem;
+      }
+  
+      .form-group {
+        margin-bottom: 1rem;
+  
+        label {
+          display: block;
+          margin-bottom: 0.5rem;
+          font-weight: bold;
+          color: #23283b;
+        }
+  
+        input {
+          width: 100%;
+          padding: 0.75rem;
+          border: 1px solid #e0e0e0;
+          border-radius: 4px;
+          font-size: 1rem;
+  
+          &:focus {
+            outline: none;
+            border-color: #23283b;
+          }
+        }
+      }
+  
+      .update-button {
+        background-color: #23283b;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 4px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+  
+        &:hover {
+          background-color: lighten(#23283b, 10%);
+        }
+      }
+    }
+  
+    .back-button {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background-color: #e0e0e0;
+      color: #23283b;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+  
+      &:hover {
+        background-color: darken(#e0e0e0, 10%);
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .settings-page {
+      margin: 1rem;
+      padding: 1.5rem;
+    }
+  }
