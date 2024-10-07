@@ -4,6 +4,7 @@ import Typed from 'typed.js';
 import { Link } from 'react-router-dom';
 import featuredData from '../../featured';
 import placeholderData from "../../data";
+import { Helmet } from 'react-helmet';
 
 export default function Component() {
     const typedRef = useRef(null);
@@ -51,6 +52,12 @@ export default function Component() {
     }, [changingWordIndex]);
 
     return (
+        <>
+      <Helmet>
+        <title>Gecko Co. - Premium Gecko Breeder in the Philippines</title>
+        <meta name="description" content="Discover exceptional morphs of Leopard Geckos, African Fat-Tailed Geckos, Crested Geckos, and Knobtail Geckos at Gecko Co. Expert care and ethical breeding practices." />
+        <link rel="canonical" href="https://geckoco.ph" />
+      </Helmet>
         <div className="App">
             <div className="first-section">
                 <div className="content-wrapper">
@@ -151,5 +158,6 @@ export default function Component() {
                 </div>
             </div>
         </div>
+        </>
     );
 }

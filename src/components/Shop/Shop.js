@@ -4,6 +4,7 @@ import Card from "../Card/Card";
 import Pagination from "../Pagination/Pagination";
 import Filter from "../Filter/Filter";
 import placeholderData from "../../data";
+import { Helmet } from 'react-helmet';
 
 function Shop() {
   const navigate = useNavigate();
@@ -106,6 +107,12 @@ function Shop() {
   );
 
   return (
+<>
+      <Helmet>
+        <title>Shop Exotic Geckos | Gecko Co.</title>
+        <meta name="description" content="Browse our selection of high-quality, ethically bred geckos including Leopard Geckos, Crested Geckos, and more. Find your perfect pet today!" />
+        <link rel="canonical" href="https://geckoco.ph/shop" />
+      </Helmet>
     <div className="App" style={{ backgroundColor: 'white' }}>
       <div className="container" style={{ marginTop: '130px' }}>
         <div className="row">
@@ -166,6 +173,7 @@ function Shop() {
         onPageChange={(newPage) => { setPageNumber(newPage); updateUrl({ page: newPage.toString() }); }}
       />
     </div>
+    </>
   );
 }
 
