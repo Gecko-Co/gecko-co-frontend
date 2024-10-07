@@ -72,11 +72,11 @@ function App() {
           <Footer />
         </div>
         <Toaster 
-          position="bottom-left"
+          position="top-right"
           toastOptions={{
             duration: 3000,
             style: {
-              background: '#23283b',
+              background: '#bd692d',
               color: '#fff',
               padding: '16px',
               borderRadius: '8px',
