@@ -204,6 +204,34 @@
     }
 
     @media (max-width: 480px) {
+      gap: 10px;
+
+      .nav-icons {
+        gap: 10px;
+
+        .nav-icon-link {
+          font-size: 1.2rem;
+          color: #bd692d;
+
+          &.cart-icon {
+            margin-left: 0;
+          }
+        }
+
+        .icon {
+          font-size: 1.5rem;
+        }
+
+        .user-email {
+          font-size: 0.9rem;
+        }
+
+        .sign-out-button {
+          font-size: 0.9rem;
+          padding: 4px 8px;
+        }
+      }
+
       .hamburger {
         display: flex;
         flex-direction: column;
@@ -236,26 +264,6 @@
           span:nth-child(3) {
             transform: rotate(-45deg);
           }
-        }
-      }
-
-      .nav-icons {
-        .nav-icon-link {
-          font-size: 1.2rem;
-          color: #bd692d;
-        }
-
-        .icon {
-          font-size: 1.5rem;
-        }
-
-        .user-email {
-          font-size: 0.9rem;
-        }
-
-        .sign-out-button {
-          font-size: 0.9rem;
-          padding: 4px 8px;
         }
       }
     }
@@ -372,6 +380,13 @@
 
     .logo-link {
       order: 1;
+      .logo {
+        width: 40px; // Reduce logo size on smaller screens
+        margin-right: 5px; // Reduce space between logo and text
+      }
+      .company-name {
+        font-size: 1.2rem; // Reduce font size on smaller screens
+      }
     }
 
     .nav-links {
