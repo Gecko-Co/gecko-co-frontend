@@ -1,6 +1,8 @@
-// src/components/Cart/Cart.js
 import React from 'react';
 import { useCart } from './CartContext';
+import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faArrowLeft, faCreditCard } from '@fortawesome/free-solid-svg-icons';
 import './Cart.scss';
 
 const Cart = () => {
@@ -13,27 +15,40 @@ const Cart = () => {
   return (
     <div className="cart-page">
       <div className="cart-container">
-        <h2>Your Cart</h2>
+        <h1 className="cart-title">Your Cart</h1>
         {cart.length === 0 ? (
-          <p>Your cart is empty.</p>
+          <div className="empty-cart">
+            <p>Your cart is empty.</p>
+            <Link to="/shop" className="continue-shopping">
+              <FontAwesomeIcon icon={faArrowLeft} /> Continue Shopping
+            </Link>
+          </div>
         ) : (
           <>
-            <ul className="cart-items">
+            <div className="cart-items">
               {cart.map((item, index) => (
-                <li key={item.id} className="cart-item">
+                <div key={item.id} className="cart-item">
                   <img src={item.images} alt={item.species} className="item-image" />
                   <div className="item-details">
                     <h3>{item.species}</h3>
                     <p className="item-price">₱{parseFloat(item.price).toLocaleString('en-US')}</p>
                   </div>
-                  <button onClick={() => removeFromCart(index)} className="remove-button">Remove</button>
-                </li>
+                  <button onClick={() => removeFromCart(index)} className="remove-button">
+                    <FontAwesomeIcon icon={faTrash} />
+                  </button>
+                </div>
               ))}
-            </ul>
+            </div>
             <div className="cart-summary">
               <p className="cart-total">Total: ₱{calculateTotal().toLocaleString('en-US')}</p>
-              <button onClick={clearCart} className="clear-cart-button">Clear Cart</button>
-              <button className="checkout-button">Proceed to Checkout</button>
+              <div className="cart-actions">
+                <button onClick={clearCart} className="clear-cart-button">
+                  <FontAwesomeIcon icon={faTrash} /> Clear Cart
+                </button>
+                <button className="checkout-button">
+                  <FontAwesomeIcon icon={faCreditCard} /> Proceed to Checkout
+                </button>
+              </div>
             </div>
           </>
         )}
