@@ -38,14 +38,14 @@ const Card = ({ results, addToCart }) => {
   return (
     <div className="card-grid">
       {results.map((gecko) => {
-        const { id, images, species, price, status, gender, name } = gecko;
+        const { id, images, title, price, status, gender, name } = gecko;
         const priceInPHP = price ? `₱${parseFloat(price).toLocaleString('en-US')}` : "Price not available";
         const imageUrl = getImageUrl(images);
 
         return (
           <div key={id} className="card">
             <div className="card-image-container">
-              <img src={imageUrl} alt={species} className="card-image" />
+              <img src={imageUrl} alt={title} className="card-image" />
               <div className="card-quick-info">
                 <span className="card-gender">{gender}</span>
                 <span className="card-name">{name}</span>
@@ -53,7 +53,9 @@ const Card = ({ results, addToCart }) => {
             </div>
             <div className="card-content">
               <div className="card-info">
-                <h3 className="card-title">{species}</h3>
+                <h3 className="card-title">
+                  <span className="card-title-text">{title}</span>
+                </h3>
                 <p className="card-price">{priceInPHP}</p>
               </div>
               <div className="card-actions">

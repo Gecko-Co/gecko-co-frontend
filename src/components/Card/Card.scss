@@ -61,11 +61,18 @@
 
 .card-title {
   margin: 0 0 10px;
-  font-size: 18px;
-  font-weight: bold;
   color: #23283b;
   line-height: 1.2;
-  max-height: 2.4em;
+  height: 2.4em;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+
+.card-title-text {
+  display: inline-block;
+  font-size: clamp(14px, 4vw, 18px);
+  font-weight: bold;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
@@ -93,6 +100,7 @@
     border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    white-space: nowrap;
 
     &.btn-primary {
       background-color: #23283b;

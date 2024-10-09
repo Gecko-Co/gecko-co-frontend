@@ -3,13 +3,15 @@ import { getFirestore, collection, addDoc } from 'firebase/firestore';
 import placeholderData from '../src/data.js';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDSZZEIn2qImteTJYpBJzSJZ7Jqzdic8Pg",
-  authDomain: "gecko-co.firebaseapp.com",
-  projectId: "gecko-co",
-  storageBucket: "gecko-co.appspot.com",
-  messagingSenderId: "531275334948",
-  appId: "1:531275334948:web:ea1154b1f5ee930e931fb1",
-  measurementId: "G-G1CRKRSN8V"
+  // You might encounter this error: GrpcConnection RPC 'Write' stream 0x36416bd3 error
+  // Just hard code the key values if that happens
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID
 };
 
 const app = initializeApp(firebaseConfig);
