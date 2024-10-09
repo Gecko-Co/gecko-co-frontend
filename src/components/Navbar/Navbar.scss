@@ -157,6 +157,7 @@
 
         .icon {
           font-size: 1.8rem;
+          color: white;
         }
 
         .cart-count {
@@ -218,6 +219,68 @@
     padding: 40px 200px;
   }
 
+  @media screen and (max-width: 1280px) {
+    padding: 20px 100px;
+    transition: padding 0.5s ease;
+
+    &.scrolled {
+      padding: 10px 50px;
+    }
+
+    &.unscrolled {
+      padding: 20px 100px;
+    }
+
+    &.open {
+      padding: 20px 100px;
+    }
+
+    .logo-link {
+      .logo {
+        width: 40px;
+        margin-right: 8px;
+      }
+      .company-name {
+        font-size: 1.3rem;
+      }
+    }
+
+    .nav-links {
+      gap: 15px;
+
+      .nav-link {
+        font-size: 1.1rem;
+        padding: 5px 8px;
+      }
+    }
+
+    .menu-icons-container {
+      gap: 15px;
+
+      .nav-icons {
+        .nav-icon-link {
+          font-size: 1.2rem;
+
+          .icon {
+            font-size: 1.5rem;
+          }
+
+          &.cart-icon {
+            margin-left: 5px;
+
+            .cart-count {
+              font-size: 0.6rem;
+              min-width: 14px;
+              height: 14px;
+              bottom: -3px;
+              right: -3px;
+            }
+          }
+        }
+      }
+    }
+  }
+
   @media screen and (max-width: 768px) {
     padding: 20px 100px;
     transition: padding 0.5s ease;
@@ -238,9 +301,11 @@
       .nav-icons {
         .nav-icon-link {
           font-size: 1.3rem;
+          color: white;
 
           .icon {
             font-size: 1.6rem;
+            color: white;
           }
 
           &.cart-icon {
@@ -288,6 +353,48 @@
         }
       }
     }
+
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: #23283b;
+      z-index: 1000;
+      padding: 120px 20px 20px;
+      overflow-y: auto;
+
+      &.open {
+        display: flex;
+      }
+
+      .nav-link-container {
+        width: 100%;
+      }
+
+      .nav-link {
+        font-size: 1.4rem;
+        padding: 15px;
+        width: 100%;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
+
+        &:hover {
+          color: #bd692d;
+          background-color: rgba(189, 105, 45, 0.2);
+        }
+
+        &.active {
+          color: #bd692d;
+          background-color: rgba(189, 105, 45, 0.2);
+        }
+      }
+    }
   }
 
   @media screen and (max-width: 480px) {
@@ -315,10 +422,11 @@
 
         .nav-icon-link {
           font-size: 1.1rem;
-          color: #bd692d;
+          color: white;
 
           .icon {
             font-size: 1.4rem;
+            color: white;
           }
 
           &.cart-icon {
@@ -387,9 +495,11 @@
 
         .nav-icon-link {
           font-size: 0.9rem;
+          color: white;
 
           .icon {
             font-size: 1.1rem;
+            color: white;
           }
 
           &.cart-icon {
@@ -432,6 +542,49 @@
       order: 3;
     }
   }
+  @media screen and (max-width: 768px) {
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      gap: 20px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: #23283b;
+      z-index: 1000;
+      padding: 120px 20px 20px;
+      overflow-y: auto;
+  
+      &.open {
+        display: flex;
+      }
+  
+      .nav-link-container {
+        width: 100%;
+      }
+  
+      .nav-link {
+        font-size: 1.4rem;
+        padding: 15px;
+        width: 100%;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
+  
+        &:hover {
+          color: #bd692d;
+          background-color: rgba(189, 105, 45, 0.2);
+        }
+  
+        &.active {
+          color: #bd692d;
+          background-color: rgba(189, 105, 45, 0.2);
+        }
+      }
+    }
+  }
 }
 
 .nav-icons {
@@ -452,6 +605,7 @@
 
     .icon {
       font-size: 1.8rem;
+      color: white;
     }
   }
 }
