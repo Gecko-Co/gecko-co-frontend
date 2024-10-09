@@ -534,12 +534,40 @@
         margin-right: 5px;
       }
       .company-name {
-        font-size: 1rem;
+        font-size: 0.9rem;
       }
     }
 
     .nav-links {
       order: 3;
+      padding: 100px 15px 15px;
+
+      &.open {
+        display: flex;
+      }
+
+      .nav-link-container {
+        width: 100%;
+      }
+
+      .nav-link {
+        font-size: 1.2rem;
+        padding: 12px;
+        width: 100%;
+        justify-content: center;
+        background-color: rgba(255, 255, 255, 0.05);
+        color: white;
+
+        &:hover {
+          color: #bd692d;
+          background-color: rgba(189, 105, 45, 0.2);
+        }
+
+        &.active {
+          color: #bd692d;
+          background-color: rgba(189, 105, 45, 0.2);
+        }
+      }
     }
   }
 }
