@@ -7,6 +7,7 @@ import Card from "../Card/Card";
 import Pagination from "../Pagination/Pagination";
 import Filter from "../Filter/Filter";
 import { Helmet } from 'react-helmet';
+import { FaFilter } from 'react-icons/fa';
 import './Shop.scss';
 
 function Shop() {
@@ -22,6 +23,7 @@ function Shop() {
   const [noResults, setNoResults] = useState(false);
   const [sortOrder, setSortOrder] = useState("asc");
   const [loading, setLoading] = useState(true);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const itemsPerPage = 12;
 
   const updateFiltersFromUrl = useCallback(() => {
@@ -71,25 +73,6 @@ function Shop() {
     fetchGeckos();
   }, [fetchGeckos]);
 
-  useEffect(() => {
-    filterAndSortResults();
-  }, [geckos, status, species, gender, sortOrder]);
-
-  const handleAddToCart = useCallback(async (gecko) => {
-    if (!gecko || typeof gecko.id !== 'string' || gecko.id.trim() === '') {
-      console.error("Invalid gecko:", gecko);
-      return;
-    }
-    const success = await addToCart(gecko);
-    if (success) {
-      setGeckos((prevGeckos) =>
-        prevGeckos.map((g) =>
-          g.id === gecko.id ? { ...g, status: 'Reserved' } : g
-        )
-      );
-    }
-  }, [addToCart]);
-
   const filterAndSortResults = useCallback(() => {
     let results = [...geckos];
 
@@ -112,6 +95,25 @@ function Shop() {
     setFilteredResults(results);
     setNoResults(results.length === 0);
   }, [geckos, status, species, gender, sortOrder]);
+
+  useEffect(() => {
+    filterAndSortResults();
+  }, [filterAndSortResults]);
+
+  const handleAddToCart = useCallback(async (gecko) => {
+    if (!gecko || typeof gecko.id !== 'string' || gecko.id.trim() === '') {
+      console.error("Invalid gecko:", gecko);
+      return;
+    }
+    const success = await addToCart(gecko);
+    if (success) {
+      setGeckos((prevGeckos) =>
+        prevGeckos.map((g) =>
+          g.id === gecko.id ? { ...g, status: 'Reserved' } : g
+        )
+      );
+    }
+  }, [addToCart]);
 
   const clearFilters = useCallback(() => {
     setStatus("");
@@ -158,6 +160,10 @@ function Shop() {
     pageNumber * itemsPerPage
   );
 
+  const toggleFilterModal = () => {
+    setIsFilterModalOpen(!isFilterModalOpen);
+  };
+
   return (
     <>
       <Helmet>
@@ -168,7 +174,7 @@ function Shop() {
       <div className="shop-container">
         <div className="container">
           <div className="row">
-            <div className="col-lg-3 col-md-4 col-12">
+            <div className="col-lg-3 col-md-4 col-12 d-none d-lg-block">
               <Filter
                 status={status}
                 species={species}
@@ -179,9 +185,11 @@ function Shop() {
                 clearFilters={clearFilters}
               />
             </div>
-            <div className="col-lg-9 col-md-8 col-12">
+            <div className="col-lg-9 col-md-12 col-12">
               <div className="shop-header">
-                <h1 className="shop-title">Geckos for sale</h1>
+                <button className="btn btn-primary d-lg-none" onClick={toggleFilterModal}>
+                  <FaFilter /> Filter
+                </button>
                 <div className="sort-container">
                   <span className="sort-label">Sort by Price:</span>
                   <div className="btn-group" role="group" aria-label="Sort order">
@@ -235,6 +243,22 @@ function Shop() {
           </div>
         </div>
       </div>
+      {isFilterModalOpen && (
+        <div className="filter-modal">
+          <div className="filter-modal-content">
+            <button className="close-modal" onClick={toggleFilterModal}>&times;</button>
+            <Filter
+              status={status}
+              species={species}
+              gender={gender}
+              updateStatus={(newStatus) => handleFilterChange('status', newStatus)}
+              updateSpecies={(newSpecies) => handleFilterChange('species', newSpecies)}
+              updateGender={(newGender) => handleFilterChange('gender', newGender)}
+              clearFilters={clearFilters}
+            />
+          </div>
+        </div>
+      )}
     </>
   );
 }
