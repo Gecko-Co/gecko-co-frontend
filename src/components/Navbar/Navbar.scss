@@ -305,7 +305,7 @@
 
           .icon {
             font-size: 1.6rem;
-            color: white;
+            color: #bd692d;
           }
 
           &.cart-icon {
@@ -426,7 +426,7 @@
 
           .icon {
             font-size: 1.4rem;
-            color: white;
+            color: #bd692d;
           }
 
           &.cart-icon {
@@ -499,7 +499,7 @@
 
           .icon {
             font-size: 1.1rem;
-            color: white;
+            color: #bd692d;
           }
 
           &.cart-icon {
@@ -540,49 +540,6 @@
 
     .nav-links {
       order: 3;
-    }
-  }
-  @media screen and (max-width: 768px) {
-    .nav-links {
-      display: none;
-      flex-direction: column;
-      gap: 20px;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background-color: #23283b;
-      z-index: 1000;
-      padding: 120px 20px 20px;
-      overflow-y: auto;
-  
-      &.open {
-        display: flex;
-      }
-  
-      .nav-link-container {
-        width: 100%;
-      }
-  
-      .nav-link {
-        font-size: 1.4rem;
-        padding: 15px;
-        width: 100%;
-        justify-content: center;
-        background-color: rgba(255, 255, 255, 0.05);
-        color: white;
-  
-        &:hover {
-          color: #bd692d;
-          background-color: rgba(189, 105, 45, 0.2);
-        }
-  
-        &.active {
-          color: #bd692d;
-          background-color: rgba(189, 105, 45, 0.2);
-        }
-      }
     }
   }
 }
