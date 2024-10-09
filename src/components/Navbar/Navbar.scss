@@ -157,6 +157,7 @@
 
         .icon {
           font-size: 1.8rem;
+          color: white;
         }
 
         .cart-count {
@@ -238,9 +239,11 @@
       .nav-icons {
         .nav-icon-link {
           font-size: 1.3rem;
+          color: white;
 
           .icon {
             font-size: 1.6rem;
+            color: white;
           }
 
           &.cart-icon {
@@ -315,10 +318,11 @@
 
         .nav-icon-link {
           font-size: 1.1rem;
-          color: #bd692d;
+          color: white;
 
           .icon {
             font-size: 1.4rem;
+            color: white;
           }
 
           &.cart-icon {
@@ -387,9 +391,11 @@
 
         .nav-icon-link {
           font-size: 0.9rem;
+          color: white;
 
           .icon {
             font-size: 1.1rem;
+            color: white;
           }
 
           &.cart-icon {
@@ -485,16 +491,17 @@
     padding: 0;
     display: flex;
     align-items: center;
-    color: #bd692d;
+    color: white;
     font-size: 1.5rem;
     transition: color 0.3s ease;
 
     &:hover {
-      color: darken(#bd692d, 10%);
+      color: #bd692d;
     }
 
     .icon {
       font-size: 1.8rem;
+      color: white;
     }
   }
 }
