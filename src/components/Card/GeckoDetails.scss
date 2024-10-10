@@ -1,282 +1,175 @@
-.gecko-details-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.7);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-  z-index: 1000;
-
-  &.open {
-    opacity: 1;
-    visibility: visible;
-  }
+.gecko-details-page {
+  padding-top: 200px; // Adjust this value based on your navbar height
+  min-height: calc(100vh - 200px);
+  background-color: #f4f4f4;
+  font-family: 'Poppins', sans-serif;
 }
 
-.gecko-details-modal {
-  background-color: #fff;
+.gecko-details-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  display: flex;
+  gap: 40px;
+  background-color: #ffffff;
   border-radius: 12px;
-  width: 90%;
-  max-width: 800px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  transform: translateY(20px);
-  transition: transform 0.3s ease;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 
-  .open & {
-    transform: translateY(0);
+  @media (max-width: 768px) {
+    flex-direction: column;
   }
 }
 
-.close-button {
-  position: absolute;
-  top: 15px;
-  right: 15px;
-  font-size: 24px;
-  color: #fff;
-  background-color: rgba(35, 40, 59, 0.8);
-  border: none;
-  border-radius: 50%;
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  z-index: 10;
-  transition: background-color 0.3s ease;
-
-  &:hover {
-    background-color: rgba(35, 40, 59, 1);
-  }
-}
-
-.gecko-details-content {
-  display: flex;
-  flex-direction: column;
-}
-
-.gecko-details-image-container {
+.gecko-image-container {
+  flex: 1;
   position: relative;
-  width: 100%;
-  padding-top: 75%; // 4:3 aspect ratio
-  overflow: hidden;
+  max-width: 500px;
+  align-self: flex-start;
 }
 
-.gecko-details-image {
-  position: absolute;
-  top: 0;
-  left: 0;
+.gecko-image {
   width: 100%;
-  height: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   object-fit: cover;
+  aspect-ratio: 4 / 3;
 }
 
-.gecko-details-image-overlay {
+.gecko-status {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  padding: 15px;
-  background: linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0));
-  color: #fff;
-
-  h2 {
-    margin: 0;
-    font-size: 20px;
-    font-weight: bold;
-  }
-}
-
-.gecko-details-status {
-  display: inline-block;
-  padding: 4px 8px;
+  top: 10px;
+  right: 10px;
+  padding: 5px 10px;
   border-radius: 20px;
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
-  margin-top: 8px;
+  text-transform: uppercase;
+  color: #fff;
 
   &.available { background-color: #28a745; }
   &.sold { background-color: #dc3545; }
-  &.reserved { background-color: #007bff; color: #fff; }
+  &.reserved { background-color: #ffc107; color: #000; }
 }
 
-.gecko-details-info {
-  padding: 15px;
+.gecko-info-container {
+  flex: 1;
 }
 
-.gecko-details-tabs {
+h1 {
+  color: #23283b;
+  margin-bottom: 20px;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.gecko-info {
+  background-color: #f8f9fa;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.info-item {
   display: flex;
-  border-bottom: 2px solid #e0e0e0;
-  margin-bottom: 15px;
+  align-items: center;
+  margin-bottom: 10px;
 
-  button {
-    background: none;
-    border: none;
-    padding: 8px 15px;
-    font-size: 14px;
-    font-weight: bold;
-    color: #666;
-    cursor: pointer;
-    transition: color 0.3s ease;
+  svg {
+    margin-right: 10px;
+    color: #bd692d;
+    width: 20px;
+  }
 
-    &.active {
-      color: #23283b;
-      border-bottom: 2px solid #23283b;
+  span {
+    font-size: 16px;
+  }
+}
+
+.gecko-description {
+  margin-bottom: 20px;
+
+  h2 {
+    color: #23283b;
+    margin-bottom: 10px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+
+    svg {
+      margin-right: 10px;
+      color: #bd692d;
     }
   }
+
+  p {
+    font-size: 16px;
+    line-height: 1.6;
+  }
 }
 
-.gecko-details-tab-content {
-  animation: fadeIn 0.3s ease;
-}
-
-.gecko-details-item {
+.gecko-actions {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-  font-size: 14px;
+  gap: 10px;
 }
 
-.gecko-details-label {
-  font-weight: bold;
-  color: #23283b;
-}
-
-.gecko-details-value {
-  color: #555;
-}
-
-.gecko-details-actions {
-  display: flex;
-  justify-content: space-between;
-  padding: 15px;
-  background-color: #f8f9fa;
-  border-top: 1px solid #e0e0e0;
-}
-
-.gecko-details-action-button {
-  padding: 8px 15px;
+.action-button {
+  padding: 12px 24px;
   border: none;
   border-radius: 5px;
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.1s ease;
-
-  &:active {
-    transform: translateY(1px);
-  }
+  transition: all 0.3s ease;
 
   &.primary {
+    background-color: #bd692d;
+    color: white;
+
+    &:hover {
+      background-color: darken(#bd692d, 10%);
+    }
+  }
+
+  &.secondary {
     background-color: #23283b;
-    color: #fff;
+    color: white;
 
     &:hover {
       background-color: darken(#23283b, 10%);
     }
   }
-
-  &.secondary {
-    background-color: #e0e0e0;
-    color: #23283b;
-
-    &:hover {
-      background-color: darken(#e0e0e0, 10%);
-    }
-  }
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.loading, .error {
+  text-align: center;
+  font-size: 18px;
+  color: #23283b;
+  margin-top: 40px;
 }
 
-@media (min-width: 768px) {
-  .gecko-details-content {
-    flex-direction: row;
+@media (max-width: 768px) {
+  .gecko-details-page {
+    padding-top: 120px;
   }
 
-  .gecko-details-image-container {
-    width: 50%;
-    padding-top: 37.5%; // Maintain 4:3 aspect ratio for half width
-  }
-
-  .gecko-details-info {
-    width: 50%;
-  }
-
-  .close-button {
-    top: 20px;
-    right: 20px;
-    font-size: 28px;
-    width: 40px;
-    height: 40px;
-  }
-
-  .gecko-details-image-overlay {
-    padding: 20px;
-
-    h2 {
-      font-size: 24px;
-    }
-  }
-
-  .gecko-details-status {
-    padding: 5px 10px;
-    font-size: 14px;
-    margin-top: 10px;
-  }
-
-  .gecko-details-info {
+  .gecko-details-container {
     padding: 20px;
   }
 
-  .gecko-details-tabs button {
-    padding: 10px 20px;
-    font-size: 16px;
+  .gecko-image-container {
+    max-width: 100%;
   }
 
-  .gecko-details-item {
-    font-size: 16px;
-    margin-bottom: 10px;
+  h1 {
+    font-size: 24px;
   }
 
-  .gecko-details-actions {
-    padding: 20px;
-  }
-
-  .gecko-details-action-button {
-    padding: 10px 20px;
-    font-size: 16px;
-  }
-}
-
-@media (max-width: 767px) {
-  .gecko-details-modal {
-    width: 95%;
-    max-height: 95vh;
-    margin-top: 60px; // Add space for the navbar
-  }
-
-  .gecko-details-image-container {
-    padding-top: 75%; // Maintain 4:3 aspect ratio
-  }
-
-  .gecko-details-actions {
+  .gecko-actions {
     flex-direction: column;
-    gap: 10px;
   }
 
-  .gecko-details-action-button {
+  .action-button {
     width: 100%;
   }
 }

@@ -1,17 +1,11 @@
 import React, { useState } from "react";
-import GeckoDetails from "./GeckoDetails";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
 import "./Card.scss";
 
 const Card = ({ results, addToCart }) => {
-  const [selectedGecko, setSelectedGecko] = useState(null);
-
-  const handleShowDetails = (gecko) => {
-    setSelectedGecko(gecko);
-  };
-
-  const handleCloseDetails = () => {
-    setSelectedGecko(null);
-  };
+  const [hoveredGecko, setHoveredGecko] = useState(null);
 
   const handleAddToCart = async (gecko) => {
     if (!gecko || typeof gecko.id !== 'string' || gecko.id.trim() === '') {
@@ -19,7 +13,6 @@ const Card = ({ results, addToCart }) => {
       return;
     }
     await addToCart(gecko);
-    setSelectedGecko(null);
   };
 
   const getImageUrl = (imagePath) => {
@@ -43,7 +36,12 @@ const Card = ({ results, addToCart }) => {
         const imageUrl = getImageUrl(images);
 
         return (
-          <div key={id} className="card">
+          <div 
+            key={id} 
+            className="card"
+            onMouseEnter={() => setHoveredGecko(id)}
+            onMouseLeave={() => setHoveredGecko(null)}
+          >
             <div className="card-image-container">
               <img src={imageUrl} alt={title} className="card-image" />
               <div className="card-quick-info">
@@ -59,13 +57,17 @@ const Card = ({ results, addToCart }) => {
                 <p className="card-price">{priceInPHP}</p>
               </div>
               <div className="card-actions">
-                <button className="btn btn-primary" onClick={() => handleShowDetails(gecko)}>View Details</button>
+                <Link to={`/gecko/${id}`} className="btn btn-primary">View Details</Link>
                 <button 
                   className="btn btn-secondary" 
                   onClick={() => handleAddToCart(gecko)}
                   disabled={status.toLowerCase() !== 'available'}
                 >
-                  {status.toLowerCase() === 'available' ? 'Add to Cart' : 'Not Available'}
+                  {hoveredGecko === id ? (
+                    <FontAwesomeIcon icon={faShoppingCart} />
+                  ) : (
+                    status.toLowerCase() === 'available' ? 'Add to Cart' : 'Not Available'
+                  )}
                 </button>
               </div>
             </div>
@@ -75,14 +77,6 @@ const Card = ({ results, addToCart }) => {
           </div>
         );
       })}
-      {selectedGecko && (
-        <GeckoDetails
-          gecko={selectedGecko}
-          isOpen={!!selectedGecko}
-          onClose={handleCloseDetails}
-          addToCart={handleAddToCart}
-        />
-      )}
     </div>
   );
 };

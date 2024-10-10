@@ -26,6 +26,7 @@ import Account from './components/Account/Account';
 import { inject } from '@vercel/analytics';
 import SignUp from './components/Auth/SignUp';
 import Settings from './components/Account/Settings';
+import GeckoDetailsPage from './components/Card/GeckoDetails';
 
 inject();
 
@@ -66,7 +67,7 @@ function App() {
               <Route path="/account" element={<Account user={user} />} />
               <Route path="/settings" element={<Settings user={user} />} />
               <Route path="/signup" element={<SignUp />} />
-              
+              <Route path="/gecko/:id" element={<GeckoDetailsPage />} />
             </Routes>
           </div>
           <Scroll />
@@ -85,7 +86,6 @@ function App() {
               fontSize: '14px',
               maxWidth: '350px',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
-              
             },
           }}
           containerStyle={{

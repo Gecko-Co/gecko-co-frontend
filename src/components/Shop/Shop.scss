@@ -122,15 +122,16 @@
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   z-index: 1000;
+  padding-top: 80px; // Default padding-top
 
   .filter-modal-content {
     background-color: white;
     padding: 20px;
     border-radius: 8px;
-    max-width: 90%;
-    max-height: 90%;
+    max-width: 90%; // Default max-width
+    max-height: calc(100% - 100px);
     overflow-y: auto;
     position: relative;
   }
@@ -154,6 +155,14 @@
       font-size: 2.2rem;
     }
   }
+
+  // Increase modal size for larger screens
+  .filter-modal {
+    .filter-modal-content {
+      max-width: 80%; // Increased from 90%
+      max-height: calc(100% - 120px); // Increased height
+    }
+  }
 }
 
 @media (max-width: 991px) {
@@ -163,6 +172,14 @@
     .shop-title {
       font-size: 2rem;
       margin-bottom: 1.5rem;
+    }
+  }
+
+  // Adjust modal size for medium screens
+  .filter-modal {
+    .filter-modal-content {
+      max-width: 85%; // Slightly smaller than larger screens
+      max-height: calc(100% - 110px);
     }
   }
 }
@@ -193,6 +210,16 @@
 
     .btn-primary, .btn-outline-primary {
       flex: 1;
+    }
+  }
+
+  .filter-modal {
+    padding-top: 150px;
+
+    // Increase modal size for tablets and large phones
+    .filter-modal-content {
+      max-width: 95%; // Wider on smaller screens
+      max-height: calc(100% - 80px); // More vertical space
     }
   }
 }
@@ -231,11 +258,21 @@
       font-size: 20px;
     }
   }
+
+  .filter-modal {
+    padding-top: 140px;
+
+    // Adjust modal size for small phones
+    .filter-modal-content {
+      max-width: 98%; // Almost full width
+      max-height: calc(100% - 60px); // More vertical space
+    }
+  }
 }
 
 @media (max-width: 320px) {
   .shop-container {
-    padding-top: 130px;
+    padding-top: 150px;
     padding-left: 10px;
     padding-right: 10px;
 
@@ -277,6 +314,17 @@
 
     .no-results {
       font-size: 18px;
+    }
+  }
+
+  .filter-modal {
+    padding-top: 150px; // Adjusted padding-top for 320px screens
+
+    // Maximize modal size for very small screens
+    .filter-modal-content {
+      max-width: 100%; // Full width
+      max-height: calc(100% - 50px); // Almost full height
+      border-radius: 0; // Remove border radius for full-screen effect
     }
   }
 }

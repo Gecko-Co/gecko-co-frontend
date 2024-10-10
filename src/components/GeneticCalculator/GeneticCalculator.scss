@@ -353,8 +353,9 @@
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   z-index: 1000;
+  padding-top: 200px; // Adjusted to prevent navbar overlap
 }
 
 .modal-content {
@@ -403,6 +404,7 @@
   }
 }
 
+// Improved responsiveness for smaller screens
 @media (max-width: 768px) {
   .genetic-calculator-wrapper {
     padding-top: 140px;
@@ -419,11 +421,25 @@
       h2 {
         font-size: 1.5rem;
       }
+
+      .gene-input {
+        flex-direction: column;
+
+        select, button {
+          width: 100%;
+        }
+      }
     }
 
     .offspring-results {
       h2 {
         font-size: 1.8rem;
+      }
+
+      .gene-type-legend {
+        ul {
+          flex-direction: column;
+        }
       }
     }
 
@@ -436,6 +452,16 @@
     .share-btn,
     .clear-btn {
       width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+    width: 95%;
+
+    h2 {
+      font-size: 1.5rem;
     }
   }
 }
@@ -460,7 +486,102 @@
       h2 {
         font-size: 1.5rem;
       }
+
+      table {
+        font-size: 0.9rem;
+
+        th, td {
+          padding: 0.75rem;
+        }
+      }
+    }
+  }
+
+  .modal-content {
+    padding: 1rem;
+
+    h2 {
+      font-size: 1.3rem;
+    }
+
+    p {
+      font-size: 0.9rem;
     }
   }
 }
 
+// New styles for 320px screens
+@media (max-width: 320px) {
+  .genetic-calculator-wrapper {
+    padding-top: 100px;
+  }
+
+  .genetic-calculator {
+    padding: 1rem;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+
+    .gene-selector {
+      h2 {
+        font-size: 1.2rem;
+      }
+
+      .gene-input {
+        select, button {
+          font-size: 0.9rem;
+        }
+      }
+    }
+
+    .offspring-results {
+      padding: 1rem;
+
+      h2 {
+        font-size: 1.3rem;
+      }
+
+      table {
+        font-size: 0.8rem;
+
+        th, td {
+          padding: 0.5rem;
+        }
+      }
+    }
+
+    .button-container {
+      gap: 0.5rem;
+    }
+
+    .calculate-btn,
+    .share-btn,
+    .clear-btn {
+      font-size: 0.9rem;
+      padding: 0.6rem 1rem;
+    }
+  }
+
+  .modal-overlay {
+    padding-top: 130px; // Further reduced to prevent navbar overlap on very small screens
+  }
+
+  .modal-content {
+    padding: 0.8rem;
+    width: 98%;
+
+    h2 {
+      font-size:  1.2rem;
+    }
+
+    p {
+      font-size: 0.8rem;
+    }
+  }
+
+  .modal-close {
+    font-size: 0.9rem;
+    padding: 0.6rem;
+  }
+}

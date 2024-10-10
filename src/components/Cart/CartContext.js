@@ -1,6 +1,6 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
 import customToast from '../../utils/toast';
-import { doc, updateDoc, getDoc } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 const CartContext = createContext();
@@ -18,7 +18,7 @@ export const CartProvider = ({ children }) => {
   }, [cart]);
 
   const addToCart = useCallback(async (item) => {
-    if (!item || typeof item.id !== 'string' || item.id.trim() === '') {
+    if (!item || !item.id) {
       console.error("Invalid item:", item);
       customToast.error('Failed to add item to cart');
       return false;
@@ -26,13 +26,25 @@ export const CartProvider = ({ children }) => {
 
     try {
       console.log("Adding item to cart:", item);
-      const geckoRef = doc(db, 'geckos', item.id);
-      const geckoSnap = await getDoc(geckoRef);
+      
+      const geckoId = item.id.toString();
+      
+      let geckoRef = doc(db, 'geckos', geckoId);
+      let geckoSnap = await getDoc(geckoRef);
       
       if (!geckoSnap.exists()) {
-        console.error("Gecko document does not exist:", item.id);
-        customToast.error('Gecko not found');
-        return false;
+        const geckosCollection = collection(db, 'geckos');
+        const q = query(geckosCollection, where('name', '==', item.name));
+        const querySnapshot = await getDocs(q);
+        
+        if (!querySnapshot.empty) {
+          geckoSnap = querySnapshot.docs[0];
+          geckoRef = doc(db, 'geckos', geckoSnap.id);
+        } else {
+          console.error("Gecko document does not exist:", item.id);
+          customToast.error('Gecko not found');
+          return false;
+        }
       }
 
       const geckoData = geckoSnap.data();
@@ -45,7 +57,7 @@ export const CartProvider = ({ children }) => {
         });
         
         setCart((prevCart) => {
-          const newCart = [...prevCart, item];
+          const newCart = [...prevCart, { ...item, id: geckoSnap.id }];
           localStorage.setItem('cart', JSON.stringify(newCart));
           return newCart;
         });
@@ -67,13 +79,13 @@ export const CartProvider = ({ children }) => {
   const removeFromCart = useCallback(async (index) => {
     try {
       const item = cart[index];
-      if (!item || typeof item.id !== 'string' || item.id.trim() === '') {
+      if (!item || !item.id) {
         console.error("Invalid item:", item);
         customToast.error('Failed to remove item from cart');
         return;
       }
 
-      const geckoRef = doc(db, 'geckos', item.id);
+      const geckoRef = doc(db, 'geckos', item.id.toString());
       await updateDoc(geckoRef, { status: 'Available', reservedUntil: null });
       
       setCart((prevCart) => {
@@ -91,11 +103,11 @@ export const CartProvider = ({ children }) => {
   const clearCart = useCallback(async () => {
     try {
       for (const item of cart) {
-        if (!item || typeof item.id !== 'string' || item.id.trim() === '') {
+        if (!item || !item.id) {
           console.error("Invalid item:", item);
           continue;
         }
-        const geckoRef = doc(db, 'geckos', item.id);
+        const geckoRef = doc(db, 'geckos', item.id.toString());
         await updateDoc(geckoRef, { status: 'Available', reservedUntil: null });
       }
       setCart([]);
@@ -113,3 +125,5 @@ export const CartProvider = ({ children }) => {
     </CartContext.Provider>
   );
 };
+
+export default CartProvider;

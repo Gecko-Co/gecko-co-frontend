@@ -3,6 +3,7 @@ import { useCart } from './CartContext';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faArrowLeft, faCreditCard } from '@fortawesome/free-solid-svg-icons';
+import customToast from '../../utils/toast';
 import './Cart.scss';
 
 const Cart = () => {
@@ -10,6 +11,10 @@ const Cart = () => {
 
   const calculateTotal = () => {
     return cart.reduce((total, item) => total + parseFloat(item.price), 0);
+  };
+
+  const handleCheckout = () => {
+    customToast.warning('Checkout is currently under maintenance. Please try again later.');
   };
 
   return (
@@ -45,7 +50,7 @@ const Cart = () => {
                 <button onClick={clearCart} className="clear-cart-button">
                   <FontAwesomeIcon icon={faTrash} /> Clear Cart
                 </button>
-                <button className="checkout-button">
+                <button onClick={handleCheckout} className="checkout-button">
                   <FontAwesomeIcon icon={faCreditCard} /> Proceed to Checkout
                 </button>
               </div>
