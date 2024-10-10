@@ -1,15 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVenusMars, faWeightHanging, faClock, faDollarSign, faUser, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { useCart } from '../Cart/CartContext';
+import customToast from '../../utils/toast';
 import './GeckoDetails.scss';
 
 const GeckoDetails = () => {
   const [gecko, setGecko] = useState(null);
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
+  const { addToCart } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGecko = async () => {
@@ -33,6 +37,20 @@ const GeckoDetails = () => {
   const getImageUrl = (imagePath) => {
     const baseUrl = "https://www.geckoco.ph/";
     return imagePath ? `${baseUrl}${imagePath}` : '/placeholder.svg';
+  };
+
+  const handleAddToCart = async () => {
+    if (!gecko || typeof gecko.id !== 'string' || gecko.id.trim() === '') {
+      console.error("Invalid gecko:", gecko);
+      return;
+    }
+    await addToCart(gecko);
+    customToast.success('Gecko added to cart!');
+  };
+
+  const handleContactBreeder = () => {
+    // Implement contact breeder functionality
+    customToast.info('Contact breeder functionality not implemented yet.');
   };
 
   if (loading) {
@@ -83,8 +101,14 @@ const GeckoDetails = () => {
             <p>{gecko.description || "No description available for this gecko."}</p>
           </div>
           <div className="gecko-actions">
-            <button className="action-button primary">Contact Breeder</button>
-            <button className="action-button secondary">Add to Cart</button>
+            <button className="action-button primary" onClick={handleContactBreeder}>Contact Breeder</button>
+            <button 
+              className="action-button secondary" 
+              onClick={handleAddToCart}
+              disabled={gecko.status.toLowerCase() !== 'available'}
+            >
+              {gecko.status.toLowerCase() === 'available' ? 'Add to Cart' : 'Not Available'}
+            </button>
           </div>
         </div>
       </div>
