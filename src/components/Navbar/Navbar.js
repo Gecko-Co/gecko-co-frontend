@@ -3,11 +3,10 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Navbar.scss';
 import { FaUserCircle, FaUserPlus, FaShoppingCart } from 'react-icons/fa';
 import { useCart } from '../Cart/CartContext';
-import { signOut } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { useAuth } from '../Auth/AuthContext'; // Add this import
 import LoginPopup from '../Auth/LoginPopup';
 
-const Navbar = ({ user }) => {
+const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -15,6 +14,7 @@ const Navbar = ({ user }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const { cart } = useCart();
+  const { currentUser } = useAuth(); // Add this line
   
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -41,17 +41,8 @@ const Navbar = ({ user }) => {
     setShowLoginPopup(false);
   }, [location]);
 
-  const handleSignOut = async () => {
-    try {
-      await signOut(auth);
-      navigate('/');
-    } catch (error) {
-      console.error('Error signing out:', error);
-    }
-  };
-
   const handleAccountClick = () => {
-    if (user) {
+    if (currentUser) {
       navigate('/account');
     } else if (location.pathname !== '/signin') {
       setShowLoginPopup(true);
@@ -76,7 +67,7 @@ const Navbar = ({ user }) => {
       <div className="menu-icons-container">
         <div className="nav-icons">
           <button onClick={handleAccountClick} className="nav-icon-link">
-            {user ? (
+            {currentUser ? (
               <FaUserCircle className="icon" aria-label="Account" />
             ) : (
               <FaUserPlus className="icon" aria-label="Sign In" />

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
 import './Settings.scss';
 
-const Settings = ({ user }) => {
+const Settings = () => {
   const navigate = useNavigate();
-  const [displayName, setDisplayName] = useState(user.displayName || '');
-  const [email, setEmail] = useState(user.email || '');
+  const { currentUser } = useAuth();
+  const [displayName, setDisplayName] = useState(currentUser?.displayName || '');
+  const [email, setEmail] = useState(currentUser?.email || '');
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -16,7 +17,7 @@ const Settings = ({ user }) => {
   const handleUpdateProfile = async (e) => {
     e.preventDefault();
     try {
-      await updateProfile(auth.currentUser, { displayName });
+      await updateProfile(currentUser, { displayName });
       customToast.success('Profile updated successfully');
     } catch (error) {
       console.error('Error updating profile:', error);
@@ -31,9 +32,9 @@ const Settings = ({ user }) => {
       return;
     }
     try {
-      const credential = EmailAuthProvider.credential(user.email, currentPassword);
-      await reauthenticateWithCredential(auth.currentUser, credential);
-      await updateEmail(auth.currentUser, email);
+      const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+      await reauthenticateWithCredential(currentUser, credential);
+      await updateEmail(currentUser, email);
       customToast.success('Email updated successfully');
     } catch (error) {
       console.error('Error updating email:', error);
@@ -52,9 +53,9 @@ const Settings = ({ user }) => {
       return;
     }
     try {
-      const credential = EmailAuthProvider.credential(user.email, currentPassword);
-      await reauthenticateWithCredential(auth.currentUser, credential);
-      await updatePassword(auth.currentUser, newPassword);
+      const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
+      await reauthenticateWithCredential(currentUser, credential);
+      await updatePassword(currentUser, newPassword);
       customToast.success('Password updated successfully');
       setCurrentPassword('');
       setNewPassword('');
@@ -65,7 +66,7 @@ const Settings = ({ user }) => {
     }
   };
 
-  if (!user) {
+  if (!currentUser) {
     navigate('/signin');
     return null;
   }
