@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
-import { useAuth } from '../Auth/AuthContext'; // Updated import path
+import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
-import { doc, updateDoc, getDoc, setDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { doc, updateDoc, getDoc, setDoc, arrayUnion, arrayRemove, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 
 const CartContext = createContext();
@@ -51,31 +51,38 @@ const CartProvider = ({ children }) => {
     try {
       console.log("Adding item to cart:", item);
       
+      let geckoDoc;
+      // First, try to fetch the gecko using the id
       const geckoRef = doc(db, 'geckos', item.id.toString());
-      const geckoSnap = await getDoc(geckoRef);
+      let geckoSnap = await getDoc(geckoRef);
       
       if (!geckoSnap.exists()) {
-        console.error("Gecko document does not exist:", item.id);
-        customToast.error('Gecko not found');
-        return false;
+        // If not found by id, try to fetch using the 'name' field
+        const geckosCollection = collection(db, 'geckos');
+        const q = query(geckosCollection, where('name', '==', item.name));
+        const querySnapshot = await getDocs(q);
+
+        if (!querySnapshot.empty) {
+          geckoDoc = querySnapshot.docs[0];
+        } else {
+          console.error("Gecko document does not exist:", item.id);
+          customToast.error('Gecko not found');
+          return false;
+        }
+      } else {
+        geckoDoc = geckoSnap;
       }
 
-      const geckoData = geckoSnap.data();
+      const geckoData = geckoDoc.data();
       console.log("Gecko data:", geckoData);
 
       if (geckoData.status === 'Available') {
-        await updateDoc(geckoRef, { 
-          status: 'Reserved',
-          reservedBy: currentUser.uid,
-          reservedUntil: Date.now() + 30 * 60 * 1000 // 30 minutes from now
-        });
-        
         const userCartRef = doc(db, 'userCarts', currentUser.uid);
         await updateDoc(userCartRef, {
-          items: arrayUnion({ ...item, id: geckoSnap.id })
+          items: arrayUnion({ ...item, id: geckoDoc.id })
         });
         
-        setCart(prevCart => [...prevCart, { ...item, id: geckoSnap.id }]);
+        setCart(prevCart => [...prevCart, { ...item, id: geckoDoc.id }]);
         
         customToast.success('Gecko added to cart!');
         return true;
@@ -98,13 +105,6 @@ const CartProvider = ({ children }) => {
     }
 
     try {
-      const geckoRef = doc(db, 'geckos', itemToRemove.id.toString());
-      await updateDoc(geckoRef, { 
-        status: 'Available', 
-        reservedBy: null,
-        reservedUntil: null 
-      });
-      
       const userCartRef = doc(db, 'userCarts', currentUser.uid);
       await updateDoc(userCartRef, {
         items: arrayRemove(itemToRemove)
@@ -125,15 +125,6 @@ const CartProvider = ({ children }) => {
     }
 
     try {
-      for (const item of cart) {
-        const geckoRef = doc(db, 'geckos', item.id.toString());
-        await updateDoc(geckoRef, { 
-          status: 'Available', 
-          reservedBy: null,
-          reservedUntil: null 
-        });
-      }
-      
       const userCartRef = doc(db, 'userCarts', currentUser.uid);
       await setDoc(userCartRef, { items: [] });
       
@@ -143,7 +134,7 @@ const CartProvider = ({ children }) => {
       console.error("Error clearing cart: ", error);
       customToast.error('Failed to clear cart');
     }
-  }, [cart, currentUser]);
+  }, [currentUser]);
 
   return (
     <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart }}>

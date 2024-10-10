@@ -105,14 +105,7 @@ function Shop() {
       console.error("Invalid gecko:", gecko);
       return;
     }
-    const success = await addToCart(gecko);
-    if (success) {
-      setGeckos((prevGeckos) =>
-        prevGeckos.map((g) =>
-          g.id === gecko.id ? { ...g, status: 'Reserved' } : g
-        )
-      );
-    }
+    await addToCart(gecko);
   }, [addToCart]);
 
   const clearFilters = useCallback(() => {
@@ -144,7 +137,7 @@ function Shop() {
       case 'status':
         setStatus(value);
         break;
-      case 'species':
+      case  'species':
         setSpecies(value);
         break;
       case 'gender':
@@ -217,7 +210,6 @@ function Shop() {
               ) : noResults ? (
                 <div className="no-results-container">
                   <p className="no-results">No Geckos Found 😢</p>
-                  {/* <button onClick={clearFilters} className="btn btn-primary">Clear Filters</button> */}
                 </div>
               ) : (
                 <div className="shop-content">

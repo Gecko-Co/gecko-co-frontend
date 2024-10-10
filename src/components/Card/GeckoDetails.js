@@ -5,6 +5,7 @@ import { db } from '../../firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faVenusMars, faWeightHanging, faClock, faDollarSign, faUser, faInfoCircle, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from '../Cart/CartContext';
+import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
 import './GeckoDetails.scss';
 
@@ -13,34 +14,36 @@ const GeckoDetails = () => {
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const { addToCart } = useCart();
+  const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchGecko = async () => {
       try {
-        // First, try to fetch the gecko using the Firestore-generated ID
+        let geckoDoc;
+        // First, try to fetch the gecko using the id
         const geckoRef = doc(db, 'geckos', id);
-        const geckoSnap = await getDoc(geckoRef);
+        let geckoSnap = await getDoc(geckoRef);
 
         if (geckoSnap.exists()) {
-          const geckoData = { id: geckoSnap.id, ...geckoSnap.data() };
-          console.log('Fetched gecko:', geckoData);
-          setGecko(geckoData);
+          geckoDoc = geckoSnap;
         } else {
-          // If not found, try to fetch using the 'name' field
+          // If not found by id, try to fetch using the 'name' field
           const geckosCollection = collection(db, 'geckos');
           const q = query(geckosCollection, where('name', '==', id));
           const querySnapshot = await getDocs(q);
 
           if (!querySnapshot.empty) {
-            const geckoDoc = querySnapshot.docs[0];
-            const geckoData = { id: geckoDoc.id, ...geckoDoc.data() };
-            console.log('Fetched gecko by name:', geckoData);
-            setGecko(geckoData);
+            geckoDoc = querySnapshot.docs[0];
           } else {
             console.log('No such gecko!');
             setGecko(null);
+            return;
           }
         }
+
+        const geckoData = { id: geckoDoc.id, ...geckoDoc.data() };
+        console.log('Fetched gecko:', geckoData);
+        setGecko(geckoData);
       } catch (error) {
         console.error('Error fetching gecko:', error);
       } finally {
@@ -57,17 +60,22 @@ const GeckoDetails = () => {
   };
 
   const handleAddToCart = async () => {
+    if (!currentUser) {
+      customToast.error('Please log in to add items to your cart');
+      return;
+    }
+
     if (!gecko) {
       console.error("Invalid gecko:", gecko);
       customToast.error('Failed to add gecko to cart. Please try again.');
       return;
     }
+
     try {
       console.log("Adding gecko to cart:", gecko);
       const success = await addToCart(gecko);
       if (success) {
         customToast.success('Gecko added to cart successfully!');
-        setGecko(prevGecko => ({ ...prevGecko, status: 'Reserved' }));
       } else {
         customToast.error('Failed to add gecko to cart. Please try again.');
       }
@@ -133,13 +141,14 @@ const GeckoDetails = () => {
             <button 
               className="action-button secondary" 
               onClick={handleAddToCart}
-              disabled={gecko.status.toLowerCase() !== 'available'}
+              disabled={!currentUser || gecko.status.toLowerCase() !== 'available'}
             >
-              {gecko.status.toLowerCase() === 'available' ? (
-                <>
-                  <FontAwesomeIcon icon={faShoppingCart} /> Add to Cart
-                </>
-              ) : 'Not Available'}
+              {!currentUser ? 'Log in to Add to Cart' : 
+                (gecko.status.toLowerCase() === 'available' ? (
+                  <>
+                    <FontAwesomeIcon icon={faShoppingCart} /> Add to Cart
+                  </>
+                ) : 'Not Available')}
             </button>
           </div>
         </div>
