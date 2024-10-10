@@ -27,6 +27,10 @@ const Account = ({ user }) => {
     return cart.reduce((total, item) => total + parseFloat(item.price), 0).toFixed(2);
   };
 
+  const handleCheckout = () => {
+    customToast.warning('Checkout is currently under maintenance. Please try again later.');
+  };
+
   if (!user) {
     navigate('/signin');
     return null;
@@ -75,7 +79,7 @@ const Account = ({ user }) => {
                 <p>Total: ₱{parseFloat(calculateTotal()).toLocaleString('en-US')}</p>
               </div>
               <div className="cart-actions">
-                <button onClick={() => navigate('/cart')} className="checkout-button">
+                <button onClick={handleCheckout} className="checkout-button">
                   <FontAwesomeIcon icon={faCreditCard} /> Proceed to Checkout
                 </button>
                 <button onClick={clearCart} className="clear-cart-button">
