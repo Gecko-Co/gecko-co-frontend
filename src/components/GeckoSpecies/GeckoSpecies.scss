@@ -1,9 +1,35 @@
 .gecko-species-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 140px 20px 40px; // Increased top padding
+  padding: 140px 20px 40px; // Default padding
   font-family: 'Poppins', sans-serif;
   position: relative;
+
+  // Media queries for different screen sizes
+  // EDIT PADDING-TOP VALUES BELOW AS NEEDED
+  @media (min-width: 1280px) {
+    padding-top: 160px; // Larger screens
+  }
+
+  @media (max-width: 1279px) and (min-width: 992px) {
+    padding-top: 150px; // Large screens
+  }
+
+  @media (max-width: 991px) and (min-width: 768px) {
+    padding-top: 140px; // Medium screens
+  }
+
+  @media (max-width: 767px) and (min-width: 481px) {
+    padding-top: 130px; // Small screens
+  }
+
+  @media (max-width: 480px) {
+    padding-top: 120px; // Extra small screens
+  }
+
+  @media (max-width: 320px) {
+    padding-top: 110px; // Very small screens
+  }
 
   .back-button {
     display: inline-block;
@@ -22,6 +48,26 @@
     &:hover {
       color: #bd692d;
     }
+
+    // Adjust back button position for different screen sizes
+    @media (max-width: 991px) {
+      top: 140px;
+    }
+
+    @media (max-width: 991px) {
+      top: 140px;
+    }
+
+    @media (max-width: 767px) {
+      top: 130px;
+    }
+
+    @media (max-width: 480px) {
+      top: 130px;
+    }
+    @media (max-width: 320px) {
+      top: 110px;
+    }
   }
 
   h1 {
@@ -29,6 +75,26 @@
     color: #23283b;
     margin-bottom: 10px;
     padding-top: 100px; // Increased to create more space for the back button
+
+    // Adjust h1 padding-top for different screen sizes
+    @media (max-width: 991px) {
+      padding-top: 80px;
+    }
+
+    @media (max-width: 767px) {
+      padding-top: 60px;
+      font-size: 32px;
+    }
+
+    @media (max-width: 480px) {
+      padding-top: 55px;
+      font-size: 28px;
+    }
+    
+    @media (max-width: 320px) {
+      padding-top: 50px;
+      font-size: 28px;
+    }
   }
 
   h2 {
@@ -36,12 +102,24 @@
     color: #bd692d;
     margin-bottom: 30px;
     font-style: italic;
+
+    @media (max-width: 767px) {
+      font-size: 22px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 20px;
+    }
   }
 
   .gecko-info-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 30px;
+
+    @media (max-width: 767px) {
+      grid-template-columns: 1fr;
+    }
   }
 
   .info-section {
@@ -116,21 +194,6 @@
       padding: 5px 10px;
       border-radius: 15px;
       font-size: 14px;
-    }
-  }
-}
-
-// Media query for smaller screens
-@media (max-width: 768px) {
-  .gecko-species-container {
-    padding-top: 120px;
-
-    .back-button {
-      top: 80px;
-    }
-
-    h1 {
-      padding-top: 40px;
     }
   }
 }

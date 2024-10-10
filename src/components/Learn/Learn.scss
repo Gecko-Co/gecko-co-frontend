@@ -2,12 +2,34 @@
 
 .learn-container {
   background-color: #f4f4f4;
-  padding: 180px 20px 50px;
+  padding: 180px 20px 50px; // Default padding
   font-family: 'Poppins', sans-serif;
   color: #333;
 
-  @media (min-width: 768px) {
-    padding: 200px 50px 70px;
+  // Media query for screen sizes
+  // EDIT PADDING-TOP VALUES BELOW AS NEEDED
+  @media (min-width: 1280px) {
+    padding-top: 200px; // Larger screens
+  }
+
+  @media (max-width: 1279px) and (min-width: 992px) {
+    padding-top: 190px; // Large screens
+  }
+
+  @media (max-width: 991px) and (min-width: 768px) {
+    padding-top: 180px; // Medium screens
+  }
+
+  @media (max-width: 767px) and (min-width: 481px) {
+    padding-top: 170px; // Small screens
+  }
+
+  @media (max-width: 480px) {
+    padding-top: 160px; // Extra small screens
+  }
+
+  @media (max-width: 320px) {
+    padding-top: 150px; // Very small screens
   }
 }
 
