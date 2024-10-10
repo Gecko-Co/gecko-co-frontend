@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { doc, getDoc } from 'firebase/firestore';
+import { useParams } from 'react-router-dom';
+import { doc, getDoc, collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faVenusMars, faWeightHanging, faClock, faDollarSign, faUser, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { faVenusMars, faWeightHanging, faClock, faDollarSign, faUser, faInfoCircle, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { useCart } from '../Cart/CartContext';
 import customToast from '../../utils/toast';
 import './GeckoDetails.scss';
@@ -13,16 +13,33 @@ const GeckoDetails = () => {
   const [loading, setLoading] = useState(true);
   const { id } = useParams();
   const { addToCart } = useCart();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGecko = async () => {
       try {
-        const geckoDoc = await getDoc(doc(db, 'geckos', id));
-        if (geckoDoc.exists()) {
-          setGecko({ id: geckoDoc.id, ...geckoDoc.data() });
+        // First, try to fetch the gecko using the Firestore-generated ID
+        const geckoRef = doc(db, 'geckos', id);
+        const geckoSnap = await getDoc(geckoRef);
+
+        if (geckoSnap.exists()) {
+          const geckoData = { id: geckoSnap.id, ...geckoSnap.data() };
+          console.log('Fetched gecko:', geckoData);
+          setGecko(geckoData);
         } else {
-          console.log('No such gecko!');
+          // If not found, try to fetch using the 'name' field
+          const geckosCollection = collection(db, 'geckos');
+          const q = query(geckosCollection, where('name', '==', id));
+          const querySnapshot = await getDocs(q);
+
+          if (!querySnapshot.empty) {
+            const geckoDoc = querySnapshot.docs[0];
+            const geckoData = { id: geckoDoc.id, ...geckoDoc.data() };
+            console.log('Fetched gecko by name:', geckoData);
+            setGecko(geckoData);
+          } else {
+            console.log('No such gecko!');
+            setGecko(null);
+          }
         }
       } catch (error) {
         console.error('Error fetching gecko:', error);
@@ -40,17 +57,28 @@ const GeckoDetails = () => {
   };
 
   const handleAddToCart = async () => {
-    if (!gecko || typeof gecko.id !== 'string' || gecko.id.trim() === '') {
+    if (!gecko) {
       console.error("Invalid gecko:", gecko);
+      customToast.error('Failed to add gecko to cart. Please try again.');
       return;
     }
-    await addToCart(gecko);
-    customToast.success('Gecko added to cart!');
+    try {
+      console.log("Adding gecko to cart:", gecko);
+      const success = await addToCart(gecko);
+      if (success) {
+        customToast.success('Gecko added to cart successfully!');
+        setGecko(prevGecko => ({ ...prevGecko, status: 'Reserved' }));
+      } else {
+        customToast.error('Failed to add gecko to cart. Please try again.');
+      }
+    } catch (error) {
+      console.error("Error adding gecko to cart:", error);
+      customToast.error('Failed to add gecko to cart. Please try again.');
+    }
   };
 
   const handleContactBreeder = () => {
-    // Implement contact breeder functionality
-    customToast.info('Contact breeder functionality not implemented yet.');
+    customToast.warning('Contact breeder functionality is currently under maintenance. Please try again later.');
   };
 
   if (loading) {
@@ -107,7 +135,11 @@ const GeckoDetails = () => {
               onClick={handleAddToCart}
               disabled={gecko.status.toLowerCase() !== 'available'}
             >
-              {gecko.status.toLowerCase() === 'available' ? 'Add to Cart' : 'Not Available'}
+              {gecko.status.toLowerCase() === 'available' ? (
+                <>
+                  <FontAwesomeIcon icon={faShoppingCart} /> Add to Cart
+                </>
+              ) : 'Not Available'}
             </button>
           </div>
         </div>

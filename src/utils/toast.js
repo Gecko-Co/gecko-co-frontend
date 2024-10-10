@@ -1,32 +1,40 @@
 import toast from 'react-hot-toast';
 
+const debounce = (func, delay) => {
+  let timeoutId;
+  return (...args) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
+};
+
+const showToast = (type, message) => {
+  const options = {
+    duration: 3000,
+    position: 'top-right',
+  };
+
+  switch (type) {
+    case 'success':
+      toast.success(message, options);
+      break;
+    case 'error':
+      toast.error(message, options);
+      break;
+    case 'warning':
+      toast(message, { ...options, icon: '⚠️' });
+      break;
+    default:
+      toast(message, options);
+  }
+};
+
+const debouncedShowToast = debounce(showToast, 300);
+
 const customToast = {
-  success: (message) => {
-    toast.success(message, {
-      position: "top-right",
-      duration: 3000,
-    });
-  },
-  error: (message) => {
-    toast.error(message, {
-      position: "top-right",
-      duration: 3000,
-    });
-  },
-  warning: (message) => {
-    toast(message, {
-      icon: '⚠️',
-      position: "top-right",
-      duration: 3000,
-    });
-  },
-  info: (message) => {
-    toast(message, {
-      icon: 'ℹ️',
-      position: "top-right",
-      duration: 3000,
-    });
-  },
+  success: (message) => debouncedShowToast('success', message),
+  error: (message) => debouncedShowToast('error', message),
+  warning: (message) => debouncedShowToast('warning', message),
 };
 
 export default customToast;
