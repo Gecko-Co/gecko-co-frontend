@@ -1,20 +1,20 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { signOut } from 'firebase/auth';
-import { auth } from '../../firebase';
+import { useAuth } from '../Auth/AuthContext';
 import { useCart } from '../Cart/CartContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSignOutAlt, faCog, faShoppingCart, faTrash, faCreditCard } from '@fortawesome/free-solid-svg-icons';
 import customToast from '../../utils/toast';
 import './Account.scss';
 
-const Account = ({ user }) => {
+const Account = () => {
   const navigate = useNavigate();
+  const { currentUser, signOut } = useAuth();
   const { cart, removeFromCart, clearCart } = useCart();
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth);
+      await signOut();
       customToast.success('Signed out successfully');
       navigate('/');
     } catch (error) {
@@ -31,7 +31,7 @@ const Account = ({ user }) => {
     customToast.warning('Checkout is currently under maintenance. Please try again later.');
   };
 
-  if (!user) {
+  if (!currentUser) {
     navigate('/signin');
     return null;
   }
@@ -41,8 +41,8 @@ const Account = ({ user }) => {
       <div className="account-page">
         <h1>My Account</h1>
         <div className="account-info">
-          <p><strong>Email:</strong> {user.email}</p>
-          {user.displayName && <p><strong>Name:</strong> {user.displayName}</p>}
+          <p><strong>Email:</strong> {currentUser.email}</p>
+          {currentUser.displayName && <p><strong>Name:</strong> {currentUser.displayName}</p>}
         </div>
         <div className="account-actions">
           <button onClick={() => navigate('/cart')}>
