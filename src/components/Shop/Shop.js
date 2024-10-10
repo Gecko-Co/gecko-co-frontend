@@ -217,7 +217,7 @@ function Shop() {
               ) : noResults ? (
                 <div className="no-results-container">
                   <p className="no-results">No Geckos Found 😢</p>
-                  <button onClick={clearFilters} className="btn btn-primary">Clear Filters</button>
+                  {/* <button onClick={clearFilters} className="btn btn-primary">Clear Filters</button> */}
                 </div>
               ) : (
                 <div className="shop-content">
