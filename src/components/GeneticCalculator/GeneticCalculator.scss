@@ -403,6 +403,7 @@
   }
 }
 
+// Improved responsiveness for smaller screens
 @media (max-width: 768px) {
   .genetic-calculator-wrapper {
     padding-top: 140px;
@@ -419,11 +420,25 @@
       h2 {
         font-size: 1.5rem;
       }
+
+      .gene-input {
+        flex-direction: column;
+
+        select, button {
+          width: 100%;
+        }
+      }
     }
 
     .offspring-results {
       h2 {
         font-size: 1.8rem;
+      }
+
+      .gene-type-legend {
+        ul {
+          flex-direction: column;
+        }
       }
     }
 
@@ -436,6 +451,16 @@
     .share-btn,
     .clear-btn {
       width: 100%;
+      margin-bottom: 0.5rem;
+    }
+  }
+
+  .modal-content {
+    padding: 1.5rem;
+    width: 95%;
+
+    h2 {
+      font-size: 1.5rem;
     }
   }
 }
@@ -460,7 +485,26 @@
       h2 {
         font-size: 1.5rem;
       }
+
+      table {
+        font-size: 0.9rem;
+
+        th, td {
+          padding: 0.75rem;
+        }
+      }
+    }
+  }
+
+  .modal-content {
+    padding: 1rem;
+
+    h2 {
+      font-size: 1.3rem;
+    }
+
+    p {
+      font-size: 0.9rem;
     }
   }
 }
-
