@@ -5,6 +5,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 import customToast from '../../utils/toast';
 import ReCAPTCHA from "react-google-recaptcha";
+import GoogleSignInButton from './GoogleSignInButton';
 import './SignUp.scss';
 
 const SignUp = () => {
@@ -128,6 +129,10 @@ const SignUp = () => {
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
+        <div className="separator">
+          <span>OR</span>
+        </div>
+        <GoogleSignInButton />
         <p className="login-link">
           Already have an account? <Link to="/signin">Sign In</Link>
         </p>

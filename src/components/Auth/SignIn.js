@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../firebase';
 import customToast from '../../utils/toast';
+import GoogleSignInButton from './GoogleSignInButton';
 import './SignIn.scss';
 
 const SignIn = () => {
@@ -67,6 +68,10 @@ const SignIn = () => {
             {loading ? 'Signing In...' : 'Sign In'}
           </button>
         </form>
+        <div className="separator">
+          <span>OR</span>
+        </div>
+        <GoogleSignInButton />
         <p className="forgot-password">
           <Link to="/forgot-password">Forgot Password?</Link>
         </p>
