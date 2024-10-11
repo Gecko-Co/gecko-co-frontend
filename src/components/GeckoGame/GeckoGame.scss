@@ -1,76 +1,85 @@
 .gecko-game-object {
-    position: fixed;
-    width: 80px;
-    height: 80px;
-    border-radius: 50%;
-    background-color: #bd692d;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
+  position: fixed;
+  width: 80px;
+  height: 80px;
+  left: var(--gecko-x, 0);
+  top: var(--gecko-y, 0);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  z-index: 9999999;
+  transition: transform 0.3s ease;
+  transform: rotate(var(--gecko-rotate, 0deg));
+  animation: pulsate 1.5s ease-in-out infinite;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
     transition: transform 0.3s ease;
-    z-index: 9999999;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    animation: pulse 2s infinite, float 6s ease-in-out infinite;
-  
+  }
+
+  &:hover {
+    transform: scale(1.1) rotate(var(--gecko-rotate, 0deg));
+    animation: wiggle 0.5s ease-in-out;
+
     img {
-      width: 80%;
-      height: 80%;
-      object-fit: contain;
-      transition: transform 0.3s ease;
-    }
-  
-    &:hover {
-      transform: scale(1.1);
-  
-      img {
-        transform: rotate(360deg);
-      }
-    }
-  
-    &::after {
-      content: 'Click me!';
-      position: absolute;
-      bottom: -30px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #bd692d;
-      color: white;
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 14px;
-      white-space: nowrap;
-      opacity: 0;
-      animation: fadeInOut 2s infinite;
+      animation: spin 0.5s linear;
     }
   }
-  
-  @keyframes pulse {
-    0% {
-      box-shadow: 0 0 0 0 rgba(189, 105, 45, 0.7);
-    }
-    70% {
-      box-shadow: 0 0 0 20px rgba(189, 105, 45, 0);
-    }
-    100% {
-      box-shadow: 0 0 0 0 rgba(189, 105, 45, 0);
-    }
+
+  &.show-tooltip::after {
+    content: 'Click me!';
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(189, 105, 45, 0.8);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 15px;
+    font-size: 14px;
+    white-space: nowrap;
+    animation: fadeIn 0.3s ease-out;
   }
-  
-  @keyframes float {
-    0%, 100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-10px);
-    }
+}
+
+@keyframes pulsate {
+  0% {
+    transform: scale(1) rotate(var(--gecko-rotate, 0deg));
+    filter: drop-shadow(0 0 0 rgba(189, 105, 45, 0.7));
   }
-  
-  @keyframes fadeInOut {
-    0%, 100% {
-      opacity: 0;
-    }
-    50% {
-      opacity: 1;
-    }
+  50% {
+    transform: scale(1.15) rotate(var(--gecko-rotate, 0deg));
+    filter: drop-shadow(0 0 10px rgba(189, 105, 45, 0.9));
   }
+  100% {
+    transform: scale(1) rotate(var(--gecko-rotate, 0deg));
+    filter: drop-shadow(0 0 0 rgba(189, 105, 45, 0.7));
+  }
+}
+
+@keyframes wiggle {
+  0%, 100% { transform: scale(1.1) rotate(var(--gecko-rotate, 0deg)); }
+  25% { transform: scale(1.1) rotate(calc(var(--gecko-rotate, 0deg) - 5deg)); }
+  75% { transform: scale(1.1) rotate(calc(var(--gecko-rotate, 0deg) + 5deg)); }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}

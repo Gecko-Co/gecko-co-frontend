@@ -30,9 +30,9 @@ import { inject } from '@vercel/analytics';
 inject();
 
 function App() {
-  const [geckoGameEnabled, setGeckoGameEnabled] = useState(false);
+  const [geckoGameEnabled, setGeckoGameEnabled] = useState(true);
   const [transferTime, setTransferTime] = useState(600000); // 10 minutes in milliseconds 600000
-  const [respawnTime, setRespawnTime] = useState(3600000); // 60 minutes in milliseconds 3600000
+  const [respawnTime, setRespawnTime] = useState(600000); // 60 minutes in milliseconds 3600000
   const [score, setScore] = useState(10);
   const [enabledPages, setEnabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', 'policies', '/cart', '/account', '/settings']);
 
