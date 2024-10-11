@@ -31,16 +31,20 @@ const Cart = () => {
         ) : (
           <>
             <div className="cart-items">
-              {cart.map((item, index) => (
+              {cart.map((item) => (
                 <div key={item.id} className="cart-item">
-                  <img src={item.images} alt={item.species} className="item-image" />
-                  <div className="item-details">
-                    <h3>{item.species}</h3>
-                    <p className="item-price">₱{parseFloat(item.price).toLocaleString('en-US')}</p>
+                  <Link to={`/gecko/${item.id}`} className="item-link">
+                    <img src={item.images} alt={item.title} className="item-image" />
+                    <div className="item-details">
+                      <h3>{item.title}</h3>
+                      <p className="item-price">₱{parseFloat(item.price).toLocaleString('en-US')}</p>
+                    </div>
+                  </Link>
+                  <div className="item-actions">
+                    <button onClick={() => removeFromCart(item)} className="remove-button">
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
                   </div>
-                  <button onClick={() => removeFromCart(index)} className="remove-button">
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
                 </div>
               ))}
             </div>

@@ -50,10 +50,19 @@
     align-items: center;
     padding: 1rem;
     border-bottom: 1px solid #eee;
-    transition: background-color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+    transition: background-color 0.3s ease;
 
     &:hover {
       background-color: #f9f9f9;
+    }
+
+    .item-link {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      color: inherit;
+      flex-grow: 1;
+      max-width: calc(100% - 120px);
     }
 
     .item-image {
@@ -66,16 +75,54 @@
 
     .item-details {
       flex-grow: 1;
+      min-width: 0;
 
       h3 {
         font-size: 1.2rem;
         margin: 0 0 0.5rem;
         color: #23283b;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .item-price {
         font-size: 1.1rem;
         color: #bd692d;
+        font-weight: bold;
+      }
+    }
+
+    .item-actions {
+      display: flex;
+      align-items: center;
+      margin-left: auto;
+    }
+
+    .quantity-controls {
+      display: flex;
+      align-items: center;
+      margin-right: 1rem;
+
+      .quantity-btn {
+        background-color: #e0e0e0;
+        border: none;
+        color: #23283b;
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+
+        &:hover {
+          background-color: darken(#e0e0e0, 10%);
+        }
+      }
+
+      .quantity {
+        margin: 0 0.5rem;
         font-weight: bold;
       }
     }
@@ -148,23 +195,18 @@
   }
 
   .cart-items .cart-item {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-wrap: wrap;
 
-    .item-image {
+    .item-link {
       width: 100%;
-      height: auto;
-      margin-right: 0;
-      margin-bottom: 1rem;
-    }
-
-    .item-details {
-      width: 100%;
+      max-width: 100%;
       margin-bottom: 0.5rem;
     }
 
-    .remove-button {
-      align-self: flex-end;
+    .item-actions {
+      width: 100%;
+      justify-content: space-between;
+      margin-top: 0.5rem;
     }
   }
 
