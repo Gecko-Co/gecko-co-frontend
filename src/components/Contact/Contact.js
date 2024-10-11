@@ -1,5 +1,9 @@
 import React, { useState, useCallback } from 'react';
 import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
+import { useAuth } from '../Auth/AuthContext';
+import { db } from '../../firebase';
+import { collection, addDoc } from 'firebase/firestore';
+import customToast from '../../utils/toast';
 import './Contact.scss';
 
 const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
@@ -7,7 +11,7 @@ const API_KEY = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
 const mapContainerStyle = {
   width: '100%',
   height: '100%',
-  minHeight: '300px', // Ensure a minimum height
+  minHeight: '300px',
 };
 
 const center = {
@@ -21,29 +25,67 @@ export default function Contact() {
     email: '',
     message: ''
   });
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [email, setEmail] = useState('');
-  const [showNewsletterSuccess, setShowNewsletterSuccess] = useState(false);
+  const [newsletterEmail, setNewsletterEmail] = useState('');
+  const { currentUser } = useAuth();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData(prevData => ({ ...prevData, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    console.log(formData);
-    setShowSuccess(true);
-    setTimeout(() => setShowSuccess(false), 3000);
-    setFormData({ name: '', email: '', message: '' });
+  const validateEmail = (email: string) => {
+    const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return re.test(String(email).toLowerCase());
   };
 
-  const handleNewsletterSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    console.log('Newsletter signup:', email);
-    setShowNewsletterSuccess(true);
-    setTimeout(() => setShowNewsletterSuccess(false), 3000);
-    setEmail('');
+    if (!currentUser) {
+      customToast.error('Please log in to submit the form');
+      return;
+    }
+    if (!validateEmail(formData.email)) {
+      customToast.error('Please enter a valid email address');
+      return;
+    }
+    addDoc(collection(db, 'contactMessages'), {
+      ...formData,
+      userId: currentUser.uid,
+      timestamp: new Date()
+    })
+      .then(() => {
+        setFormData({ name: '', email: '', message: '' });
+        customToast.success('Message sent successfully!');
+      })
+      .catch((error) => {
+        console.error('Error submitting form:', error);
+        customToast.error('Failed to send message. Please try again.');
+      });
+  };
+
+  const handleNewsletterSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    if (!currentUser) {
+      customToast.error('Please log in to subscribe to the newsletter');
+      return;
+    }
+    if (!validateEmail(newsletterEmail)) {
+      customToast.error('Please enter a valid email address');
+      return;
+    }
+    addDoc(collection(db, 'newsletterSubscriptions'), {
+      email: newsletterEmail,
+      userId: currentUser.uid,
+      timestamp: new Date()
+    })
+      .then(() => {
+        setNewsletterEmail('');
+        customToast.success('Subscribed successfully!');
+      })
+      .catch((error) => {
+        console.error('Error subscribing to newsletter:', error);
+        customToast.error('Failed to subscribe. Please try again.');
+      });
   };
 
   const faqs = [
@@ -66,12 +108,11 @@ export default function Contact() {
 
   return (
     <div className="contact-container">
-      {/* <div className="decorative-shape"></div> */}
       <div className="content">
         <div className="info-section">
           <h1 className="title">Get in Touch</h1>
           <p className="subtitle">We'd love to hear from you!</p>
-          <form className="contact-form" onSubmit={handleSubmit}>
+          <form className="contact-form">
             <div className="input-group">
               <label htmlFor="name">Name</label>
               <input 
@@ -104,11 +145,10 @@ export default function Contact() {
                 required 
               />
             </div>
-            <button type="submit" className="send-button">
-              <span>Send Message</span>
+            <button type="button" className="send-button" onClick={handleSubmit}>
+              <span>{currentUser ? 'Send Message' : 'Log in to Send Message'}</span>
             </button>
           </form>
-          {showSuccess && <div className="success-message">Message sent successfully!</div>}
         </div>
         <div className="additional-info">
           <div className="faq-section">
@@ -125,17 +165,18 @@ export default function Contact() {
           <div className="newsletter-signup">
             <h2>Stay Updated</h2>
             <p>Subscribe to our newsletter for the latest gecko news and care tips!</p>
-            <form onSubmit={handleNewsletterSubmit}>
+            <form>
               <input
                 type="email"
                 placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={newsletterEmail}
+                onChange={(e) => setNewsletterEmail(e.target.value)}
                 required
               />
-              <button type="submit">Subscribe</button>
+              <button type="button" onClick={handleNewsletterSubmit}>
+                {currentUser ? 'Subscribe' : 'Log in to Subscribe'}
+              </button>
             </form>
-            {showNewsletterSuccess && <div className="success-message">Subscribed successfully!</div>}
           </div>
           <div className="map-container">
             <LoadScript googleMapsApiKey={API_KEY}>
