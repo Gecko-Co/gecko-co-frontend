@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { updateProfile, updateEmail, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
+import { updateProfile, updatePassword, reauthenticateWithCredential, EmailAuthProvider } from 'firebase/auth';
 import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
 import './Settings.scss';
@@ -25,21 +25,9 @@ const Settings = () => {
     }
   };
 
-  const handleUpdateEmail = async (e) => {
+  const handleUpdateEmail = (e) => {
     e.preventDefault();
-    if (!currentPassword) {
-      customToast.error('Please enter your current password to update email');
-      return;
-    }
-    try {
-      const credential = EmailAuthProvider.credential(currentUser.email, currentPassword);
-      await reauthenticateWithCredential(currentUser, credential);
-      await updateEmail(currentUser, email);
-      customToast.success('Email updated successfully');
-    } catch (error) {
-      console.error('Error updating email:', error);
-      customToast.error('Failed to update email. Please check your password and try again.');
-    }
+    customToast.warning('Email update is currently under maintenance. Please try again later.');
   };
 
   const handleUpdatePassword = async (e) => {
@@ -97,6 +85,7 @@ const Settings = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled
             />
           </div>
           <div className="form-group">
@@ -106,9 +95,10 @@ const Settings = () => {
               id="currentPasswordEmail"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
+              disabled
             />
           </div>
-          <button type="submit" className="update-button">Update Email</button>
+          <button type="submit" className="update-button update-email-button">Update Email</button>
         </form>
         <form onSubmit={handleUpdatePassword} className="settings-form">
           <h2>Change Password</h2>

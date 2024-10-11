@@ -19,19 +19,20 @@ import GeneticCalculator from './components/GeneticCalculator/GeneticCalculator'
 import Scroll from './components/Scroll/Scroll';
 import PolicyPage from './components/Policy/Policy';
 import SignIn from './components/Auth/SignIn';
-import Account from './components/Account/Account';
-import { inject } from '@vercel/analytics';
 import SignUp from './components/Auth/SignUp';
+import ForgotPassword from './components/Auth/ForgotPassword';
+import Account from './components/Account/Account';
 import Settings from './components/Account/Settings';
 import GeckoDetailsPage from './components/Card/GeckoDetails';
 import GeckoGame from './components/GeckoGame/GeckoGame';
+import { inject } from '@vercel/analytics';
 
 inject();
 
 function App() {
   const [geckoGameEnabled, setGeckoGameEnabled] = useState(true);
   const [transferTime, setTransferTime] = useState(600000); // 10 minutes in milliseconds 600000
-  const [respawnTime, setRespawnTime] = useState(3600000); // 60 minutes in milliseconds 3600000
+  const [respawnTime, setRespawnTime] = useState(600000); // 60 minutes in milliseconds 3600000
   const [score, setScore] = useState(10);
   const [enabledPages, setEnabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', 'policies', '/cart', '/account', '/settings']);
 
@@ -53,9 +54,10 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/signin" element={<SignIn />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/account" element={<Account />} />
                 <Route path="/settings" element={<Settings />} />
-                <Route path="/signup" element={<SignUp />} />
                 <Route path="/gecko/:id" element={<GeckoDetailsPage />} />
               </Routes>
             </div>
