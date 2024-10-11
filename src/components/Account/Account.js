@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../Auth/AuthContext';
 import { useCart } from '../Cart/CartContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -62,14 +62,16 @@ const Account = () => {
           ) : (
             <>
               <div className="cart-items">
-                {cart.map((item, index) => (
-                  <div key={index} className="cart-item">
-                    <img src={item.images} alt={item.species} className="cart-item-image" />
-                    <div className="cart-item-details">
-                      <h3>{item.species}</h3>
-                      <p>₱{parseFloat(item.price).toLocaleString('en-US')}</p>
-                    </div>
-                    <button onClick={() => removeFromCart(index)} className="remove-item">
+                {cart.map((item) => (
+                  <div key={item.id} className="cart-item">
+                    <Link to={`/gecko/${item.id}`} className="cart-item-link">
+                      <img src={item.images} alt={item.title} className="cart-item-image" />
+                      <div className="cart-item-details">
+                        <h3>{item.title}</h3>
+                        <p>₱{parseFloat(item.price).toLocaleString('en-US')}</p>
+                      </div>
+                    </Link>
+                    <button onClick={() => removeFromCart(item)} className="remove-item">
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
                   </div>
