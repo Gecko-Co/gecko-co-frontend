@@ -1,35 +1,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
 .learn-container {
-  background-color: #f4f4f4;
-  padding: 180px 20px 50px; // Default padding
+  background-color: #f8f9fa;
+  // Adjust the top padding value below if needed
+  padding: 210px 20px 50px;
   font-family: 'Poppins', sans-serif;
   color: #333;
 
-  // Media query for screen sizes
-  // EDIT PADDING-TOP VALUES BELOW AS NEEDED
-  @media (min-width: 1280px) {
-    padding-top: 200px; // Larger screens
+  @media (max-width: 1200px) {
+    padding-top: 200px;
   }
 
-  @media (max-width: 1279px) and (min-width: 992px) {
-    padding-top: 190px; // Large screens
-  }
-
-  @media (max-width: 991px) and (min-width: 768px) {
-    padding-top: 180px; // Medium screens
-  }
-
-  @media (max-width: 767px) and (min-width: 481px) {
-    padding-top: 170px; // Small screens
+  @media (max-width: 768px) {
+    padding-top: 180px;
   }
 
   @media (max-width: 480px) {
-    padding-top: 160px; // Extra small screens
-  }
-
-  @media (max-width: 320px) {
-    padding-top: 150px; // Very small screens
+    padding-top: 140px;
   }
 }
 
@@ -38,9 +25,9 @@
   margin-bottom: 50px;
   
   .learn-title {
-    font-size: 36px;
-    color: #23283b;
-    margin-bottom: 10px;
+    font-size: 42px;
+    color: #2c3e50;
+    margin-bottom: 15px;
     position: relative;
     display: inline-block;
     
@@ -50,76 +37,77 @@
       bottom: -10px;
       left: 50%;
       transform: translateX(-50%);
-      width: 50px;
-      height: 3px;
-      background-color: #bd692d;
+      width: 60px;
+      height: 4px;
+      background-color: #e67e22;
     }
 
-    @media (min-width: 768px) {
-      font-size: 48px;
+    @media (max-width: 768px) {
+      font-size: 32px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 28px;
     }
   }
 
   .learn-subtitle {
     font-size: 18px;
-    color: #666;
-    max-width: 600px;
+    color: #7f8c8d;
+    max-width: 700px;
     margin: 20px auto 0;
+
+    @media (max-width: 768px) {
+      font-size: 16px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 14px;
+    }
   }
 }
 
 .species-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 30px;
   margin-bottom: 50px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  @media (max-width: 480px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .species-card {
   background-color: #ffffff;
   border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
-  cursor: pointer;
-  text-align: center;
 
   &:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-  }
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 
-  h3 {
-    margin: 15px 0;
-    color: #23283b;
-    font-size: 20px;
-  }
-
-  .learn-more-btn {
-    background-color: #23283b;
-    color: #ffffff;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    text-decoration: none;
-    display: inline-block;
-
-    &:hover {
-      background-color: #bd692d;
+    .gecko-image {
+      transform: scale(1.1);
     }
   }
 }
 
 .image-container {
-  width: 200px;
+  width: 100%;
   height: 200px;
-  border-radius: 50%;
   overflow: hidden;
-  margin: 0 auto;
-  border: 5px solid #f0f0f0;
+
+  @media (max-width: 480px) {
+    height: 180px;
+  }
 }
 
 .gecko-image {
@@ -127,8 +115,58 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
+}
+
+.species-info {
+  padding: 20px;
+  text-align: center;
+
+  h3 {
+    margin: 0 0 10px;
+    color: #2c3e50;
+    font-size: 24px;
+
+    @media (max-width: 768px) {
+      font-size: 22px;
+    }
+
+    @media (max-width: 480px) {
+      font-size: 20px;
+    }
+  }
+
+  .scientific-name {
+    color: #7f8c8d;
+    font-style: italic;
+    margin-bottom: 15px;
+    font-size: 14px;
+
+    @media (max-width: 480px) {
+      font-size: 12px;
+    }
+  }
+}
+
+.learn-more-btn {
+  background-color: #e67e22;
+  color: #ffffff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
 
   &:hover {
-    transform: scale(1.1);
+    background-color: #d35400;
+    transform: scale(1.05);
+  }
+
+  @media (max-width: 480px) {
+    font-size: 14px;
+    padding: 8px 16px;
   }
 }

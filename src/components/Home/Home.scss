@@ -259,6 +259,9 @@ body {
     padding: 30px;
     border-radius: 15px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
     h2 {
       text-align: center;
@@ -654,7 +657,11 @@ body {
       padding: 30px;
       border-radius: 15px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
       text-align: center;
+      height: 100%;
       transition: transform 0.3s ease;
 
       &:hover {

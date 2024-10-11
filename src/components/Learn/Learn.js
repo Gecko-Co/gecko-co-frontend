@@ -22,21 +22,15 @@ function Learn() {
         {Object.entries(geckoData).map(([species, data]) => (
           <div key={species} className="species-card">
             <div className="image-container">
-              <img 
-                src={`/images/${species}.jpg`}
-                alt={species} 
-                className="gecko-image" 
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = '/images/placeholder-gecko.jpg';
-                }}
-              />
+              <img src={`/images/${species}.jpg`} alt={species} className="gecko-image" />
             </div>
-            <h3>{species}</h3>
-            <p>{data.scientificName}</p>
-            <Link to={`/learn/${createUrlSlug(species)}`} className="learn-more-btn">
-              Learn More
-            </Link>
+            <div className="species-info">
+              <h3>{species}</h3>
+              <p className="scientific-name">{data.scientificName}</p>
+              <Link to={`/learn/${createUrlSlug(species)}`} className="learn-more-btn">
+                Learn More
+              </Link>
+            </div>
           </div>
         ))}
       </div>
