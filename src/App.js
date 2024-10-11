@@ -68,6 +68,18 @@ function App() {
                 maxWidth: '350px',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
               },
+              success: {
+                icon: '✅',
+              },
+              error: {
+                icon: '❌',
+              },
+              warning: {
+                icon: '⚠️',
+              },
+              info: {
+                icon: '🔔',
+              },
             }}
             containerStyle={{
               bottom: 20,

@@ -76,9 +76,8 @@ const GeckoDetails = () => {
       const success = await addToCart(gecko);
       if (success) {
         customToast.success('Gecko added to cart successfully!');
-      } else {
-        customToast.error('Failed to add gecko to cart. Please try again.');
       }
+      // The error cases are now handled in the CartContext
     } catch (error) {
       console.error("Error adding gecko to cart:", error);
       customToast.error('Failed to add gecko to cart. Please try again.');

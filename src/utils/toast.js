@@ -11,7 +11,6 @@ const debounce = (func, delay) => {
 const showToast = (type, message) => {
   const options = {
     duration: 3000,
-    position: 'top-right',
   };
 
   switch (type) {
@@ -24,6 +23,9 @@ const showToast = (type, message) => {
     case 'warning':
       toast(message, { ...options, icon: '⚠️' });
       break;
+    case 'info':
+      toast(message, { ...options, icon: '🔔' });
+      break;
     default:
       toast(message, options);
   }
@@ -35,6 +37,7 @@ const customToast = {
   success: (message) => debouncedShowToast('success', message),
   error: (message) => debouncedShowToast('error', message),
   warning: (message) => debouncedShowToast('warning', message),
+  info: (message) => debouncedShowToast('info', message),
 };
 
 export default customToast;

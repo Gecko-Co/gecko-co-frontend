@@ -78,6 +78,18 @@ const CartProvider = ({ children }) => {
 
       if (geckoData.status === 'Available') {
         const userCartRef = doc(db, 'userCarts', currentUser.uid);
+        const userCartSnap = await getDoc(userCartRef);
+        const currentCart = userCartSnap.data().items || [];
+
+        // Check if the item already exists in the cart
+        const existingItemIndex = currentCart.findIndex(cartItem => cartItem.id === geckoDoc.id);
+
+        if (existingItemIndex !== -1) {
+          customToast.info('This gecko is already in your cart');
+          return false;
+        }
+
+        // If the item doesn't exist, add it to the cart
         await updateDoc(userCartRef, {
           items: arrayUnion({ ...item, id: geckoDoc.id })
         });
