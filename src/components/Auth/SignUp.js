@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createUserWithEmailAndPassword, updateProfile, sendEmailVerification } from 'firebase/auth';
 import { doc, setDoc } from 'firebase/firestore';
 import { auth, db } from '../../firebase';
 import customToast from '../../utils/toast';
 import ReCAPTCHA from "react-google-recaptcha";
+import GoogleSignInButton from './GoogleSignInButton';
+import { useAuth } from './AuthContext';
 import './SignUp.scss';
 
 const SignUp = () => {
@@ -16,6 +18,14 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const recaptchaRef = useRef(null);
   const navigate = useNavigate();
+  const { setCurrentUser } = useAuth();
+
+  useEffect(() => {
+    // Clean up function to ensure no lingering states or effects
+    return () => {
+      setLoading(false);
+    };
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -48,8 +58,14 @@ const SignUp = () => {
 
       await sendEmailVerification(user);
 
+      setCurrentUser(user);
+
       customToast.success('Account created successfully! Please check your email to verify your account.');
-      navigate('/');
+      
+      // Delay navigation slightly to ensure state updates have propagated
+      setTimeout(() => {
+        navigate('/');
+      }, 100);
     } catch (error) {
       console.error('Error signing up:', error);
       if (error.code === 'auth/email-already-in-use') {
@@ -61,12 +77,14 @@ const SignUp = () => {
       }
     } finally {
       setLoading(false);
-      recaptchaRef.current.reset();
+      if (recaptchaRef.current) {
+        recaptchaRef.current.reset();
+      }
     }
   };
 
   return (
-    <div className="signup-container">
+    <div className="signup-container" style={{ pointerEvents: loading ? 'none' : 'auto' }}>
       <div className="signup-form">
         <h2>Create your account</h2>
         <form onSubmit={handleSubmit}>
@@ -128,6 +146,10 @@ const SignUp = () => {
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
+        <div className="separator">
+          <span>OR</span>
+        </div>
+        <GoogleSignInButton />
         <p className="login-link">
           Already have an account? <Link to="/signin">Sign In</Link>
         </p>

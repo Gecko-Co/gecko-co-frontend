@@ -1,0 +1,76 @@
+.gecko-game-object {
+    position: fixed;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: #bd692d;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+    z-index: 9999999;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    animation: pulse 2s infinite, float 6s ease-in-out infinite;
+  
+    img {
+      width: 80%;
+      height: 80%;
+      object-fit: contain;
+      transition: transform 0.3s ease;
+    }
+  
+    &:hover {
+      transform: scale(1.1);
+  
+      img {
+        transform: rotate(360deg);
+      }
+    }
+  
+    &::after {
+      content: 'Click me!';
+      position: absolute;
+      bottom: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #bd692d;
+      color: white;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 14px;
+      white-space: nowrap;
+      opacity: 0;
+      animation: fadeInOut 2s infinite;
+    }
+  }
+  
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(189, 105, 45, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 20px rgba(189, 105, 45, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(189, 105, 45, 0);
+    }
+  }
+  
+  @keyframes float {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  
+  @keyframes fadeInOut {
+    0%, 100% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+  }

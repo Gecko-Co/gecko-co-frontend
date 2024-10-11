@@ -1,7 +1,7 @@
-// src/components/LoginPopup/LoginPopup.js
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaSignInAlt, FaUserPlus, FaTimes, FaUserCircle } from 'react-icons/fa';
+import GoogleSignInButton from './GoogleSignInButton';
 import './LoginPopup.scss';
 
 const LoginPopup = ({ onClose }) => {
@@ -22,6 +22,7 @@ const LoginPopup = ({ onClose }) => {
             <FaUserCircle />
             Sign Up
           </Link>
+          <GoogleSignInButton />
           <button onClick={onClose} className="guest-button">
             <FaUserPlus />
             Continue as Guest
