@@ -29,7 +29,7 @@ const AuthProvider = ({ children }) => {
       setLoading(false);
     });
 
-    return unsubscribe;
+    return () => unsubscribe();
   }, []);
 
   const signOut = async () => {
@@ -80,12 +80,13 @@ const AuthProvider = ({ children }) => {
     currentUser,
     loading,
     signOut,
-    signInWithGoogle
+    signInWithGoogle,
+    setCurrentUser
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };
