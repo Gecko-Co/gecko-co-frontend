@@ -1,16 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../Auth/AuthContext';
 import { useCart } from '../Cart/CartContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSignOutAlt, faCog, faShoppingCart, faTrash, faCreditCard } from '@fortawesome/free-solid-svg-icons';
+import { faSignOutAlt, faCog, faShoppingCart, faTrash, faCreditCard, faStar } from '@fortawesome/free-solid-svg-icons';
 import customToast from '../../utils/toast';
 import './Account.scss';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../firebase';
 
 const Account = () => {
   const navigate = useNavigate();
   const { currentUser, signOut } = useAuth();
   const { cart, removeFromCart, clearCart } = useCart();
+  const [userPoints, setUserPoints] = useState(0);
+
+  useEffect(() => {
+    const fetchUserPoints = async () => {
+      if (currentUser) {
+        const userRef = doc(db, 'users', currentUser.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          setUserPoints(userSnap.data().points || 0);
+        }
+      }
+    };
+
+    fetchUserPoints();
+  }, [currentUser]);
 
   const handleSignOut = async () => {
     try {
@@ -43,6 +60,7 @@ const Account = () => {
         <div className="account-info">
           <p><strong>Email:</strong> {currentUser.email}</p>
           {currentUser.displayName && <p><strong>Name:</strong> {currentUser.displayName}</p>}
+          <p><strong>Points:</strong> <FontAwesomeIcon icon={faStar} className="points-icon" /> {userPoints}</p>
         </div>
         <div className="account-actions">
           <button onClick={() => navigate('/cart')}>
