@@ -373,8 +373,24 @@ body {
     .slick-next {
       right: -25px;
     }
-  }
 
+    // New styles added for the dots
+    .slick-dots {
+      bottom: -30px;
+
+      li {
+        button:before {
+          color: #bd692d;
+          opacity: 0.25;
+        }
+
+        &.slick-active button:before {
+          color: #bd692d;
+          opacity: 0.75;
+        }
+      }
+    }
+  }
   .gecko-slider-card {
     background-color: #fff;
     border-radius: 8px;
