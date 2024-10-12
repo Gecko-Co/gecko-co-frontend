@@ -1,34 +1,34 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalculator, faArrowRight, faShoppingCart, faDna, faChartLine } from '@fortawesome/free-solid-svg-icons';
-import Typed from 'typed.js';
 import Slider from "react-slick";
 import { Helmet } from 'react-helmet';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import './Home.scss';
 import featuredData from '../../featured';
-import placeholderData from "../../data";
 import { useCart } from '../Cart/CartContext';
 import customToast from '../../utils/toast';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../firebase';
 
-function GeckoSliderCard({ gecko }) {
+const GeckoSliderCard = ({ gecko }) => {
   const [isHovered, setIsHovered] = useState(false);
   const { addToCart } = useCart();
 
-  const handleAddToCart = async (event) => {
+  const handleAddToCart = useCallback(async (event) => {
     event.preventDefault();
     const success = await addToCart(gecko);
     if (success) {
       customToast.success('Gecko added to cart!');
     }
-  };
+  }, [addToCart, gecko]);
 
-  const getImageUrl = (imagePath) => {
+  const getImageUrl = useCallback((imagePath) => {
     const baseUrl = "https://www.geckoco.ph/";
     return imagePath ? `${baseUrl}${imagePath}` : '/placeholder.svg';
-  };
+  }, []);
 
   return (
     <div 
@@ -51,7 +51,7 @@ function GeckoSliderCard({ gecko }) {
           <p className="card-price">₱{parseFloat(gecko.price).toLocaleString('en-US')}</p>
         </div>
         <div className="card-actions">
-          <Link to={`/gecko/${gecko.name}`} className="btn btn-primary">View Details</Link>
+        <Link to={`/gecko/${gecko.name}`} className="btn btn-primary">View Details</Link>
           <button 
             className="btn btn-secondary" 
             onClick={handleAddToCart}
@@ -70,50 +70,69 @@ function GeckoSliderCard({ gecko }) {
       </div>
     </div>
   );
-}
+};
 
 export default function Component() {
-  const typedRef = useRef(null);
   const [currentSecondSectionIndex, setCurrentSecondSectionIndex] = useState(0);
+  const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [availableGeckos, setAvailableGeckos] = useState([]);
+
+  const heroContent = [
+    {
+      title: "Discover Gecko Genetics",
+      subtitle: "Find the perfect genes for your project",
+      cta: "Explore Now",
+      link: "/genetic-calculator",
+      image: "/images/hero-gecko-1.jpg"
+    },
+    {
+      title: "Expert Care Guides",
+      subtitle: "Learn how to care for your gecko",
+      cta: "Read Guides",
+      link: "/learn",
+      image: "/images/hero-gecko-2.jpg"
+    },
+    {
+      title: "Rare Morphs Available",
+      subtitle: "Unique colors and patterns",
+      cta: "View Collection",
+      link: "/shop",
+      image: "/images/hero-gecko-3.jpg"
+    }
+  ];
+
+  const second_section_images = featuredData.images;
 
   const first_section_images = [
     "images/home1-resize.png",
     "images/home2-resize.png",
     "images/home3-resize.png",
   ];
-  const second_section_images = featuredData.images;
-
-  const words = ["love?"];
-  const [changingWordIndex, setChangingWordIndex] = useState(0);
-
-  // Filter available geckos
-  const availableGeckos = placeholderData.results.filter(gecko => gecko.status === "Available");
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setChangingWordIndex((prevIndex) => (prevIndex + 1) % words.length);
-    }, 3000);
+    const fetchGeckos = async () => {
+      const geckosRef = collection(db, 'geckos');
+      const q = query(geckosRef, where("status", "==", "Available"));
+      const querySnapshot = await getDocs(q);
+      const geckos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAvailableGeckos(geckos);
+    };
 
-    return () => clearInterval(interval);
-  }, [words]);
+    fetchGeckos();
+  }, []);
 
   useEffect(() => {
-    const options = {
-      strings: [words[changingWordIndex]],
-      typeSpeed: 40,
-      backSpeed: 50,
-      loop: true,
-      contentType: 'text',
-      cursorChar: '',
-      smartBackspace: true,
-    };
+    const timer = setInterval(() => {
+      setIsTransitioning(true);
+      setTimeout(() => {
+        setCurrentHeroIndex((prevIndex) => (prevIndex + 1) % heroContent.length);
+        setIsTransitioning(false);
+      }, 500);
+    }, 5000);
 
-    const typed = new Typed(typedRef.current, options);
-
-    return () => {
-      typed.destroy();
-    };
-  }, [changingWordIndex]);
+    return () => clearInterval(timer);
+  }, []);
 
   const sliderSettings = {
     dots: true,
@@ -149,14 +168,17 @@ export default function Component() {
         <link rel="canonical" href="https://geckoco.ph" />
       </Helmet>
       <div className="App">
-        <div className="first-section">
-          <div className="content-wrapper">
-            <div className="text-content">
-              <div className="text-container">
-                <h1 className="gradient-text">Looking for a new pet</h1>
-                <h1 className="gradient-text">you will</h1>
-                <h1 className="gradient-text">truly <span className="red-text" ref={typedRef}></span></h1>
-                <Link to="/shop" className="shop-now-button">SHOP NOW!</Link>
+        <section className="hero-section">
+          <div className="hero-container">
+            <div className="hero-content">
+              <div className={`hero-text ${isTransitioning ? 'fade-out' : 'fade-in'}`}>
+
+                  <h1 className="hero-title">{heroContent[currentHeroIndex].title}</h1>
+                  <p className="hero-subtitle">{heroContent[currentHeroIndex].subtitle}</p>
+                  <Link to={heroContent[currentHeroIndex].link} className="hero-cta">
+                    {heroContent[currentHeroIndex].cta}
+                  </Link>
+
               </div>
             </div>
             <div className="image-showcase">
@@ -167,12 +189,12 @@ export default function Component() {
               ))}
             </div>
           </div>
-        </div>
+        </section>
 
         <div className="diagonal-transition"></div>
 
         <div className="second-section">
-          <h1 className="section-title">Species Highlight</h1>
+          <h2 className="section-title">Species Highlight</h2>
           <div className="content-wrapper">
             <div className="image-gallery">
               <div className="main-image-container">
@@ -209,7 +231,7 @@ export default function Component() {
         <div className="diagonal-transition reverse"></div>
 
         <div className="third-section">
-          <h1 className="section-title">Featured Geckos</h1>
+          <h2 className="section-title">Featured Geckos</h2>
           <div className="content-wrapper">
             <div className="gecko-slider">
               <Slider {...sliderSettings}>
@@ -225,11 +247,11 @@ export default function Component() {
         <div className="diagonal-transition"></div>
 
         <div className="fourth-section">
-          <h1 className="section-title">Gecko Genetics Hub</h1>
+          <h2 className="section-title">Gecko Genetics Hub</h2>
           <div className="content-wrapper">
             <div className="calculator-preview">
               <FontAwesomeIcon icon={faCalculator} className="calculator-icon" />
-              <h2>Genetic Calculator</h2>
+              <h3>Genetic Calculator</h3>
               <p>Predict offspring traits based on parent genetics.</p>
               <Link to="/genetic-calculator" className="calculator-btn">
                 Try Calculator <FontAwesomeIcon icon={faArrowRight} />
@@ -253,7 +275,7 @@ export default function Component() {
         <div className="diagonal-transition reverse"></div>
 
         <div className="fifth-section">
-          <h1 className="section-title">Why Choose Us?</h1>
+          <h2 className="section-title">Why Choose Us?</h2>
           <div className="content-wrapper">
             <div className="feature">
               <div className="feature-icon">🏆</div>
