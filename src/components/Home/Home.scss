@@ -50,6 +50,8 @@ body {
     .hero-text-container {
       position: relative;
       width: 100%;
+      height: 300px; // Fixed height
+      overflow: hidden; // Hide overflow
     }
 
     .hero-text {
@@ -57,17 +59,17 @@ body {
       padding: 30px;
       width: 100%;
       position: absolute;
-      top: 0;
-      left: 0;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
 
       &.fade-in {
         opacity: 1;
-        transform: translateY(0);
       }
 
       &.fade-out {
         opacity: 0;
-        transform: translateY(20px);
       }
     }
 
@@ -130,11 +132,14 @@ body {
     padding: 120px 20px 60px; /* Update top padding here */
 
     .hero-title {
-      font-size: 2.5rem;
+      font-size: 2rem;
     }
 
     .hero-subtitle {
-      font-size: 1.2rem;
+      font-size: 1rem;
+    }
+    .hero-text-container {
+      height: 250px; // Slightly smaller fixed height for mobile
     }
   }
 
@@ -142,11 +147,14 @@ body {
     padding: 120px 20px 40px; /* Update top padding here */
 
     .hero-title {
-      font-size: 2rem;
+      font-size: 1.5rem;
     }
 
     .hero-subtitle {
-      font-size: 1rem;
+      font-size: 0.9rem;
+    }
+    .hero-text-container {
+      height: 200px; // Even smaller fixed height for very small screens
     }
   }
 }
