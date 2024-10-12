@@ -51,7 +51,7 @@ const GeckoSliderCard = ({ gecko }) => {
           <p className="card-price">₱{parseFloat(gecko.price).toLocaleString('en-US')}</p>
         </div>
         <div className="card-actions">
-        <Link to={`/gecko/${gecko.name}`} className="btn btn-primary">View Details</Link>
+          <Link to={`/gecko/${gecko.name}`} className="btn btn-primary">View Details</Link>
           <button 
             className="btn btn-secondary" 
             onClick={handleAddToCart}
@@ -77,6 +77,7 @@ export default function Component() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [availableGeckos, setAvailableGeckos] = useState([]);
+  const [heroTextMaxHeight, setHeroTextMaxHeight] = useState(0);
 
   const heroContent = [
     {
@@ -134,6 +135,19 @@ export default function Component() {
     return () => clearInterval(timer);
   }, []);
 
+  useEffect(() => {
+    const updateMaxHeight = () => {
+      const heroTextElements = document.querySelectorAll('.hero-text');
+      const maxHeight = Math.max(...Array.from(heroTextElements).map(el => el.offsetHeight));
+      setHeroTextMaxHeight(maxHeight);
+    };
+
+    updateMaxHeight();
+    window.addEventListener('resize', updateMaxHeight);
+
+    return () => window.removeEventListener('resize', updateMaxHeight);
+  }, [heroContent]);
+
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -171,14 +185,14 @@ export default function Component() {
         <section className="hero-section">
           <div className="hero-container">
             <div className="hero-content">
-              <div className={`hero-text ${isTransitioning ? 'fade-out' : 'fade-in'}`}>
-
+              <div className="hero-text-container" style={{ height: heroTextMaxHeight }}>
+                <div className={`hero-text ${isTransitioning ? 'fade-out' : 'fade-in'}`}>
                   <h1 className="hero-title">{heroContent[currentHeroIndex].title}</h1>
                   <p className="hero-subtitle">{heroContent[currentHeroIndex].subtitle}</p>
                   <Link to={heroContent[currentHeroIndex].link} className="hero-cta">
                     {heroContent[currentHeroIndex].cta}
                   </Link>
-
+                </div>
               </div>
             </div>
             <div className="image-showcase">

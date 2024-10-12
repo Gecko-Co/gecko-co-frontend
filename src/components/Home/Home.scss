@@ -43,11 +43,22 @@ body {
     max-width: 600px;
     text-align: center;
     margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    min-height: 300px; /* Add this line to set a minimum height */
+
+    .hero-text-container {
+      position: relative;
+      width: 100%;
+    }
 
     .hero-text {
       transition: opacity 0.5s ease, transform 0.5s ease;
       padding: 30px;
       width: 100%;
+      position: absolute;
+      top: 0;
+      left: 0;
 
       &.fade-in {
         opacity: 1;
@@ -59,6 +70,7 @@ body {
         transform: translateY(20px);
       }
     }
+
 
     .hero-title {
       font-size: 3rem;
@@ -81,7 +93,6 @@ body {
       margin-top: 1rem;
     }
   }
-
 
   .image-showcase {
     width: 100%;
@@ -354,6 +365,8 @@ body {
     .learn-more-button {
       @extend .button;
       margin-top: 20px;
+      text-align: center;
+      width: 100%;
     }
   }
 }
@@ -522,7 +535,7 @@ body {
 
     .card-image-container {
       position: relative;
-      padding-top: 75%;
+      padding-top: 100%; // Change this to create a perfect square
       overflow: hidden;
 
       .card-image {
@@ -531,7 +544,7 @@ body {
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover; // Change this to 'cover' to fill the container without white space
       }
 
       .card-quick-info {
