@@ -97,6 +97,21 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     }
   }, [currentUser]);
 
+  const respawnGecko = useCallback(() => {
+    if (geckoGameEnabled) {
+      const newRandomPage = getRandomPage();
+      setCurrentPage(newRandomPage);
+      updateIconState(newRandomPage, true);
+    }
+  }, [geckoGameEnabled, getRandomPage, updateIconState]);
+
+  const scheduleRespawn = useCallback(() => {
+    if (respawnTimeoutRef.current) {
+      clearTimeout(respawnTimeoutRef.current);
+    }
+    respawnTimeoutRef.current = setTimeout(respawnGecko, respawnTime);
+  }, [respawnTime, respawnGecko]);
+
   useEffect(() => {
     if (!geckoGameEnabled) {
       setIsVisible(false);
@@ -129,6 +144,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
         }
       } else {
         setIsVisible(false);
+        scheduleRespawn();
       }
     });
 
@@ -149,7 +165,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [location, checkDailyBonus, startTransferTimer, updatePosition, getRandomPosition, startTooltipTimer, geckoGameEnabled]);
+  }, [location, checkDailyBonus, startTransferTimer, updatePosition, getRandomPosition, startTooltipTimer, geckoGameEnabled, scheduleRespawn]);
 
   const calculateScore = useCallback(() => {
     const minScore = 1;
@@ -198,16 +214,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
           cancelAnimationFrame(animationRef.current);
         }
 
-        if (respawnTimeoutRef.current) {
-          clearTimeout(respawnTimeoutRef.current);
-        }
-        respawnTimeoutRef.current = setTimeout(() => {
-          if (geckoGameEnabled) {
-            const newRandomPage = getRandomPage();
-            setCurrentPage(newRandomPage);
-            updateIconState(newRandomPage, true);
-          }
-        }, respawnTime);
+        scheduleRespawn();
       } catch (error) {
         console.error('Error updating points:', error);
         customToast.error('Failed to update points. Please try again.');
@@ -217,7 +224,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     } else if (!currentUser) {
       customToast.info('Sign in to collect points!');
     }
-  }, [currentUser, respawnTime, getRandomPage, calculateScore, isUpdating, dailyBonusAvailable, currentPage, geckoGameEnabled, updateIconState]);
+  }, [currentUser, calculateScore, isUpdating, dailyBonusAvailable, currentPage, geckoGameEnabled, updateIconState, scheduleRespawn]);
 
   if (!geckoGameEnabled || !isVisible) return null;
 
