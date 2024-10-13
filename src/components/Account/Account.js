@@ -8,10 +8,11 @@ import customToast from '../../utils/toast';
 import './Account.scss';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'; // Correct import path
 
 const Account = () => {
   const navigate = useNavigate();
-  const { currentUser, signOut } = useAuth();
+  const { currentUser, loading, signOut } = useAuth();
   const { cart, removeFromCart, clearCart } = useCart();
   const [userPoints, setUserPoints] = useState(0);
 
@@ -47,6 +48,10 @@ const Account = () => {
   const handleCheckout = () => {
     customToast.warning('Checkout is currently under maintenance. Please try again later.');
   };
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   if (!currentUser) {
     navigate('/signin');
