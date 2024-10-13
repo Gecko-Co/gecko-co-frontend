@@ -78,8 +78,11 @@ const RollingIconBlogPost = () => {
         
         <h2>Current Leaderboard</h2>
         <p>
-          Check out the current standings on our leaderboard! See how you stack up against other players and aim for the top 10 spots to have a chance to win the gecko. Remember, with our new scoring system, including daily bonuses, the leaderboard can change quickly!
+          Check out the current standings on our leaderboard See how you stack up against other players and aim for the top 10 spots to have a chance to win the gecko. Remember, with our new scoring system, including daily bonuses, the leaderboard can change quickly!
         </p>
+        <p>
+          Once we have the top 10, we'll use the <a href="https://wheelofnames.com/" target="_blank" rel="noopener noreferrer">Wheel of Names</a> to determine the winner.
+          </p>
         <Link to="/leaderboard" className="leaderboard-link">View Leaderboard</Link>
         
         <div className="event-details">
