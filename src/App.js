@@ -25,16 +25,18 @@ import Account from './components/Account/Account';
 import Settings from './components/Account/Settings';
 import GeckoDetailsPage from './components/Card/GeckoDetails';
 import GeckoGame from './components/GeckoGame/GeckoGame';
+import Blogs from './components/Blogs/Blogs';
+import Leaderboard from './components/Blogs/Leaderboard';
+import RollingIconBlogPost from './components/Blogs/RollingIconBlogPost';
 import { inject } from '@vercel/analytics';
 
 inject();
 
 function App() {
   const [geckoGameEnabled, setGeckoGameEnabled] = useState(true);
-  const [transferTime, setTransferTime] = useState(600000); // 10 minutes in milliseconds 600000
-  const [respawnTime, setRespawnTime] = useState(600000); // 60 minutes in milliseconds 3600000
-  const [score, setScore] = useState(10);
-  const [enabledPages, setEnabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', 'policies', '/cart', '/account', '/settings']);
+  const [transferTime, setTransferTime] = useState(60000); // 1 minute in milliseconds
+  const [respawnTime, setRespawnTime] = useState(600000); // 10 minutes in milliseconds
+  const [enabledPages, setEnabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', 'policies', '/cart', '/account', '/settings', '/blogs']);
 
   return (
     <Router>
@@ -59,6 +61,9 @@ function App() {
                 <Route path="/account" element={<Account />} />
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/gecko/:id" element={<GeckoDetailsPage />} />
+                <Route path="/blogs" element={<Blogs />} />
+                <Route path="/blogs/rolling-icon-christmas-event" element={<RollingIconBlogPost />} />
+                <Route path="/leaderboard" element={<Leaderboard />} />
               </Routes>
             </div>
             <Scroll />
@@ -67,7 +72,6 @@ function App() {
               <GeckoGame
                 transferTime={transferTime}
                 respawnTime={respawnTime}
-                score={score}
                 enabledPages={enabledPages}
               />
             )}

@@ -3,7 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Navbar.scss';
 import { FaUserCircle, FaUserPlus, FaShoppingCart } from 'react-icons/fa';
 import { useCart } from '../Cart/CartContext';
-import { useAuth } from '../Auth/AuthContext'; // Add this import
+import { useAuth } from '../Auth/AuthContext';
 import LoginPopup from '../Auth/LoginPopup';
 
 const Navbar = () => {
@@ -14,7 +14,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const { cart } = useCart();
-  const { currentUser } = useAuth(); // Add this line
+  const { currentUser } = useAuth();
   
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -61,7 +61,8 @@ const Navbar = () => {
         <NavLink to="/" text="Home" toggleMenu={toggleMenu} />
         <NavLink to="/shop" text="Shop" toggleMenu={toggleMenu} />
         <NavLink to="/learn" text="Learn" toggleMenu={toggleMenu} />
-        <NavLink to="/genetic-calculator" text="Genetic Calculator" toggleMenu={toggleMenu} />
+        <NavLink to="/blogs" text="Blogs" toggleMenu={toggleMenu} />
+        <NavLink to="/genetic-calculator" text="Calculators" toggleMenu={toggleMenu} />
         <NavLink to="/contact" text="Contact Us" toggleMenu={toggleMenu} />
       </div>
       <div className="menu-icons-container">

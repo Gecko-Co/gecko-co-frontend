@@ -6,7 +6,7 @@ import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
 import './GeckoGame.scss';
 
-const GeckoGame = ({ transferTime, respawnTime, score, enabledPages }) => {
+const GeckoGame = ({ transferTime, respawnTime, enabledPages }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [currentPage, setCurrentPage] = useState('');
@@ -114,17 +114,30 @@ const GeckoGame = ({ transferTime, respawnTime, score, enabledPages }) => {
     };
   }, [location, checkVisibility, getRandomPage, startPageChangeTimer, updatePosition, getRandomPosition, startTooltipTimer]);
 
+  const calculateScore = useCallback(() => {
+    const today = new Date();
+    const endDate = new Date('2023-12-20');
+    const daysUntilEnd = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
+    const daysToIncrease = Math.max(20 - daysUntilEnd, 0);
+    
+    const currentMinScore = 1 + daysToIncrease;
+    const currentMaxScore = 10 + daysToIncrease;
+    
+    return Math.floor(Math.random() * (currentMaxScore - currentMinScore + 1)) + currentMinScore;
+  }, []);
+
   const handleClick = useCallback(async () => {
     if (currentUser) {
+      const earnedScore = calculateScore();
       const userRef = doc(db, 'users', currentUser.uid);
       await updateDoc(userRef, {
-        points: increment(score)
+        points: increment(earnedScore)
       });
 
       const userDoc = await getDoc(userRef);
       const newPoints = userDoc.data().points;
 
-      customToast.success(`+${score} points! Total: ${newPoints}`);
+      customToast.success(`+${earnedScore} points! Total: ${newPoints}`);
 
       setIsVisible(false);
       setShowTooltip(false);
@@ -154,7 +167,7 @@ const GeckoGame = ({ transferTime, respawnTime, score, enabledPages }) => {
     } else {
       customToast.info('Sign in to collect points!');
     }
-  }, [currentUser, score, respawnTime, getRandomPage, location.pathname, updatePosition, getRandomPosition, startTooltipTimer]);
+  }, [currentUser, respawnTime, getRandomPage, location.pathname, updatePosition, getRandomPosition, startTooltipTimer, calculateScore]);
 
   if (!isVisible || currentPage !== location.pathname) return null;
 
