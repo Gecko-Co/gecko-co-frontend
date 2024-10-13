@@ -41,8 +41,9 @@ const Cart = () => {
                     </div>
                   </Link>
                   <div className="item-actions">
-                    <button onClick={() => removeFromCart(item)} className="remove-button">
+                    <button onClick={() => removeFromCart(item)} className="remove-button" aria-label="Remove item">
                       <FontAwesomeIcon icon={faTrash} />
+                      <span className="remove-text">Remove</span>
                     </button>
                   </div>
                 </div>

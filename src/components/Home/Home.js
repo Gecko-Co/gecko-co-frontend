@@ -12,6 +12,7 @@ import { useCart } from '../Cart/CartContext';
 import customToast from '../../utils/toast';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase';
+import EventPopup from './EventPopup';
 
 const GeckoSliderCard = ({ gecko }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -77,7 +78,6 @@ export default function Component() {
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [availableGeckos, setAvailableGeckos] = useState([]);
-  //const [heroTextMaxHeight, setHeroTextMaxHeight] = useState(0); //Removed
 
   const heroContent = [
     {
@@ -135,8 +135,6 @@ export default function Component() {
     return () => clearInterval(timer);
   }, []);
 
-  //Removed useEffect for heroTextMaxHeight
-
   const sliderSettings = {
     dots: true,
     infinite: true,
@@ -174,7 +172,7 @@ export default function Component() {
         <section className="hero-section">
           <div className="hero-container">
             <div className="hero-content">
-              <div className="hero-text-container" style={{ height: '300px' }}> {/* Updated */}
+              <div className="hero-text-container" style={{ height: '300px' }}>
                 <div className={`hero-text ${isTransitioning ? 'fade-out' : 'fade-in'}`}>
                   <h1 className="hero-title">{heroContent[currentHeroIndex].title}</h1>
                   <p className="hero-subtitle">{heroContent[currentHeroIndex].subtitle}</p>
@@ -297,6 +295,8 @@ export default function Component() {
             </div>
           </div>
         </div>
+
+        <EventPopup />
       </div>
     </>
   );

@@ -109,6 +109,7 @@
         .cart-item-image {
           width: 60px;
           height: 60px;
+          min-width: 60px;
           object-fit: cover;
           border-radius: 4px;
           margin-right: 1rem;
@@ -212,6 +213,14 @@
     .cart-actions {
       flex-direction: column;
       gap: 1rem;
+    }
+
+    .cart-items .cart-item {
+      .cart-item-image {
+        width: 60px;
+        height: 60px;
+        min-width: 60px;
+      }
     }
   }
 }

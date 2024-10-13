@@ -8,6 +8,7 @@ import ReCAPTCHA from "react-google-recaptcha";
 import GoogleSignInButton from './GoogleSignInButton';
 import { useAuth } from './AuthContext';
 import './SignUp.scss';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'; // Assume you have this component
 
 const SignUp = () => {
   const [firstName, setFirstName] = useState('');
@@ -18,14 +19,17 @@ const SignUp = () => {
   const [loading, setLoading] = useState(false);
   const recaptchaRef = useRef(null);
   const navigate = useNavigate();
-  const { setCurrentUser } = useAuth();
+  const { currentUser, loading: authLoading, setCurrentUser } = useAuth();
 
   useEffect(() => {
-    // Clean up function to ensure no lingering states or effects
-    return () => {
-      setLoading(false);
-    };
-  }, []);
+    if (!authLoading && currentUser) {
+      navigate('/account');
+    }
+  }, [currentUser, authLoading, navigate]);
+
+  if (authLoading) {
+    return <LoadingSpinner />;
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
