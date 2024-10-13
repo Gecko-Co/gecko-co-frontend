@@ -34,9 +34,9 @@ inject();
 
 function App() {
   const [geckoGameEnabled, setGeckoGameEnabled] = useState(true);
-  const [transferTime, setTransferTime] = useState(60000); // 1 minute in milliseconds
+  const [transferTime, setTransferTime] = useState(600000); // 10 minute in milliseconds
   const [respawnTime, setRespawnTime] = useState(600000); // 10 minutes in milliseconds
-  const [enabledPages, setEnabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', 'policies', '/cart', '/account', '/settings', '/blogs']);
+  const [enabledPages, setEnabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', '/policies', '/cart', '/account', '/settings', '/blogs']);
 
   return (
     <Router>
@@ -52,7 +52,7 @@ function App() {
                 <Route path="/learn" element={<Learn />} />
                 <Route path="/learn/:species" element={<GeckoSpecies />} />
                 <Route path="/genetic-calculator" element={<GeneticCalculator />} />
-                <Route path="/policies" element={<PolicyPage />} />
+                <Route  path="/policies" element={<PolicyPage />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/signin" element={<SignIn />} />

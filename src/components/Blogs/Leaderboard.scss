@@ -1,7 +1,7 @@
 .leaderboard-container {
     max-width: 800px;
     margin: 0 auto;
-    padding: 200px 20px 220px;
+    padding: 200px 20px 200px;
     font-family: Arial, sans-serif;
   
     .leaderboard-title {
@@ -101,4 +101,24 @@
         }
       }
     }
+  }
+  
+  .loading-spinner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.5rem;
+    color: #bd692d;
+    margin-top: 20px;
+  
+    svg {
+      margin-bottom: 10px;
+    }
+  }
+  
+  .last-updated {
+    text-align: center;
+    font-size: 0.9rem;
+    color: #666;
+    margin-top: 20px;
   }

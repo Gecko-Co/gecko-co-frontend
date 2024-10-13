@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrophy, faStar } from '@fortawesome/free-solid-svg-icons';
+import { faTrophy, faStar, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import './Leaderboard.scss';
 
 const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [lastUpdated, setLastUpdated] = useState(null);
 
   useEffect(() => {
     const fetchLeaderboardData = async () => {
@@ -23,6 +24,7 @@ const Leaderboard = () => {
           ...doc.data(),
         }));
         setLeaderboardData(data);
+        setLastUpdated(new Date());
       } catch (error) {
         console.error('Error fetching leaderboard data:', error);
       } finally {
@@ -31,6 +33,10 @@ const Leaderboard = () => {
     };
 
     fetchLeaderboardData();
+
+    const intervalId = setInterval(fetchLeaderboardData, 60000); // Refresh every 60 seconds
+
+    return () => clearInterval(intervalId); // Clean up on unmount
   }, []);
 
   const getTrophyIcon = (index) => {
@@ -54,7 +60,10 @@ const Leaderboard = () => {
     <div className="leaderboard-container">
       <h1 className="leaderboard-title">Rolling Icon Leaderboard</h1>
       {loading ? (
-        <p>Loading leaderboard...</p>
+        <div className="loading-spinner">
+          <FontAwesomeIcon icon={faSpinner} spin />
+          <span>Loading leaderboard...</span>
+        </div>
       ) : (
         <div className="leaderboard-table">
           <div className="leaderboard-header">
@@ -75,6 +84,11 @@ const Leaderboard = () => {
               </span>
             </div>
           ))}
+        </div>
+      )}
+      {lastUpdated && (
+        <div className="last-updated">
+          Last updated: {lastUpdated.toLocaleTimeString()}
         </div>
       )}
     </div>

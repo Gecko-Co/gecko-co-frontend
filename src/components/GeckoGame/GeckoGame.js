@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { doc, updateDoc, increment, getDoc } from 'firebase/firestore';
+import { doc, updateDoc, increment, getDoc, setDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
@@ -10,6 +10,8 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages }) => {
   const [isVisible, setIsVisible] = useState(false);
   const [showTooltip, setShowTooltip] = useState(false);
   const [currentPage, setCurrentPage] = useState('');
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [dailyBonusAvailable, setDailyBonusAvailable] = useState(false);
   const { currentUser } = useAuth();
   const location = useLocation();
   const timeoutRef = useRef();
@@ -32,13 +34,16 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages }) => {
   const getRandomPosition = useCallback(() => {
     return {
       x: Math.random() * (window.innerWidth - 80),
-      y: Math.random() * (window.innerHeight - 80)
+      y: Math.random() * (window.innerHeight - 80),
     };
   }, []);
 
-  const getRandomPage = useMemo(() => () => {
-    return enabledPages[Math.floor(Math.random() * enabledPages.length)];
-  }, [enabledPages]);
+  const getRandomPage = useMemo(
+    () => () => {
+      return enabledPages[Math.floor(Math.random() * enabledPages.length)];
+    },
+    [enabledPages]
+  );
 
   const updatePosition = useCallback(() => {
     positionRef.current.x += velocityRef.current.x;
@@ -83,6 +88,18 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages }) => {
     tooltipTimeoutRef.current = setTimeout(showTooltip, Math.random() * 5000 + 2000);
   }, []);
 
+  const checkDailyBonus = useCallback(async () => {
+    if (currentUser) {
+      const userRef = doc(db, 'users', currentUser.uid);
+      const userDoc = await getDoc(userRef);
+      const lastBonusDate = userDoc.data()?.lastDailyBonus?.toDate();
+      const today = new Date();
+      if (!lastBonusDate || lastBonusDate.getDate() !== today.getDate()) {
+        setDailyBonusAvailable(true);
+      }
+    }
+  }, [currentUser]);
+
   useEffect(() => {
     const shouldBeVisible = checkVisibility();
     if (shouldBeVisible) {
@@ -101,6 +118,8 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages }) => {
       }
     }
 
+    checkDailyBonus();
+
     return () => {
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
@@ -112,73 +131,92 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages }) => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [location, checkVisibility, getRandomPage, startPageChangeTimer, updatePosition, getRandomPosition, startTooltipTimer]);
+  }, [location, checkVisibility, getRandomPage, startPageChangeTimer, updatePosition, getRandomPosition, startTooltipTimer, checkDailyBonus]);
 
   const calculateScore = useCallback(() => {
-    const today = new Date();
-    const endDate = new Date('2023-12-20');
-    const daysUntilEnd = Math.ceil((endDate - today) / (1000 * 60 * 60 * 24));
-    const daysToIncrease = Math.max(20 - daysUntilEnd, 0);
-    
-    const currentMinScore = 1 + daysToIncrease;
-    const currentMaxScore = 10 + daysToIncrease;
-    
-    return Math.floor(Math.random() * (currentMaxScore - currentMinScore + 1)) + currentMinScore;
+    const minScore = 1;
+    const maxScore = 10;
+    return Math.floor(Math.random() * (maxScore - minScore + 1)) + minScore;
   }, []);
 
   const handleClick = useCallback(async () => {
-    if (currentUser) {
-      const earnedScore = calculateScore();
-      const userRef = doc(db, 'users', currentUser.uid);
-      await updateDoc(userRef, {
-        points: increment(earnedScore)
-      });
+    if (currentUser && !isUpdating) {
+      setIsUpdating(true);
+      try {
+        const earnedScore = calculateScore();
+        const userRef = doc(db, 'users', currentUser.uid);
+        
+        let bonusPoints = 0;
+        if (dailyBonusAvailable) {
+          bonusPoints = 50; // Daily bonus points
+          await setDoc(userRef, { lastDailyBonus: new Date() }, { merge: true });
+          setDailyBonusAvailable(false);
+        }
 
-      const userDoc = await getDoc(userRef);
-      const newPoints = userDoc.data().points;
+        await updateDoc(userRef, {
+          points: increment(earnedScore + bonusPoints),
+        });
 
-      customToast.success(`+${earnedScore} points! Total: ${newPoints}`);
+        const userDoc = await getDoc(userRef);
+        const newPoints = userDoc.data().points;
 
-      setIsVisible(false);
-      setShowTooltip(false);
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+        if (bonusPoints > 0) {
+          customToast.success(`Daily Bonus! +${bonusPoints} bonus points! +${earnedScore} points! Total: ${newPoints}`);
+        } else {
+          customToast.success(`+${earnedScore} points! Total: ${newPoints}`);
+        }
+
+        setIsVisible(false);
+        setShowTooltip(false);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+        if (tooltipTimeoutRef.current) {
+          clearTimeout(tooltipTimeoutRef.current);
+        }
+        if (animationRef.current) {
+          cancelAnimationFrame(animationRef.current);
+        }
+
+        console.log('GeckoGame: Icon clicked, will respawn after', respawnTime, 'ms');
+        sessionStorage.setItem('geckoGameLastClick', Date.now().toString());
+
+        setTimeout(() => {
+          const newRandomPage = getRandomPage();
+          setCurrentPage(newRandomPage);
+          setIsVisible(newRandomPage === location.pathname);
+          console.log('GeckoGame: Icon respawned on', newRandomPage);
+          positionRef.current = getRandomPosition();
+          velocityRef.current = { x: Math.random() * 4 - 2, y: Math.random() * 4 - 2 };
+          updatePosition();
+          startTooltipTimer();
+        }, respawnTime);
+      } catch (error) {
+        console.error('Error updating points:', error);
+        customToast.error('Failed to update points. Please try again.');
+      } finally {
+        setIsUpdating(false);
       }
-      if (tooltipTimeoutRef.current) {
-        clearTimeout(tooltipTimeoutRef.current);
-      }
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-
-      console.log('GeckoGame: Icon clicked, will respawn after', respawnTime, 'ms');
-      sessionStorage.setItem('geckoGameLastClick', Date.now().toString());
-
-      setTimeout(() => {
-        const newRandomPage = getRandomPage();
-        setCurrentPage(newRandomPage);
-        setIsVisible(newRandomPage === location.pathname);
-        console.log('GeckoGame: Icon respawned on', newRandomPage);
-        positionRef.current = getRandomPosition();
-        velocityRef.current = { x: Math.random() * 4 - 2, y: Math.random() * 4 - 2 };
-        updatePosition();
-        startTooltipTimer();
-      }, respawnTime);
-    } else {
+    } else if (!currentUser) {
       customToast.info('Sign in to collect points!');
     }
-  }, [currentUser, respawnTime, getRandomPage, location.pathname, updatePosition, getRandomPosition, startTooltipTimer, calculateScore]);
+  }, [currentUser, respawnTime, getRandomPage, location.pathname, updatePosition, getRandomPosition, startTooltipTimer, calculateScore, isUpdating, dailyBonusAvailable]);
 
   if (!isVisible || currentPage !== location.pathname) return null;
 
   return (
     <div 
-      className={`gecko-game-object ${showTooltip ? 'show-tooltip' : ''}`}
+      className={`gecko-game-object ${showTooltip ? 'show-tooltip' : ''} ${dailyBonusAvailable ? 'daily-bonus' : ''}`}
       onClick={handleClick}
+      onKeyPress={(e) => e.key === 'Enter' && handleClick()}
+      tabIndex={0}
+      role="button"
+      aria-label={dailyBonusAvailable ? "Click to earn points and collect your daily bonus!" : "Click to earn points"}
     >
       <img src="/images/geckoco-png.png" alt="Gecko Co. Logo" />
+      {dailyBonusAvailable && <div className="daily-bonus-indicator">Daily Bonus Available!</div>}
     </div>
   );
 };
 
-export default GeckoGame;
+export default React.memo(GeckoGame);

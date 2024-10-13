@@ -11,7 +11,7 @@ const RollingIconBlogPost = () => {
   return (
     <div className="blog-post-container">
       <h1 className="blog-post-title">Rolling Icon Christmas Event</h1>
-      <p className="blog-post-date">Posted on October 13, 2023</p>
+      <p className="blog-post-date">Updated on October 13, 2023</p>
       
       <div className="blog-post-content">
         <h2>Win a Gecko this Christmas!</h2>
@@ -40,23 +40,23 @@ const RollingIconBlogPost = () => {
         <ol>
           <li>Our icon will appear randomly on different pages of our website.</li>
           <li>The icon moves around the page, making it a fun challenge to catch!</li>
-          <li>Click on  the icon to earn points. Be quick - it disappears after a while!</li>
+          <li>Click on the icon to earn points. Be quick - it disappears after a while!</li>
           <li>After clicking, the icon will respawn on a random page after a set time.</li>
           <li>The more icons you catch, the higher your score!</li>
         </ol>
         
-        <h2>Exciting Scoring Mechanics</h2>
+        <h2>Updated Scoring Mechanics</h2>
         <p>
-          We've introduced a dynamic scoring system to make the game even more thrilling as we approach the end of the event!
+          We've updated our scoring system to make the game even more exciting and fair for all players!
         </p>
         <ul>
-          <li>At the start of the event, each click on the Rolling Icon will earn you between 1 to 10 points.</li>
-          <li>As we get closer to the end date (December 20th), the potential points you can earn will increase daily!</li>
-          <li>In the final days of the event, you could earn up to 30 points or more per click!</li>
-          <li>The exact number of points you earn per click is random within the day's range, adding an element of excitement to each capture.</li>
+          <li>Each click on the Rolling Icon will earn you between 1 to 10 points.</li>
+          <li>The exact number of points you earn per click is random within this range, adding an element of excitement to each capture.</li>
+          <li>There's a daily bonus available! The first click of each day will give you an additional 50 points on top of your regular score.</li>
+          <li>Keep an eye out for the daily bonus indicator on the icon - it's your chance to boost your score significantly!</li>
         </ul>
         <p>
-          This progressive scoring system means that every player has a chance to climb the leaderboard, even if they start playing later in the event. It also adds extra excitement in the final days as scores can change dramatically!
+          This scoring system ensures that every player has a fair chance to climb the leaderboard, regardless of when they start playing. It also adds extra excitement as scores can change dramatically with each click and daily bonus!
         </p>
         
         <h2>Prize Details</h2>
@@ -78,7 +78,7 @@ const RollingIconBlogPost = () => {
         
         <h2>Current Leaderboard</h2>
         <p>
-          Check out the current standings on our leaderboard! See how you stack up against other players and aim for the top 10 spots to have a chance to win the gecko. Remember, with our new scoring system, the leaderboard can change quickly, especially near the end of the event!
+          Check out the current standings on our leaderboard! See how you stack up against other players and aim for the top 10 spots to have a chance to win the gecko. Remember, with our new scoring system, including daily bonuses, the leaderboard can change quickly!
         </p>
         <Link to="/leaderboard" className="leaderboard-link">View Leaderboard</Link>
         
