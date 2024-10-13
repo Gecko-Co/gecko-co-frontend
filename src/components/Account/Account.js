@@ -9,6 +9,7 @@ import './Account.scss';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner'; // Correct import path
+import { getGeckoDetailUrl } from '../../utils/urlHelpers';
 
 const Account = () => {
   const navigate = useNavigate();
@@ -87,7 +88,7 @@ const Account = () => {
               <div className="cart-items">
                 {cart.map((item) => (
                   <div key={item.id} className="cart-item">
-                    <Link to={`/gecko/${item.id}`} className="cart-item-link">
+                    <Link to={getGeckoDetailUrl(item.name)} className="cart-item-link">
                       <img src={item.images} alt={item.title} className="cart-item-image" />
                       <div className="cart-item-details">
                         <h3>{item.title}</h3>
