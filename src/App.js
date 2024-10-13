@@ -36,7 +36,8 @@ function App() {
   const [geckoGameEnabled, setGeckoGameEnabled] = useState(true);
   const [transferTime, setTransferTime] = useState(600000); // 10 minute in milliseconds
   const [respawnTime, setRespawnTime] = useState(600000); // 10 minutes in milliseconds
-  const [enabledPages, setEnabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', '/policies', '/cart', '/account', '/settings', '/blogs']);
+  const [enabledPages, setEnabledPages] = useState(['/shop']);
+  // const [enabledPages, setEnabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', '/policies', '/cart', '/account', '/settings', '/blogs']);
 
   return (
     <Router>
