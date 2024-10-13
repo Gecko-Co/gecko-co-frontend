@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 import { doc, updateDoc, increment, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { ref, onValue, set } from 'firebase/database';
+import { db, realtimeDb } from '../../firebase';
 import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
 import './GeckoGame.scss';
@@ -74,6 +75,13 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages }) => {
       console.log('GeckoGame: Icon moved to', newRandomPage);
       positionRef.current = getRandomPosition();
       velocityRef.current = { x: Math.random() * 4 - 2, y: Math.random() * 4 - 2 };
+      
+      // Update the icon's visibility state in Firebase Realtime Database
+      set(ref(realtimeDb, 'geckoIcon'), {
+        page: newRandomPage,
+        visible: true,
+        lastUpdated: Date.now()
+      });
     }, transferTime);
   }, [getRandomPage, location.pathname, transferTime, getRandomPosition]);
 
@@ -90,37 +98,48 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages }) => {
 
   const checkDailyBonus = useCallback(async () => {
     if (currentUser) {
-      const userRef = doc(db, 'users', currentUser.uid);
-      const userDoc = await getDoc(userRef);
-      const lastBonusDate = userDoc.data()?.lastDailyBonus?.toDate();
-      const today = new Date();
-      if (!lastBonusDate || lastBonusDate.getDate() !== today.getDate()) {
-        setDailyBonusAvailable(true);
+      try {
+        const userRef = doc(db, 'users', currentUser.uid);
+        const userDoc = await getDoc(userRef);
+        const lastBonusDate = userDoc.data()?.lastDailyBonus?.toDate();
+        const today = new Date();
+        if (!lastBonusDate || lastBonusDate.getDate() !== today.getDate()) {
+          setDailyBonusAvailable(true);
+        }
+      } catch (error) {
+        console.error('Error checking daily bonus:', error);
       }
     }
   }, [currentUser]);
 
   useEffect(() => {
-    const shouldBeVisible = checkVisibility();
-    if (shouldBeVisible) {
-      const randomPage = getRandomPage();
-      setCurrentPage(randomPage);
-      if (randomPage === location.pathname) {
-        setIsVisible(true);
-        positionRef.current = getRandomPosition();
-        velocityRef.current = { x: Math.random() * 4 - 2, y: Math.random() * 4 - 2 };
-        console.log('GeckoGame: Icon appeared at', positionRef.current, 'on page', randomPage);
-        updatePosition();
-        startPageChangeTimer();
-        startTooltipTimer();
-      } else {
-        setIsVisible(false);
+    const iconRef = ref(realtimeDb, 'geckoIcon');
+    const unsubscribe = onValue(iconRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const shouldBeVisible = data.visible && data.page === location.pathname;
+        setIsVisible(shouldBeVisible);
+        if (shouldBeVisible) {
+          positionRef.current = getRandomPosition();
+          velocityRef.current = { x: Math.random() * 4 - 2, y: Math.random() * 4 - 2 };
+          updatePosition();
+          startTooltipTimer();
+        } else {
+          if (animationRef.current) {
+            cancelAnimationFrame(animationRef.current);
+          }
+          if (tooltipTimeoutRef.current) {
+            clearTimeout(tooltipTimeoutRef.current);
+          }
+        }
       }
-    }
+    });
 
     checkDailyBonus();
+    startPageChangeTimer();
 
     return () => {
+      unsubscribe();
       if (timeoutRef.current) {
         clearTimeout(timeoutRef.current);
       }
@@ -131,7 +150,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages }) => {
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [location, checkVisibility, getRandomPage, startPageChangeTimer, updatePosition, getRandomPosition, startTooltipTimer, checkDailyBonus]);
+  }, [location, checkDailyBonus, startPageChangeTimer, updatePosition, getRandomPosition, startTooltipTimer]);
 
   const calculateScore = useCallback(() => {
     const minScore = 1;
@@ -178,18 +197,28 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages }) => {
           cancelAnimationFrame(animationRef.current);
         }
 
+        // Update the icon's visibility state in Firebase Realtime Database
+        set(ref(realtimeDb, 'geckoIcon'), {
+          page: currentPage,
+          visible: false,
+          lastUpdated: Date.now()
+        });
+
         console.log('GeckoGame: Icon clicked, will respawn after', respawnTime, 'ms');
         sessionStorage.setItem('geckoGameLastClick', Date.now().toString());
 
         setTimeout(() => {
           const newRandomPage = getRandomPage();
           setCurrentPage(newRandomPage);
-          setIsVisible(newRandomPage === location.pathname);
+          
+          // Update the icon's visibility state in Firebase Realtime Database
+          set(ref(realtimeDb, 'geckoIcon'), {
+            page: newRandomPage,
+            visible: true,
+            lastUpdated: Date.now()
+          });
+
           console.log('GeckoGame: Icon respawned on', newRandomPage);
-          positionRef.current = getRandomPosition();
-          velocityRef.current = { x: Math.random() * 4 - 2, y: Math.random() * 4 - 2 };
-          updatePosition();
-          startTooltipTimer();
         }, respawnTime);
       } catch (error) {
         console.error('Error updating points:', error);
@@ -200,7 +229,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages }) => {
     } else if (!currentUser) {
       customToast.info('Sign in to collect points!');
     }
-  }, [currentUser, respawnTime, getRandomPage, location.pathname, updatePosition, getRandomPosition, startTooltipTimer, calculateScore, isUpdating, dailyBonusAvailable]);
+  }, [currentUser, respawnTime, getRandomPage, calculateScore, isUpdating, dailyBonusAvailable, currentPage]);
 
   if (!isVisible || currentPage !== location.pathname) return null;
 

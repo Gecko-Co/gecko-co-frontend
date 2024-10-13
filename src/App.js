@@ -52,7 +52,7 @@ function App() {
                 <Route path="/learn" element={<Learn />} />
                 <Route path="/learn/:species" element={<GeckoSpecies />} />
                 <Route path="/genetic-calculator" element={<GeneticCalculator />} />
-                <Route  path="/policies" element={<PolicyPage />} />
+                <Route path="/policies" element={<PolicyPage />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/cart" element={<Cart />} />
                 <Route path="/signin" element={<SignIn />} />
