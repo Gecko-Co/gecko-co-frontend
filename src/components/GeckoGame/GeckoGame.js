@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useLocation } from 'react-router-dom';
 import { doc, updateDoc, increment, getDoc, setDoc } from 'firebase/firestore';
-import { ref, onValue, set, remove } from 'firebase/database';
+import { ref, onValue, set } from 'firebase/database';
 import { db, realtimeDb } from '../../firebase';
 import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
@@ -15,22 +15,12 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
   const [dailyBonusAvailable, setDailyBonusAvailable] = useState(false);
   const { currentUser } = useAuth();
   const location = useLocation();
-  const timeoutRef = useRef();
+  const transferTimeoutRef = useRef();
+  const respawnTimeoutRef = useRef();
   const tooltipTimeoutRef = useRef();
   const positionRef = useRef({ x: 0, y: 0 });
   const velocityRef = useRef({ x: 0.002, y: 0.002 });
   const animationRef = useRef();
-
-  const checkVisibility = useCallback(() => {
-    const lastClickTime = sessionStorage.getItem('geckoGameLastClick');
-    const currentTime = Date.now();
-
-    if (lastClickTime && currentTime - parseInt(lastClickTime) < respawnTime) {
-      setIsVisible(false);
-      return false;
-    }
-    return true;
-  }, [respawnTime]);
 
   const getRandomPosition = useCallback(() => {
     return {
@@ -39,12 +29,9 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     };
   }, []);
 
-  const getRandomPage = useMemo(
-    () => () => {
-      return enabledPages[Math.floor(Math.random() * enabledPages.length)];
-    },
-    [enabledPages]
-  );
+  const getRandomPage = useCallback(() => {
+    return enabledPages[Math.floor(Math.random() * enabledPages.length)];
+  }, [enabledPages]);
 
   const updatePosition = useCallback(() => {
     positionRef.current.x += velocityRef.current.x * window.innerWidth;
@@ -64,27 +51,24 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     animationRef.current = requestAnimationFrame(updatePosition);
   }, []);
 
-  const startPageChangeTimer = useCallback(() => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
+  const updateIconState = useCallback((newPage, visible) => {
+    set(ref(realtimeDb, 'geckoIcon'), {
+      page: newPage,
+      visible: visible,
+      lastUpdated: Date.now()
+    });
+  }, []);
+
+  const startTransferTimer = useCallback(() => {
+    if (transferTimeoutRef.current) {
+      clearTimeout(transferTimeoutRef.current);
     }
-    timeoutRef.current = setTimeout(() => {
+    transferTimeoutRef.current = setTimeout(() => {
       const newRandomPage = getRandomPage();
       setCurrentPage(newRandomPage);
-      setIsVisible(newRandomPage === location.pathname);
-      positionRef.current = getRandomPosition();
-      velocityRef.current = { 
-        x: (Math.random() * 0.004 - 0.002), 
-        y: (Math.random() * 0.004 - 0.002) 
-      };
-      
-      set(ref(realtimeDb, 'geckoIcon'), {
-        page: newRandomPage,
-        visible: true,
-        lastUpdated: Date.now()
-      });
+      updateIconState(newRandomPage, true);
     }, transferTime);
-  }, [getRandomPage, location.pathname, transferTime, getRandomPosition]);
+  }, [getRandomPage, transferTime, updateIconState]);
 
   const startTooltipTimer = useCallback(() => {
     const showTooltip = () => {
@@ -115,7 +99,6 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
 
   useEffect(() => {
     if (!geckoGameEnabled) {
-      remove(ref(realtimeDb, 'geckoIcon'));
       setIsVisible(false);
       return;
     }
@@ -124,6 +107,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     const unsubscribe = onValue(iconRef, (snapshot) => {
       const data = snapshot.val();
       if (data && geckoGameEnabled) {
+        setCurrentPage(data.page);
         const shouldBeVisible = data.visible && data.page === location.pathname;
         setIsVisible(shouldBeVisible);
         if (shouldBeVisible) {
@@ -134,6 +118,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
           };
           updatePosition();
           startTooltipTimer();
+          startTransferTimer();
         } else {
           if (animationRef.current) {
             cancelAnimationFrame(animationRef.current);
@@ -148,27 +133,14 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     });
 
     checkDailyBonus();
-    
-    const initialSpawnTimeout = setTimeout(() => {
-      if (geckoGameEnabled) {
-        const newRandomPage = getRandomPage();
-        setCurrentPage(newRandomPage);
-        setIsVisible(newRandomPage === location.pathname);
-        
-        set(ref(realtimeDb, 'geckoIcon'), {
-          page: newRandomPage,
-          visible: true,
-          lastUpdated: Date.now()
-        });
-        
-        startPageChangeTimer();
-      }
-    }, 5000);
 
     return () => {
       unsubscribe();
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
+      if (transferTimeoutRef.current) {
+        clearTimeout(transferTimeoutRef.current);
+      }
+      if (respawnTimeoutRef.current) {
+        clearTimeout(respawnTimeoutRef.current);
       }
       if (tooltipTimeoutRef.current) {
         clearTimeout(tooltipTimeoutRef.current);
@@ -176,9 +148,8 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
-      clearTimeout(initialSpawnTimeout);
     };
-  }, [location, checkDailyBonus, startPageChangeTimer, updatePosition, getRandomPosition, startTooltipTimer, getRandomPage, geckoGameEnabled]);
+  }, [location, checkDailyBonus, startTransferTimer, updatePosition, getRandomPosition, startTooltipTimer, geckoGameEnabled]);
 
   const calculateScore = useCallback(() => {
     const minScore = 1;
@@ -215,8 +186,10 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
 
         setIsVisible(false);
         setShowTooltip(false);
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
+        updateIconState(currentPage, false);
+
+        if (transferTimeoutRef.current) {
+          clearTimeout(transferTimeoutRef.current);
         }
         if (tooltipTimeoutRef.current) {
           clearTimeout(tooltipTimeoutRef.current);
@@ -225,24 +198,14 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
           cancelAnimationFrame(animationRef.current);
         }
 
-        set(ref(realtimeDb, 'geckoIcon'), {
-          page: currentPage,
-          visible: false,
-          lastUpdated: Date.now()
-        });
-
-        sessionStorage.setItem('geckoGameLastClick', Date.now().toString());
-
-        setTimeout(() => {
+        if (respawnTimeoutRef.current) {
+          clearTimeout(respawnTimeoutRef.current);
+        }
+        respawnTimeoutRef.current = setTimeout(() => {
           if (geckoGameEnabled) {
             const newRandomPage = getRandomPage();
             setCurrentPage(newRandomPage);
-            
-            set(ref(realtimeDb, 'geckoIcon'), {
-              page: newRandomPage,
-              visible: true,
-              lastUpdated: Date.now()
-            });
+            updateIconState(newRandomPage, true);
           }
         }, respawnTime);
       } catch (error) {
@@ -254,26 +217,22 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     } else if (!currentUser) {
       customToast.info('Sign in to collect points!');
     }
-  }, [currentUser, respawnTime, getRandomPage, calculateScore, isUpdating, dailyBonusAvailable, currentPage, geckoGameEnabled]);
+  }, [currentUser, respawnTime, getRandomPage, calculateScore, isUpdating, dailyBonusAvailable, currentPage, geckoGameEnabled, updateIconState]);
 
-  if (!geckoGameEnabled) return null;
+  if (!geckoGameEnabled || !isVisible) return null;
 
   return (
-    <>
-      {(isVisible && currentPage === location.pathname) && (
-        <div 
-          className={`gecko-game-object ${showTooltip ? 'show-tooltip' : ''} ${dailyBonusAvailable ? 'daily-bonus' : ''}`}
-          onClick={handleClick}
-          onKeyPress={(e) => e.key === 'Enter' && handleClick()}
-          tabIndex={0}
-          role="button"
-          aria-label={dailyBonusAvailable ? "Click to earn points and collect your daily bonus!" : "Click to earn points"}
-        >
-          <img src="/images/geckoco-png.png" alt="Gecko Co. Logo" />
-          {dailyBonusAvailable && <div className="daily-bonus-indicator">Daily Bonus Available!</div>}
-        </div>
-      )}
-    </>
+    <div 
+      className={`gecko-game-object ${showTooltip ? 'show-tooltip' : ''} ${dailyBonusAvailable ? 'daily-bonus' : ''}`}
+      onClick={handleClick}
+      onKeyPress={(e) => e.key === 'Enter' && handleClick()}
+      tabIndex={0}
+      role="button"
+      aria-label={dailyBonusAvailable ? "Click to earn points and collect your daily bonus!" : "Click to earn points"}
+    >
+      <img src="/images/geckoco-png.png" alt="Gecko Co. Logo" />
+      {dailyBonusAvailable && <div className="daily-bonus-indicator">Daily Bonus Available!</div>}
+    </div>
   );
 };
 
