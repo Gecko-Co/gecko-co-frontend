@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { doc, updateDoc, increment, getDoc, setDoc } from 'firebase/firestore';
-import { ref, onValue, set } from 'firebase/database';
+import { ref, onValue, set, serverTimestamp } from 'firebase/database';
 import { db, realtimeDb } from '../../firebase';
 import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
@@ -15,8 +15,6 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
   const [dailyBonusAvailable, setDailyBonusAvailable] = useState(false);
   const { currentUser } = useAuth();
   const location = useLocation();
-  const transferTimeoutRef = useRef();
-  const respawnTimeoutRef = useRef();
   const tooltipTimeoutRef = useRef();
   const positionRef = useRef({ x: 0, y: 0 });
   const velocityRef = useRef({ x: 0.002, y: 0.002 });
@@ -55,20 +53,26 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     set(ref(realtimeDb, 'geckoIcon'), {
       page: newPage,
       visible: visible,
-      lastUpdated: Date.now()
+      lastUpdated: serverTimestamp(),
+      nextTransferTime: serverTimestamp() + transferTime
     });
-  }, []);
+  }, [transferTime]);
 
   const startTransferTimer = useCallback(() => {
-    if (transferTimeoutRef.current) {
-      clearTimeout(transferTimeoutRef.current);
-    }
-    transferTimeoutRef.current = setTimeout(() => {
-      const newRandomPage = getRandomPage();
-      setCurrentPage(newRandomPage);
-      updateIconState(newRandomPage, true);
-    }, transferTime);
-  }, [getRandomPage, transferTime, updateIconState]);
+    const checkAndTransfer = () => {
+      const iconRef = ref(realtimeDb, 'geckoIcon');
+      onValue(iconRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data && data.nextTransferTime && Date.now() >= data.nextTransferTime) {
+          const newRandomPage = getRandomPage();
+          updateIconState(newRandomPage, true);
+        } else {
+          setTimeout(checkAndTransfer, 1000); // Check every second
+        }
+      }, { onlyOnce: true });
+    };
+    checkAndTransfer();
+  }, [getRandomPage, updateIconState]);
 
   const startTooltipTimer = useCallback(() => {
     const showTooltip = () => {
@@ -106,10 +110,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
   }, [geckoGameEnabled, getRandomPage, updateIconState]);
 
   const scheduleRespawn = useCallback(() => {
-    if (respawnTimeoutRef.current) {
-      clearTimeout(respawnTimeoutRef.current);
-    }
-    respawnTimeoutRef.current = setTimeout(respawnGecko, respawnTime);
+    setTimeout(respawnGecko, respawnTime);
   }, [respawnTime, respawnGecko]);
 
   useEffect(() => {
@@ -152,12 +153,6 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
 
     return () => {
       unsubscribe();
-      if (transferTimeoutRef.current) {
-        clearTimeout(transferTimeoutRef.current);
-      }
-      if (respawnTimeoutRef.current) {
-        clearTimeout(respawnTimeoutRef.current);
-      }
       if (tooltipTimeoutRef.current) {
         clearTimeout(tooltipTimeoutRef.current);
       }
@@ -204,9 +199,6 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
         setShowTooltip(false);
         updateIconState(currentPage, false);
 
-        if (transferTimeoutRef.current) {
-          clearTimeout(transferTimeoutRef.current);
-        }
         if (tooltipTimeoutRef.current) {
           clearTimeout(tooltipTimeoutRef.current);
         }
