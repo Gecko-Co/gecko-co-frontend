@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faArrowLeft, faCreditCard } from '@fortawesome/free-solid-svg-icons';
 import customToast from '../../utils/toast';
+import { getGeckoDetailUrl } from '../../utils/urlHelpers';
 import './Cart.scss';
 
 const Cart = () => {
@@ -33,7 +34,7 @@ const Cart = () => {
             <div className="cart-items">
               {cart.map((item) => (
                 <div key={item.id} className="cart-item">
-                  <Link to={`/gecko/${item.id}`} className="item-link">
+                  <Link to={getGeckoDetailUrl(item.name)} className="item-link">
                     <img src={item.images} alt={item.title} className="item-image" />
                     <div className="item-details">
                       <h3>{item.title}</h3>

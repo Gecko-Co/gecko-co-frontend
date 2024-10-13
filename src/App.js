@@ -60,7 +60,7 @@ function App() {
                 <Route path="/forgot-password" element={<ForgotPassword />} />
                 <Route path="/account" element={<Account />} />
                 <Route path="/settings" element={<Settings />} />
-                <Route path="/gecko/:id" element={<GeckoDetailsPage />} />
+                <Route path="/gecko/:name" element={<GeckoDetailsPage />} />
                 <Route path="/blogs" element={<Blogs />} />
                 <Route path="/blogs/rolling-icon-christmas-event" element={<RollingIconBlogPost />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />

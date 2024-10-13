@@ -12,38 +12,26 @@ import './GeckoDetails.scss';
 const GeckoDetails = () => {
   const [gecko, setGecko] = useState(null);
   const [loading, setLoading] = useState(true);
-  const { id } = useParams();
+  const { name } = useParams();
   const { addToCart } = useCart();
   const { currentUser } = useAuth();
 
   useEffect(() => {
     const fetchGecko = async () => {
       try {
-        let geckoDoc;
-        // First, try to fetch the gecko using the id
-        const geckoRef = doc(db, 'geckos', id);
-        let geckoSnap = await getDoc(geckoRef);
+        const geckosCollection = collection(db, 'geckos');
+        const q = query(geckosCollection, where('name', '==', name));
+        const querySnapshot = await getDocs(q);
 
-        if (geckoSnap.exists()) {
-          geckoDoc = geckoSnap;
+        if (!querySnapshot.empty) {
+          const geckoDoc = querySnapshot.docs[0];
+          const geckoData = { id: geckoDoc.id, ...geckoDoc.data() };
+          console.log('Fetched gecko:', geckoData);
+          setGecko(geckoData);
         } else {
-          // If not found by id, try to fetch using the 'name' field
-          const geckosCollection = collection(db, 'geckos');
-          const q = query(geckosCollection, where('name', '==', id));
-          const querySnapshot = await getDocs(q);
-
-          if (!querySnapshot.empty) {
-            geckoDoc = querySnapshot.docs[0];
-          } else {
-            console.log('No such gecko!');
-            setGecko(null);
-            return;
-          }
+          console.log('No such gecko!');
+          setGecko(null);
         }
-
-        const geckoData = { id: geckoDoc.id, ...geckoDoc.data() };
-        console.log('Fetched gecko:', geckoData);
-        setGecko(geckoData);
       } catch (error) {
         console.error('Error fetching gecko:', error);
       } finally {
@@ -52,7 +40,7 @@ const GeckoDetails = () => {
     };
 
     fetchGecko();
-  }, [id]);
+  }, [name]);
 
   const getImageUrl = (imagePath) => {
     const baseUrl = "https://www.geckoco.ph/";
@@ -77,7 +65,6 @@ const GeckoDetails = () => {
       if (success) {
         customToast.success('Gecko added to cart successfully!');
       }
-      // The error cases are now handled in the CartContext
     } catch (error) {
       console.error("Error adding gecko to cart:", error);
       customToast.error('Failed to add gecko to cart. Please try again.');

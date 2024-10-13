@@ -1,0 +1,1 @@
+export const getGeckoDetailUrl = (geckoName) => `/gecko/${encodeURIComponent(geckoName)}`;

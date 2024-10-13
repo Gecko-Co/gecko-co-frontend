@@ -13,6 +13,7 @@ import customToast from '../../utils/toast';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import { db } from '../../firebase';
 import EventPopup from './EventPopup';
+import { getGeckoDetailUrl } from '../../utils/urlHelpers';
 
 const GeckoSliderCard = ({ gecko }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -52,7 +53,7 @@ const GeckoSliderCard = ({ gecko }) => {
           <p className="card-price">₱{parseFloat(gecko.price).toLocaleString('en-US')}</p>
         </div>
         <div className="card-actions">
-          <Link to={`/gecko/${gecko.name}`} className="btn btn-primary">View Details</Link>
+          <Link to={getGeckoDetailUrl(gecko.name)} className="btn btn-primary">View Details</Link>
           <button 
             className="btn btn-secondary" 
             onClick={handleAddToCart}

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faShoppingCart } from "@fortawesome/free-solid-svg-icons";
+import { getGeckoDetailUrl } from '../../utils/urlHelpers';
 import "./Card.scss";
 
 const Card = ({ results, addToCart }) => {
@@ -57,7 +58,7 @@ const Card = ({ results, addToCart }) => {
                 <p className="card-price">{priceInPHP}</p>
               </div>
               <div className="card-actions">
-                <Link to={`/gecko/${id}`} className="btn btn-primary">View Details</Link>
+                <Link to={getGeckoDetailUrl(name)} className="btn btn-primary">View Details</Link>
                 <button 
                   className="btn btn-secondary" 
                   onClick={() => handleAddToCart(gecko)}
