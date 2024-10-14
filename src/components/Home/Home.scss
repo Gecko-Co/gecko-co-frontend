@@ -1006,6 +1006,9 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     gap: 30px;
+    @media (min-width: 1024px) {
+      flex-wrap: nowrap;
+    }
   }
 
   .feature {
@@ -1018,6 +1021,9 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
     color: #23283b;
+    @media (min-width: 1024px) {
+      min-width: 200px;
+    }
 
     &:hover {
       transform: translateY(-10px);

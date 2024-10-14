@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalculator, faArrowRight, faShoppingCart, faDna, faChartLine } from '@fortawesome/free-solid-svg-icons';
+import { faCalculator, faArrowRight, faShoppingCart, faDna, faChartLine, faAward, faMicroscope } from '@fortawesome/free-solid-svg-icons';
 import Slider from "react-slick";
 import { Helmet } from 'react-helmet';
 import "slick-carousel/slick/slick.css";
@@ -277,22 +277,35 @@ export default function Component() {
         <div className="diagonal-transition reverse"></div>
 
         <div className="fifth-section">
-          <h2 className="section-title">Why Choose Us?</h2>
+          <h2 className="section-title">Why Choose Gecko Co.?</h2>
           <div className="content-wrapper">
             <div className="feature">
-              <div className="feature-icon">🏆</div>
-              <h3>Expert Care</h3>
-              <p>Our team of experienced professionals ensures the best care for your exotic pets.</p>
+              <div className="feature-icon">
+                <FontAwesomeIcon icon={faAward} />
+              </div>
+              <h3>Gecko Expertise</h3>
+              <p>Our team specializes in gecko care, ensuring the health and happiness of every gecko we breed and sell.</p>
             </div>
             <div className="feature">
-              <div className="feature-icon">🌿</div>
-              <h3>Sustainable Practices</h3>
-              <p>We prioritize ethical sourcing and environmental responsibility in all our operations.</p>
+              <div className="feature-icon">
+                <FontAwesomeIcon icon={faDna} />
+              </div>
+              <h3>Genetic Excellence</h3>
+              <p>We use advanced breeding techniques to produce rare morphs and ensure genetic diversity in our gecko populations.</p>
             </div>
             <div className="feature">
-              <div className="feature-icon">💖</div>
+              <div className="feature-icon">
+                <FontAwesomeIcon icon={faChartLine} />
+              </div>
               <h3>Lifetime Support</h3>
-              <p>We provide ongoing guidance and support for the entire lifespan of your pet.</p>
+              <p>From habitat setup to dietary advice, we provide ongoing support throughout your gecko's life.</p>
+            </div>
+            <div className="feature">
+              <div className="feature-icon">
+                <FontAwesomeIcon icon={faMicroscope} />
+              </div>
+              <h3>Health Guarantee</h3>
+              <p>All our geckos undergo thorough health checks and come with a 30-day health guarantee for your peace of mind.</p>
             </div>
           </div>
         </div>
