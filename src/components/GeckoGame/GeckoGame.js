@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useLocation } from 'react-router-dom';
 import { doc, updateDoc, increment, getDoc, setDoc } from 'firebase/firestore';
-import { ref, onValue, set, serverTimestamp } from 'firebase/database';
+import { ref, onValue, set } from 'firebase/database';
 import { db, realtimeDb } from '../../firebase';
 import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
@@ -54,7 +54,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     set(ref(realtimeDb, 'geckoIcon'), {
       page: newPage,
       visible: visible,
-      lastUpdated: serverTimestamp(),
+      lastUpdated: now,
       nextTransferTime: now + transferTime
     });
   }, [transferTime]);
