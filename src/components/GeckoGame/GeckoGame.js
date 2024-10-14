@@ -83,7 +83,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
           console.log('Not time to transfer yet. Checking again in 1 second.');
           setTimeout(checkAndTransfer, 1000);
         }
-      }, { onlyOnce: true });
+      });
     };
     checkAndTransfer();
   }, [getRandomPage, updateIconState]);
