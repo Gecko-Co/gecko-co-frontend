@@ -51,11 +51,21 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
 
   const updateIconState = useCallback((newPage, visible) => {
     const now = Date.now();
+    const nextTransferTime = now + transferTime;
     set(ref(realtimeDb, 'geckoIcon'), {
       page: newPage,
       visible: visible,
       lastUpdated: now,
-      nextTransferTime: now + transferTime
+      nextTransferTime: nextTransferTime
+    }).then(() => {
+      console.log('Icon state updated:', {
+        page: newPage,
+        visible: visible,
+        lastUpdated: now,
+        nextTransferTime: nextTransferTime
+      });
+    }).catch((error) => {
+      console.error('Error updating icon state:', error);
     });
   }, [transferTime]);
 
@@ -64,11 +74,14 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       const iconRef = ref(realtimeDb, 'geckoIcon');
       onValue(iconRef, (snapshot) => {
         const data = snapshot.val();
-        if (data && data.nextTransferTime && Date.now() >= data.nextTransferTime) {
+        console.log('Current icon state:', data);
+        if (data && data.nextTransferTime && typeof data.nextTransferTime === 'number' && Date.now() >= data.nextTransferTime) {
+          console.log('Transferring gecko to new page');
           const newRandomPage = getRandomPage();
           updateIconState(newRandomPage, true);
         } else {
-          setTimeout(checkAndTransfer, 1000); // Check every second
+          console.log('Not time to transfer yet. Checking again in 1 second.');
+          setTimeout(checkAndTransfer, 1000);
         }
       }, { onlyOnce: true });
     };
