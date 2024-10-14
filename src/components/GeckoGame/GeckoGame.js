@@ -74,18 +74,22 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       onValue(iconRef, (snapshot) => {
         const data = snapshot.val();
         console.log('Current icon state:', data);
-        if (data && data.nextTransferTime && typeof data.nextTransferTime === 'number' && Date.now() >= data.nextTransferTime) {
+        if (data && data.lastUpdated && data.nextTransferTime && 
+            typeof data.lastUpdated === 'number' && 
+            typeof data.nextTransferTime === 'number' && 
+            Date.now() >= data.nextTransferTime) {
           console.log('Transferring gecko to new page');
           const newRandomPage = getRandomPage();
           updateIconState(newRandomPage, true);
+          setIsVisible(false); // Hide the gecko on the current page
         } else {
           console.log('Not time to transfer yet. Checking again in 1 second.');
           setTimeout(checkAndTransfer, 1000);
         }
-      });
+      }, { onlyOnce: true });
     };
     checkAndTransfer();
-  }, [getRandomPage, updateIconState, transferTime]);
+  }, [getRandomPage, updateIconState]);
 
   const startTooltipTimer = useCallback(() => {
     const showTooltip = () => {
