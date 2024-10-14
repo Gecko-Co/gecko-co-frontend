@@ -82,21 +82,21 @@ export default function Component() {
 
   const heroContent = [
     {
-      title: "Discover Gecko Genetics",
+      title: "Discover Genetics",
       subtitle: "Find the perfect genes for your project",
       cta: "Explore Now",
       link: "/genetic-calculator",
       image: "/images/hero-gecko-1.jpg"
     },
     {
-      title: "Expert Care Guides",
-      subtitle: "Learn how to care for your gecko",
+      title: "Expert Care",
+      subtitle: "Learn proper husbandry",
       cta: "Read Guides",
       link: "/learn",
       image: "/images/hero-gecko-2.jpg"
     },
     {
-      title: "Rare Morphs Available",
+      title: "Morphs Available",
       subtitle: "Unique colors and patterns",
       cta: "View Collection",
       link: "/shop",
