@@ -51,7 +51,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
 
   const updateIconState = useCallback((newPage, visible) => {
     const now = Date.now();
-    const nextTransferTime = now + transferTime;
+    const nextTransferTime = now + Number(transferTime);
     set(ref(realtimeDb, 'geckoIcon'), {
       page: newPage,
       visible: visible,
