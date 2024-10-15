@@ -10,13 +10,13 @@ const RollingIconBlogPost = () => {
 
   return (
     <div className="blog-post-container">
-      <h1 className="blog-post-title">Rolling Icon Christmas Event</h1>
-      <p className="blog-post-date">Updated on October 13, 2023</p>
+      <h1 className="blog-post-title">Gecko Hunt Christmas Event</h1>
+      <p className="blog-post-date">Published on October 15, 2023</p>
       
       <div className="blog-post-content">
         <h2>Win a Gecko this Christmas!</h2>
         <p>
-          Join our exciting Rolling Icon event this Christmas season! The top 10 players with the highest score by December 20th, 5:00 PM PH time, will have a chance to win an adorable gecko as their prize!
+          Join our exciting Gecko Hunt event this Christmas season! The top 10 players with the highest score by December 20th, 5:00 PM PH time, will have a chance to win an adorable gecko as their prize!
         </p>
         
         <h2>How the Game Works</h2>
@@ -36,7 +36,7 @@ const RollingIconBlogPost = () => {
             />
           </div>
         </div>
-        <p className="image-description">Examples of the Rolling Icon as it appears on our website</p>
+        <p className="image-description">Examples of the gecko icon as it appears on our website</p>
         <ol>
           <li>Our icon will appear randomly on different pages of our website.</li>
           <li>The icon moves around the page, making it a fun challenge to catch!</li>
@@ -45,12 +45,9 @@ const RollingIconBlogPost = () => {
           <li>The more icons you catch, the higher your score!</li>
         </ol>
         
-        <h2>Updated Scoring Mechanics</h2>
-        <p>
-          We've updated our scoring system to make the game even more exciting and fair for all players!
-        </p>
+        <h2>Scoring Mechanics</h2>
         <ul>
-          <li>Each click on the Rolling Icon will earn you between 1 to 10 points.</li>
+          <li>Each click on the moving con will earn you between 1 to 10 points.</li>
           <li>The exact number of points you earn per click is random within this range, adding an element of excitement to each capture.</li>
           <li>There's a daily bonus available! The first click of each day will give you an additional 50 points on top of your regular score.</li>
           <li>Keep an eye out for the daily bonus indicator on the icon - it's your chance to boost your score significantly!</li>

@@ -6,8 +6,8 @@ const Blogs = () => {
   const blogPosts = [
     {
       id: 1,
-      title: 'Rolling Icon Christmas Event',
-      excerpt: 'Join our exciting Rolling Icon event this Christmas season! Win a real gecko by December 20, 5 PM PH time!',
+      title: 'Gecko Hunt Christmas Event',
+      excerpt: 'Join our exciting Gecko Hunt event this Christmas season! Win a real gecko by December 20, 5 PM PH time!',
       link: '/blogs/rolling-icon-christmas-event',
       image: '/images/click1.jpg',
     },

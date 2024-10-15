@@ -1,7 +1,7 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalculator, faArrowRight, faShoppingCart, faDna, faChartLine } from '@fortawesome/free-solid-svg-icons';
+import { faCalculator, faArrowRight, faShoppingCart, faDna, faChartLine, faAward, faMicroscope } from '@fortawesome/free-solid-svg-icons';
 import Slider from "react-slick";
 import { Helmet } from 'react-helmet';
 import "slick-carousel/slick/slick.css";
@@ -70,6 +70,44 @@ const GeckoSliderCard = ({ gecko }) => {
       <div className={`card-status ${gecko.status.toLowerCase()}`}>
         {gecko.status}
       </div>
+    </div>
+  );
+};
+
+const AnimatedSection = ({ children, className, animationDirection }) => {
+  const sectionRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.unobserve(entry.target);
+        }
+      },
+      {
+        threshold: 0.1,
+      }
+    );
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current);
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <div
+      ref={sectionRef}
+      className={`${className} ${isVisible ? `animate-fade-in-${animationDirection}` : 'opacity-0'}`}
+    >
+      {children}
     </div>
   );
 };
@@ -170,7 +208,7 @@ export default function Component() {
         <link rel="canonical" href="https://geckoco.ph" />
       </Helmet>
       <div className="App">
-        <section className="hero-section">
+        <AnimatedSection className="hero-section" animationDirection="down">
           <div className="hero-container">
             <div className="hero-content">
               <div className="hero-text-container" style={{ height: '300px' }}>
@@ -191,11 +229,11 @@ export default function Component() {
               ))}
             </div>
           </div>
-        </section>
+        </AnimatedSection>
 
         <div className="diagonal-transition"></div>
 
-        <div className="second-section">
+        <AnimatedSection className="second-section" animationDirection="right">
           <h2 className="section-title">Species Highlight</h2>
           <div className="content-wrapper">
             <div className="image-gallery">
@@ -228,11 +266,11 @@ export default function Component() {
               <Link to="/learn" className="learn-more-button">Learn More About Geckos</Link>
             </div>
           </div>
-        </div>
+        </AnimatedSection>
 
         <div className="diagonal-transition reverse"></div>
 
-        <div className="third-section">
+        <AnimatedSection className="third-section" animationDirection="left">
           <h2 className="section-title">Featured Geckos</h2>
           <div className="content-wrapper">
             <div className="gecko-slider">
@@ -244,11 +282,11 @@ export default function Component() {
             </div>
           </div>
           <Link to="/shop" className="view-all-btn">View All Geckos</Link>
-        </div>
+        </AnimatedSection>
 
         <div className="diagonal-transition"></div>
 
-        <div className="fourth-section">
+        <AnimatedSection className="fourth-section" animationDirection="right">
           <h2 className="section-title">Gecko Genetics Hub</h2>
           <div className="content-wrapper">
             <div className="calculator-preview">
@@ -272,30 +310,43 @@ export default function Component() {
               </div>
             </div>
           </div>
-        </div>
+        </AnimatedSection>
 
         <div className="diagonal-transition reverse"></div>
 
-        <div className="fifth-section">
-          <h2 className="section-title">Why Choose Us?</h2>
+        <AnimatedSection className="fifth-section" animationDirection="left">
+          <h2 className="section-title">Why Choose Gecko Co.?</h2>
           <div className="content-wrapper">
             <div className="feature">
-              <div className="feature-icon">🏆</div>
-              <h3>Expert Care</h3>
-              <p>Our team of experienced professionals ensures the best care for your exotic pets.</p>
+              <div className="feature-icon">
+                <FontAwesomeIcon icon={faAward} />
+              </div>
+              <h3>Gecko Expertise</h3>
+              <p>Our team specializes in gecko care, ensuring the health and happiness of every gecko we breed and sell.</p>
             </div>
             <div className="feature">
-              <div className="feature-icon">🌿</div>
-              <h3>Sustainable Practices</h3>
-              <p>We prioritize ethical sourcing and environmental responsibility in all our operations.</p>
+              <div className="feature-icon">
+                <FontAwesomeIcon icon={faDna} />
+              </div>
+              <h3>Genetic Excellence</h3>
+              <p>We use advanced breeding techniques to produce rare morphs and ensure genetic diversity in our gecko populations.</p>
             </div>
             <div className="feature">
-              <div className="feature-icon">💖</div>
+              <div className="feature-icon">
+                <FontAwesomeIcon icon={faChartLine} />
+              </div>
               <h3>Lifetime Support</h3>
-              <p>We provide ongoing guidance and support for the entire lifespan of your pet.</p>
+              <p>From habitat setup to dietary advice, we provide ongoing support throughout your gecko's life.</p>
+            </div>
+            <div className="feature">
+              <div className="feature-icon">
+                <FontAwesomeIcon icon={faMicroscope} />
+              </div>
+              <h3>Health Guarantee</h3>
+              <p>All our geckos undergo thorough health checks and come with a 30-day health guarantee for your peace of mind.</p>
             </div>
           </div>
-        </div>
+        </AnimatedSection>
 
         <EventPopup />
       </div>

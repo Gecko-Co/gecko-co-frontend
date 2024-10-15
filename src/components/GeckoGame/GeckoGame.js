@@ -57,14 +57,14 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       lastUpdated: now,
       nextTransferTime: now + transferTime
     }).then(() => {
-      console.log('Icon state updated:', {
-        page: newPage,
-        visible: visible,
-        lastUpdated: now,
-        nextTransferTime: now + transferTime
-      });
+      // console.log('Icon state updated:', {
+      //   page: newPage,
+      //   visible: visible,
+      //   lastUpdated: now,
+      //   nextTransferTime: now + transferTime
+      // });
     }).catch((error) => {
-      console.error('Error updating icon state:', error);
+      // console.error('Error updating icon state:', error);
     });
   }, [transferTime]);
 
@@ -73,17 +73,17 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       const iconRef = ref(realtimeDb, 'geckoIcon');
       onValue(iconRef, (snapshot) => {
         const data = snapshot.val();
-        console.log('Current icon state:', data);
+        // console.log('Current icon state:', data);
         if (data && data.lastUpdated && data.nextTransferTime && 
             typeof data.lastUpdated === 'number' && 
             typeof data.nextTransferTime === 'number' && 
             Date.now() >= data.nextTransferTime) {
-          console.log('Transferring gecko to new page');
+          // console.log('Transferring gecko to new page');
           const newRandomPage = getRandomPage();
           updateIconState(newRandomPage, true);
           setIsVisible(false); // Hide the gecko on the current page
         } else {
-          console.log('Not time to transfer yet. Checking again in 1 second.');
+          // console.log('Not time to transfer yet. Checking again in 1 second.');
           setTimeout(checkAndTransfer, 1000);
         }
       }, { onlyOnce: true });
@@ -113,7 +113,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
           setDailyBonusAvailable(true);
         }
       } catch (error) {
-        console.error('Error checking daily bonus:', error);
+        // console.error('Error checking daily bonus:', error);
       }
     }
   }, [currentUser]);
@@ -225,7 +225,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
 
         scheduleRespawn();
       } catch (error) {
-        console.error('Error updating points:', error);
+        // console.error('Error updating points:', error);
         customToast.error('Failed to update points. Please try again.');
       } finally {
         setIsUpdating(false);

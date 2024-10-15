@@ -30,7 +30,7 @@ export default function EventPopup() {
         <div className="popup-content">
           <FontAwesomeIcon icon={faGift} className="gift-icon" />
           <h2>Christmas Event!</h2>
-          <p>Join our exciting Rolling Icon game and win a beautiful Sunglow gecko!</p>
+          <p>Join our exciting Gecko Hunt game and win a beautiful Sunglow gecko!</p>
           <Link to="/blogs/rolling-icon-christmas-event" className="event-link">
             Learn More
           </Link>
