@@ -181,7 +181,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
 
   const calculateScore = useCallback(() => {
     const minScore = 1;
-    const maxScore = 10;
+    const maxScore = 50;
     return Math.floor(Math.random() * (maxScore - minScore + 1)) + minScore;
   }, []);
 

@@ -47,7 +47,7 @@ const RollingIconBlogPost = () => {
         
         <h2>Scoring Mechanics</h2>
         <ul>
-          <li>Each click on the moving icon will earn you between 1 to 10 points.</li>
+          <li>Each click on the moving icon will earn you between 1 to 50 points.</li>
           <li>The exact number of points you earn per click is random within this range, adding an element of excitement to each capture.</li>
           <li>There's a daily bonus available! The first click of each day will give you an additional 50 points on top of your regular score.</li>
           <li>Keep an eye out for the daily bonus indicator on the icon - it's your chance to boost your score significantly!</li>
