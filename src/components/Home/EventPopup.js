@@ -8,14 +8,25 @@ export default function EventPopup() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-    }, 3000);
+    const hasSeenPopup = sessionStorage.getItem('hasSeenEventPopup');
+    const dontShowAgain = localStorage.getItem('dontShowEventPopup');
 
-    return () => clearTimeout(timer);
+    if (!hasSeenPopup && dontShowAgain !== 'true') {
+      const timer = setTimeout(() => {
+        setIsVisible(true);
+        sessionStorage.setItem('hasSeenEventPopup', 'true');
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
   }, []);
 
   const closePopup = () => {
+    setIsVisible(false);
+  };
+
+  const dontShowAgain = () => {
+    localStorage.setItem('dontShowEventPopup', 'true');
     setIsVisible(false);
   };
 
@@ -29,11 +40,12 @@ export default function EventPopup() {
         </button>
         <div className="popup-content">
           <FontAwesomeIcon icon={faGift} className="gift-icon" />
-          <h2>Christmas Event!</h2>
-          <p>Join our exciting Gecko Hunt game and win a beautiful Sunglow gecko!</p>
+          <h2>Early Christmas Event!</h2>
+          <p>Join our Gecko Hunt game and win a beautiful Sunglow gecko! Reach 5000 points to be eligible!</p>
           <Link to="/blogs/rolling-icon-christmas-event" className="event-link">
             Learn More
           </Link>
+          <button onClick={dontShowAgain} className="dont-show-again">Don't show this again</button>
         </div>
       </div>
     </div>

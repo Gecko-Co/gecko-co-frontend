@@ -16,7 +16,7 @@ const Leaderboard = () => {
         const leaderboardQuery = query(
           collection(db, 'users'),
           orderBy('points', 'desc'),
-          limit(10)
+          limit(20) // Increased to show more players
         );
         const querySnapshot = await getDocs(leaderboardQuery);
         const data = querySnapshot.docs.map((doc) => ({
@@ -65,26 +65,31 @@ const Leaderboard = () => {
           <span>Loading leaderboard...</span>
         </div>
       ) : (
-        <div className="leaderboard-table">
-          <div className="leaderboard-header">
-            <span className="rank">Rank</span>
-            <span className="name">Name</span>
-            <span className="points">Points</span>
+        <>
+          <div className="leaderboard-info">
+            <p>Players with 5000 points or more are eligible for the giveaway!</p>
           </div>
-          {leaderboardData.map((user, index) => (
-            <div key={user.id} className="leaderboard-row">
-              <span className="rank">
-                {getTrophyIcon(index)}
-                {index + 1}
-              </span>
-              <span className="name">{getFullName(user)}</span>
-              <span className="points">
-                <FontAwesomeIcon icon={faStar} className="points-icon" />
-                {user.points || 0}
-              </span>
+          <div className="leaderboard-table">
+            <div className="leaderboard-header">
+              <span className="rank">Rank</span>
+              <span className="name">Name</span>
+              <span className="points">Points</span>
             </div>
-          ))}
-        </div>
+            {leaderboardData.map((user, index) => (
+              <div key={user.id} className={`leaderboard-row ${user.points >= 5000 ? 'eligible' : ''}`}>
+                <span className="rank">
+                  {getTrophyIcon(index)}
+                  {index + 1}
+                </span>
+                <span className="name">{getFullName(user)}</span>
+                <span className="points">
+                  <FontAwesomeIcon icon={faStar} className="points-icon" />
+                  {user.points || 0}
+                </span>
+              </div>
+            ))}
+          </div>
+        </>
       )}
       {lastUpdated && (
         <div className="last-updated">

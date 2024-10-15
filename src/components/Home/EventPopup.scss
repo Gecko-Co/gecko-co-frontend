@@ -76,6 +76,21 @@
       transform: translateY(-3px);
     }
   }
+
+  .dont-show-again {
+    display: block;
+    margin-top: 10px;
+    background: none;
+    border: none;
+    color: #666;
+    font-size: 0.8rem;
+    cursor: pointer;
+    text-decoration: underline;
+
+    &:hover {
+      color: #bd692d;
+    }
+  }
 }
 
 @keyframes fadeIn {
@@ -97,7 +112,7 @@
 @media (max-width: 480px) {
   .event-popup-overlay {
     align-items: flex-start;
-    padding-top: 50%; // Adjust this value to move the popup lower or higher
+    padding-top: 50%;
   }
 
   .event-popup {
