@@ -72,7 +72,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       const iconRef = ref(realtimeDb, 'geckoIcon');
       onValue(iconRef, (snapshot) => {
         const data = snapshot.val();
-        console.log('Current icon state:', data);
+        // console.log('Current icon state:', data);
         if (data && data.nextTransferTime && Date.now() >= data.nextTransferTime) {
           console.log('Transferring gecko to new page');
           const newRandomPage = getRandomPage();
