@@ -22,8 +22,6 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
   const respawnTimeoutRef = useRef();
   const geckoRef = useRef(null);
 
-  console.log('Respawn time:', respawnTime);
-
   const getRandomPosition = useCallback(() => {
     return {
       x: Math.random() * (window.innerWidth - 80),
@@ -168,7 +166,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
               x: (Math.random() * 2 - 1) * 2, 
               y: (Math.random() * 2 - 1) * 2 
             };
-            startAnimation(); // Start the animation
+            startAnimation();
             startTooltipTimer();
             startTransferTimer();
           } else {
@@ -235,17 +233,40 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     };
   }, [isVisible, geckoGameEnabled, startAnimation]);
 
-  const calculateScore = useCallback(() => {
-    const minScore = 1;
-    const maxScore = 50;
-    return Math.floor(Math.random() * (maxScore - minScore + 1)) + minScore;
-  }, []);
+  const calculateScore = useCallback(async () => {
+    if (!currentUser) return 0;
+
+    try {
+      const userRef = doc(db, 'users', currentUser.uid);
+      const userDoc = await getDoc(userRef);
+      const totalPoints = userDoc.data()?.points || 0;
+
+      let minScore = 1;
+      let maxScore = 50;
+
+      if (totalPoints >= 1000 && totalPoints < 2000) {
+        maxScore = 40;
+      } else if (totalPoints >= 2000 && totalPoints < 3000) {
+        maxScore = 30;
+      } else if (totalPoints >= 3000 && totalPoints < 4000) {
+        maxScore = 20;
+      } else if (totalPoints >= 4000) {
+        maxScore = 10;
+      }
+
+      let score = Math.floor(Math.random() * (maxScore - minScore + 1)) + minScore;
+      return Math.min(score, 100); // Ensure the score is not greater than 100
+    } catch (error) {
+      console.error('Error calculating score:', error);
+      return 1; // Return minimum score if there's an error
+    }
+  }, [currentUser]);
 
   const handleClick = useCallback(async () => {
     if (currentUser && !isUpdating && geckoGameEnabled) {
       setIsUpdating(true);
       try {
-        const earnedScore = calculateScore();
+        const earnedScore = await calculateScore();
         const userRef = doc(db, 'users', currentUser.uid);
 
         let bonusPoints = 0;
