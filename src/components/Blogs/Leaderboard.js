@@ -17,6 +17,7 @@ const Leaderboard = () => {
   const [isGeckoVisible, setIsGeckoVisible] = useState(false);
   const [userScore, setUserScore] = useState(null);
   const [userRank, setUserRank] = useState(null);
+  const [daysRemaining, setDaysRemaining] = useState(0); // Added state for days remaining
   const { currentUser } = useAuth();
 
   const fetchLeaderboardData = useCallback(async () => {
@@ -87,16 +88,27 @@ const Leaderboard = () => {
     });
   }, []);
 
+  const calculateDaysRemaining = useCallback(() => { // Added function to calculate days remaining
+    const endDate = new Date('2024-12-20T23:59:59');
+    const now = new Date();
+    const timeDiff = endDate.getTime() - now.getTime();
+    const daysDiff = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    setDaysRemaining(daysDiff);
+  }, []);
+
   useEffect(() => {
     fetchLeaderboardData();
     fetchGeckoState();
+    calculateDaysRemaining(); // Call calculateDaysRemaining
 
     const intervalId = setInterval(fetchLeaderboardData, 60000);
+    const daysIntervalId = setInterval(calculateDaysRemaining, 86400000); // Update once a day
 
     return () => {
       clearInterval(intervalId);
+      clearInterval(daysIntervalId);
     };
-  }, [fetchLeaderboardData, fetchGeckoState]);
+  }, [fetchLeaderboardData, fetchGeckoState, calculateDaysRemaining]); // Added calculateDaysRemaining to dependency array
 
   useEffect(() => {
     console.log('Countdown effect triggered. NextRespawnTime:', nextRespawnTime, 'IsGeckoVisible:', isGeckoVisible);
@@ -188,6 +200,7 @@ const Leaderboard = () => {
         <>
           <div className="leaderboard-info">
             <p>Players with 5000 points or more are eligible for the giveaway!</p>
+            <p className="days-remaining">Days remaining: {daysRemaining}</p> {/* Added days remaining */}
             {getGeckoStatus()}
             {currentUser && userScore !== null && userRank !== null && (
               <div className="user-stats">
