@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
-import { ref, onValue, set, serverTimestamp } from 'firebase/database';
+import { ref, onValue } from 'firebase/database';
 import { db, realtimeDb } from '../../firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrophy, faStar, faSpinner, faClock, faEye } from '@fortawesome/free-solid-svg-icons';
@@ -15,60 +15,60 @@ const Leaderboard = () => {
   const [countdown, setCountdown] = useState('');
   const [isGeckoVisible, setIsGeckoVisible] = useState(false);
 
-  useEffect(() => {
-    const fetchLeaderboardData = async () => {
-      try {
-        const leaderboardQuery = query(
-          collection(db, 'users'),
-          orderBy('points', 'desc'),
-          limit(20)
-        );
-        const querySnapshot = await getDocs(leaderboardQuery);
-        const data = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setLeaderboardData(data);
-        setLastUpdated(new Date());
-        setError(null);
-      } catch (error) {
-        console.error('Error fetching leaderboard data:', error);
-        setError('Failed to load leaderboard data. Please try again later.');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchLeaderboardData = useCallback(async () => {
+    try {
+      const leaderboardQuery = query(
+        collection(db, 'users'),
+        orderBy('points', 'desc'),
+        limit(20)
+      );
+      const querySnapshot = await getDocs(leaderboardQuery);
+      const data = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setLeaderboardData(data);
+      setLastUpdated(new Date());
+      setError(null);
+    } catch (error) {
+      console.error('Error fetching leaderboard data:', error);
+      setError('Failed to load leaderboard data. Please try again later.');
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
-    const fetchGeckoState = () => {
-      const iconRef = ref(realtimeDb, 'geckoIcon');
-      onValue(iconRef, (snapshot) => {
-        const data = snapshot.val();
-        console.log('Gecko data from realtime DB:', data);
-        if (data) {
-          setIsGeckoVisible(data.visible);
-          console.log('Is gecko visible:', data.visible);
-          if (data.visible) {
-            setNextRespawnTime(null);
-            setCountdown('');
-            console.log('Gecko is visible, next respawn time is null');
-          } else if (data.nextRespawnTime) {
-            const nextRespawn = new Date(data.nextRespawnTime);
-            setNextRespawnTime(nextRespawn);
-            console.log('Next respawn time:', nextRespawn);
-          } else {
-            setNextRespawnTime(null);
-            setCountdown('');
-            console.log('Next respawn time is null');
-          }
-        } else {
-          setIsGeckoVisible(false);
+  const fetchGeckoState = useCallback(() => {
+    const iconRef = ref(realtimeDb, 'geckoIcon');
+    onValue(iconRef, (snapshot) => {
+      const data = snapshot.val();
+      console.log('Gecko  data from realtime DB:', data);
+      if (data) {
+        setIsGeckoVisible(data.visible);
+        console.log('Is gecko visible:', data.visible);
+        if (data.visible) {
           setNextRespawnTime(null);
           setCountdown('');
-          console.log('No gecko data available');
+          console.log('Gecko is visible, next respawn time is null');
+        } else if (data.nextRespawnTime) {
+          const nextRespawn = new Date(data.nextRespawnTime);
+          setNextRespawnTime(nextRespawn);
+          console.log('Next respawn time:', nextRespawn);
+        } else {
+          setNextRespawnTime(null);
+          setCountdown('');
+          console.log('Next respawn time is null');
         }
-      });
-    };
+      } else {
+        setIsGeckoVisible(false);
+        setNextRespawnTime(null);
+        setCountdown('');
+        console.log('No gecko data available');
+      }
+    });
+  }, []);
 
+  useEffect(() => {
     fetchLeaderboardData();
     fetchGeckoState();
 
@@ -77,11 +77,11 @@ const Leaderboard = () => {
     return () => {
       clearInterval(intervalId);
     };
-  }, []);
+  }, [fetchLeaderboardData, fetchGeckoState]);
 
   useEffect(() => {
     console.log('Countdown effect triggered. NextRespawnTime:', nextRespawnTime, 'IsGeckoVisible:', isGeckoVisible);
-    let timeoutId;
+    let intervalId;
     if (nextRespawnTime && !isGeckoVisible) {
       const updateCountdown = () => {
         const now = Date.now();
@@ -89,25 +89,25 @@ const Leaderboard = () => {
 
         if (timeLeft <= 0) {
           setCountdown('');
-          // Remove the database update logic from here
+          clearInterval(intervalId);
         } else {
-          const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-          const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+          const minutes = Math.floor(timeLeft / 60000);
+          const seconds = Math.floor((timeLeft % 60000) / 1000);
           const newCountdown = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
           setCountdown(newCountdown);
           console.log('Updated countdown:', newCountdown);
-          timeoutId = setTimeout(updateCountdown, 1000);
         }
       };
 
       updateCountdown();
+      intervalId = setInterval(updateCountdown, 1000);
     } else {
       setCountdown('');
     }
 
     return () => {
-      if (timeoutId) {
-        clearTimeout(timeoutId);
+      if (intervalId) {
+        clearInterval(intervalId);
       }
     };
   }, [nextRespawnTime, isGeckoVisible]);

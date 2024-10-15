@@ -19,6 +19,9 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
   const positionRef = useRef({ x: 0, y: 0 });
   const velocityRef = useRef({ x: 0.002, y: 0.002 });
   const animationRef = useRef();
+  const respawnTimeoutRef = useRef();
+
+  console.log('Respawn time:', respawnTime);
 
   const getRandomPosition = useCallback(() => {
     return {
@@ -58,19 +61,14 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       nextTransferTime: visible ? now + transferTime : null,
       nextRespawnTime: visible ? null : nextRespawnTime
     }).then(() => {
-      console.log('Icon state updated:', {
-        page: newPage,
-        visible: visible,
-        lastUpdated: now,
-        nextTransferTime: visible ? now + transferTime : null,
-        nextRespawnTime: visible ? null : nextRespawnTime
-      });
+      console.log('Updating icon state:', { newPage, visible, nextRespawnTime });
     }).catch((error) => {
       console.error('Error updating icon state:', error);
     });
   }, [transferTime]);
 
   const startTransferTimer = useCallback(() => {
+    console.log('Starting transfer timer');
     const checkAndTransfer = () => {
       const iconRef = ref(realtimeDb, 'geckoIcon');
       onValue(iconRef, (snapshot) => {
@@ -126,14 +124,19 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       const newRandomPage = getRandomPage();
       setCurrentPage(newRandomPage);
       updateIconState(newRandomPage, true, null);
+      console.log('Gecko respawned on page:', newRandomPage);
     }
   }, [geckoGameEnabled, getRandomPage, updateIconState]);
 
   const scheduleRespawn = useCallback(() => {
+    if (respawnTimeoutRef.current) {
+      clearTimeout(respawnTimeoutRef.current);
+    }
     const nextRespawnTime = Date.now() + respawnTime;
     updateIconState(currentPage || getRandomPage(), false, nextRespawnTime);
-    setTimeout(respawnGecko, respawnTime);
-  }, [respawnTime, respawnGecko, updateIconState, currentPage, getRandomPage]);
+    console.log('Scheduled respawn for:', new Date(nextRespawnTime).toISOString());
+    respawnTimeoutRef.current = setTimeout(respawnGecko, respawnTime);
+  }, [respawnTime, updateIconState, currentPage, getRandomPage, respawnGecko]);
 
   useEffect(() => {
     if (!geckoGameEnabled) {
@@ -167,6 +170,21 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
             }
           }
         }
+
+        if (!data.visible && data.nextRespawnTime) {
+          const now = Date.now();
+          if (now >= data.nextRespawnTime) {
+            console.log('Respawning gecko');
+            respawnGecko();
+          } else {
+            const timeUntilRespawn = data.nextRespawnTime - now;
+            console.log(`Gecko will respawn in ${timeUntilRespawn / 1000} seconds`);
+            if (respawnTimeoutRef.current) {
+              clearTimeout(respawnTimeoutRef.current);
+            }
+            respawnTimeoutRef.current = setTimeout(respawnGecko, timeUntilRespawn);
+          }
+        }
       } else {
         if (isVisible) {
           setIsVisible(false);
@@ -190,8 +208,11 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       if (animationRef.current) {
         cancelAnimationFrame(animationRef.current);
       }
+      if (respawnTimeoutRef.current) {
+        clearTimeout(respawnTimeoutRef.current);
+      }
     };
-  }, [location, checkDailyBonus, startTransferTimer, updatePosition, getRandomPosition, startTooltipTimer, geckoGameEnabled, scheduleRespawn, isVisible]);
+  }, [location, checkDailyBonus, startTransferTimer, updatePosition, getRandomPosition, startTooltipTimer, geckoGameEnabled, scheduleRespawn, isVisible, respawnGecko]);
 
   const calculateScore = useCallback(() => {
     const minScore = 1;
@@ -228,9 +249,8 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
 
         setIsVisible(false);
         setShowTooltip(false);
-        const nextRespawnTime = Date.now() + respawnTime;
-        console.log('Setting nextRespawnTime on click:', new Date(nextRespawnTime).toISOString());
-        updateIconState(currentPage, false, nextRespawnTime);
+        console.log('Gecko clicked, scheduling respawn');
+        scheduleRespawn();
 
         if (tooltipTimeoutRef.current) {
           clearTimeout(tooltipTimeoutRef.current);
@@ -238,8 +258,6 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
         if (animationRef.current) {
           cancelAnimationFrame(animationRef.current);
         }
-
-        scheduleRespawn();
       } catch (error) {
         console.error('Error updating points:', error);
         customToast.error('Failed to update points. Please try again.');
@@ -249,7 +267,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     } else if (!currentUser) {
       customToast.info('Sign in to collect points!');
     }
-  }, [currentUser, calculateScore, isUpdating, dailyBonusAvailable, currentPage, geckoGameEnabled, updateIconState, scheduleRespawn, respawnTime]);
+  }, [currentUser, calculateScore, isUpdating, dailyBonusAvailable, geckoGameEnabled, scheduleRespawn]);
 
   if (!geckoGameEnabled || !isVisible) return null;
 
