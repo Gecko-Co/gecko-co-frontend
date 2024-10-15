@@ -38,8 +38,8 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
   const updatePosition = useCallback(() => {
     if (!geckoRef.current) return;
 
-    positionRef.current.x += velocityRef.current.x * window.innerWidth;
-    positionRef.current.y += velocityRef.current.y * window.innerHeight;
+    positionRef.current.x += velocityRef.current.x;
+    positionRef.current.y += velocityRef.current.y;
 
     if (positionRef.current.x <= 0 || positionRef.current.x >= window.innerWidth - 80) {
       velocityRef.current.x *= -1;
@@ -165,8 +165,8 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
           if (shouldBeVisible) {
             positionRef.current = getRandomPosition();
             velocityRef.current = { 
-              x: (Math.random() * 0.004 - 0.002), 
-              y: (Math.random() * 0.004 - 0.002) 
+              x: (Math.random() * 2 - 1) * 2, 
+              y: (Math.random() * 2 - 1) * 2 
             };
             startAnimation(); // Start the animation
             startTooltipTimer();
@@ -223,6 +223,17 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       }
     };
   }, [location, checkDailyBonus, startTransferTimer, startAnimation, getRandomPosition, startTooltipTimer, geckoGameEnabled, scheduleRespawn, isVisible, respawnGecko]);
+
+  useEffect(() => {
+    if (isVisible && geckoGameEnabled) {
+      startAnimation();
+    }
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [isVisible, geckoGameEnabled, startAnimation]);
 
   const calculateScore = useCallback(() => {
     const minScore = 1;
