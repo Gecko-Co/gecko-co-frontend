@@ -20,6 +20,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
   const velocityRef = useRef({ x: 0.002, y: 0.002 });
   const animationRef = useRef();
   const respawnTimeoutRef = useRef();
+  const geckoRef = useRef(null);
 
   console.log('Respawn time:', respawnTime);
 
@@ -35,6 +36,8 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
   }, [enabledPages]);
 
   const updatePosition = useCallback(() => {
+    if (!geckoRef.current) return;
+
     positionRef.current.x += velocityRef.current.x * window.innerWidth;
     positionRef.current.y += velocityRef.current.y * window.innerHeight;
 
@@ -45,15 +48,19 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       velocityRef.current.y *= -1;
     }
 
-    const geckoElement = document.querySelector('.gecko-game-object');
-    if (geckoElement) {
-      geckoElement.style.left = `${positionRef.current.x}px`;
-      geckoElement.style.top = `${positionRef.current.y}px`;
-      geckoElement.style.transform = `rotate(${Math.atan2(velocityRef.current.y, velocityRef.current.x) * 180 / Math.PI}deg)`;
-    }
+    geckoRef.current.style.left = `${positionRef.current.x}px`;
+    geckoRef.current.style.top = `${positionRef.current.y}px`;
+    geckoRef.current.style.transform = `rotate(${Math.atan2(velocityRef.current.y, velocityRef.current.x) * 180 / Math.PI}deg)`;
 
     animationRef.current = requestAnimationFrame(updatePosition);
   }, []);
+
+  const startAnimation = useCallback(() => {
+    if (animationRef.current) {
+      cancelAnimationFrame(animationRef.current);
+    }
+    updatePosition();
+  }, [updatePosition]);
 
   const updateIconState = useCallback((newPage, visible, nextRespawnTime = null) => {
     const now = Date.now();
@@ -161,7 +168,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
               x: (Math.random() * 0.004 - 0.002), 
               y: (Math.random() * 0.004 - 0.002) 
             };
-            updatePosition(); // Start the animation
+            startAnimation(); // Start the animation
             startTooltipTimer();
             startTransferTimer();
           } else {
@@ -215,7 +222,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
         clearTimeout(respawnTimeoutRef.current);
       }
     };
-  }, [location, checkDailyBonus, startTransferTimer, updatePosition, getRandomPosition, startTooltipTimer, geckoGameEnabled, scheduleRespawn, isVisible, respawnGecko]);
+  }, [location, checkDailyBonus, startTransferTimer, startAnimation, getRandomPosition, startTooltipTimer, geckoGameEnabled, scheduleRespawn, isVisible, respawnGecko]);
 
   const calculateScore = useCallback(() => {
     const minScore = 1;
@@ -276,6 +283,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
 
   return (
     <div 
+      ref={geckoRef}
       className={`gecko-game-object ${showTooltip ? 'show-tooltip' : ''} ${dailyBonusAvailable ? 'daily-bonus' : ''}`}
       onClick={handleClick}
       onKeyPress={(e) => e.key === 'Enter' && handleClick()}
@@ -286,7 +294,6 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
         position: 'fixed',
         left: `${positionRef.current.x}px`,
         top: `${positionRef.current.y}px`,
-        transition: 'left 0.1s linear, top 0.1s linear',
       }}
     >
       <img src="/images/geckoco-png.png" alt="Gecko Co. Logo" />
