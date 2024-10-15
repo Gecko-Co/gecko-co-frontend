@@ -9,6 +9,7 @@ const Leaderboard = () => {
   const [leaderboardData, setLeaderboardData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchLeaderboardData = async () => {
@@ -16,7 +17,7 @@ const Leaderboard = () => {
         const leaderboardQuery = query(
           collection(db, 'users'),
           orderBy('points', 'desc'),
-          limit(20) // Increased to show more players
+          limit(20)
         );
         const querySnapshot = await getDocs(leaderboardQuery);
         const data = querySnapshot.docs.map((doc) => ({
@@ -25,8 +26,10 @@ const Leaderboard = () => {
         }));
         setLeaderboardData(data);
         setLastUpdated(new Date());
+        setError(null);
       } catch (error) {
         console.error('Error fetching leaderboard data:', error);
+        setError('Failed to load leaderboard data. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -34,9 +37,9 @@ const Leaderboard = () => {
 
     fetchLeaderboardData();
 
-    const intervalId = setInterval(fetchLeaderboardData, 60000); // Refresh every 60 seconds
+    const intervalId = setInterval(fetchLeaderboardData, 60000);
 
-    return () => clearInterval(intervalId); // Clean up on unmount
+    return () => clearInterval(intervalId);
   }, []);
 
   const getTrophyIcon = (index) => {
@@ -52,8 +55,16 @@ const Leaderboard = () => {
     }
   };
 
-  const getFullName = (user) => {
-    return `${user.firstName || ''} ${user.lastName || ''}`.trim();
+  const getDisplayName = (user) => {
+    if (user.firstName && user.lastName) {
+      return `${user.firstName} ${user.lastName}`;
+    } else if (user.firstName) {
+      return user.firstName;
+    } else if (user.email) {
+      return user.email.split('@')[0]; // Use the part before @ in email as a fallback
+    } else {
+      return `Player ${user.id.slice(0, 6)}`; // Use a part of the user ID as a last resort
+    }
   };
 
   return (
@@ -64,6 +75,8 @@ const Leaderboard = () => {
           <FontAwesomeIcon icon={faSpinner} spin />
           <span>Loading leaderboard...</span>
         </div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
       ) : (
         <>
           <div className="leaderboard-info">
@@ -81,7 +94,7 @@ const Leaderboard = () => {
                   {getTrophyIcon(index)}
                   {index + 1}
                 </span>
-                <span className="name">{getFullName(user)}</span>
+                <span className="name">{getDisplayName(user)}</span>
                 <span className="points">
                   <FontAwesomeIcon icon={faStar} className="points-icon" />
                   {user.points || 0}

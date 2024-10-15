@@ -72,12 +72,11 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       const iconRef = ref(realtimeDb, 'geckoIcon');
       onValue(iconRef, (snapshot) => {
         const data = snapshot.val();
-        // console.log('Current icon state:', data);
         if (data && data.nextTransferTime && Date.now() >= data.nextTransferTime) {
           console.log('Transferring gecko to new page');
           const newRandomPage = getRandomPage();
           updateIconState(newRandomPage, true);
-          setIsVisible(false); // Hide the gecko on the current page
+          setIsVisible(false);
         } else {
           console.log('Not time to transfer yet. Checking again in 1 second.');
           setTimeout(checkAndTransfer, 1000);
@@ -105,8 +104,13 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
         const userDoc = await getDoc(userRef);
         const lastBonusDate = userDoc.data()?.lastDailyBonus?.toDate();
         const today = new Date();
-        if (!lastBonusDate || lastBonusDate.getDate() !== today.getDate()) {
+        if (!lastBonusDate || 
+            lastBonusDate.getDate() !== today.getDate() || 
+            lastBonusDate.getMonth() !== today.getMonth() || 
+            lastBonusDate.getFullYear() !== today.getFullYear()) {
           setDailyBonusAvailable(true);
+        } else {
+          setDailyBonusAvailable(false);
         }
       } catch (error) {
         console.error('Error checking daily bonus:', error);
