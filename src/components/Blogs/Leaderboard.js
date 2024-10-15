@@ -47,7 +47,10 @@ const Leaderboard = () => {
         if (data) {
           setIsGeckoVisible(data.visible);
           console.log('Is gecko visible:', data.visible);
-          if (data.nextRespawnTime) {
+          if (data.visible) {
+            setNextRespawnTime(null);
+            console.log('Gecko is visible, next respawn time is null');
+          } else if (data.nextRespawnTime) {
             const nextRespawn = new Date(data.nextRespawnTime);
             setNextRespawnTime(nextRespawn);
             console.log('Next respawn time:', nextRespawn);
@@ -85,13 +88,17 @@ const Leaderboard = () => {
           setCountdown('Respawning...');
           clearInterval(countdownInterval);
         } else {
-          const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+          const minutes = 
+
+ Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
           const newCountdown = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
           setCountdown(newCountdown);
           console.log('Updated countdown:', newCountdown);
         }
       }, 1000);
+    } else {
+      setCountdown('');
     }
 
     return () => {
