@@ -80,15 +80,11 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
           const newRandomPage = getRandomPage();
           updateIconState(newRandomPage, true, null);
           setIsVisible(false);
-        } else if (!data || !data.nextTransferTime) {
-          console.log('No gecko data or nextTransferTime. Updating icon state.');
-          const newRandomPage = getRandomPage();
-          updateIconState(newRandomPage, true, null);
         } else {
           console.log('Not time to transfer yet. Checking again in 1 second.');
           setTimeout(checkAndTransfer, 1000);
         }
-      });
+      }, { onlyOnce: true });
     };
     checkAndTransfer();
   }, [getRandomPage, updateIconState]);
@@ -151,26 +147,30 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       if (data && geckoGameEnabled) {
         setCurrentPage(data.page);
         const shouldBeVisible = data.visible && data.page === location.pathname;
-        setIsVisible(shouldBeVisible);
-        if (shouldBeVisible) {
-          positionRef.current = getRandomPosition();
-          velocityRef.current = { 
-            x: (Math.random() * 0.004 - 0.002), 
-            y: (Math.random() * 0.004 - 0.002) 
-          };
-          updatePosition();
-          startTooltipTimer();
-          startTransferTimer();
-        } else {
-          if (animationRef.current) {
-            cancelAnimationFrame(animationRef.current);
-          }
-          if (tooltipTimeoutRef.current) {
-            clearTimeout(tooltipTimeoutRef.current);
+        if (shouldBeVisible !== isVisible) {
+          setIsVisible(shouldBeVisible);
+          if (shouldBeVisible) {
+            positionRef.current = getRandomPosition();
+            velocityRef.current = { 
+              x: (Math.random() * 0.004 - 0.002), 
+              y: (Math.random() * 0.004 - 0.002) 
+            };
+            updatePosition();
+            startTooltipTimer();
+            startTransferTimer();
+          } else {
+            if (animationRef.current) {
+              cancelAnimationFrame(animationRef.current);
+            }
+            if (tooltipTimeoutRef.current) {
+              clearTimeout(tooltipTimeoutRef.current);
+            }
           }
         }
       } else {
-        setIsVisible(false);
+        if (isVisible) {
+          setIsVisible(false);
+        }
         if (!data || (data && !data.nextRespawnTime)) {
           console.log('No gecko data or nextRespawnTime. Scheduling respawn.');
           scheduleRespawn();
@@ -191,7 +191,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
         cancelAnimationFrame(animationRef.current);
       }
     };
-  }, [location, checkDailyBonus, startTransferTimer, updatePosition, getRandomPosition, startTooltipTimer, geckoGameEnabled, scheduleRespawn]);
+  }, [location, checkDailyBonus, startTransferTimer, updatePosition, getRandomPosition, startTooltipTimer, geckoGameEnabled, scheduleRespawn, isVisible]);
 
   const calculateScore = useCallback(() => {
     const minScore = 1;
