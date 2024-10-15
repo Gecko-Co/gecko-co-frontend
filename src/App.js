@@ -36,7 +36,7 @@ function App() {
     const geckoGameEnabled = process.env.REACT_APP_ENABLE_GECKO_GAME === 'true';
     const [transferTime] = useState(600000); // 10 minutes in milliseconds
     const [respawnTime] = useState(600000); // 10 minutes in milliseconds
-    const [enabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', '/policies', '/cart', '/account', '/settings', '/blogs']);
+    const [enabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', '/cart', '/account', '/settings', '/blogs']);
   
   return (
     <Router>
