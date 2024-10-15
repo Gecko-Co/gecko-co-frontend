@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
-import { ref, onValue } from 'firebase/database';
+import { ref, onValue, set, serverTimestamp } from 'firebase/database';
 import { db, realtimeDb } from '../../firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrophy, faStar, faSpinner, faClock, faEye } from '@fortawesome/free-solid-svg-icons';
@@ -33,7 +33,7 @@ const Leaderboard = () => {
         setError(null);
       } catch (error) {
         console.error('Error fetching leaderboard data:', error);
-        setError('Failed to load leaderboard data. Please log-in.');
+        setError('Failed to load leaderboard data. Please try logging-in.');
       } finally {
         setLoading(false);
       }
@@ -49,6 +49,7 @@ const Leaderboard = () => {
           console.log('Is gecko visible:', data.visible);
           if (data.visible) {
             setNextRespawnTime(null);
+            setCountdown('');
             console.log('Gecko is visible, next respawn time is null');
           } else if (data.nextRespawnTime) {
             const nextRespawn = new Date(data.nextRespawnTime);
@@ -56,11 +57,13 @@ const Leaderboard = () => {
             console.log('Next respawn time:', nextRespawn);
           } else {
             setNextRespawnTime(null);
+            setCountdown('');
             console.log('Next respawn time is null');
           }
         } else {
           setIsGeckoVisible(false);
           setNextRespawnTime(null);
+          setCountdown('');
           console.log('No gecko data available');
         }
       });
@@ -78,32 +81,38 @@ const Leaderboard = () => {
 
   useEffect(() => {
     console.log('Countdown effect triggered. NextRespawnTime:', nextRespawnTime, 'IsGeckoVisible:', isGeckoVisible);
-    let countdownInterval;
+    let timeoutId;
     if (nextRespawnTime && !isGeckoVisible) {
-      countdownInterval = setInterval(() => {
-        const now = new Date();
-        const timeLeft = nextRespawnTime.getTime() - now.getTime();
+      const updateCountdown = () => {
+        const now = Date.now();
+        const timeLeft = nextRespawnTime.getTime() - now;
 
         if (timeLeft <= 0) {
-          setCountdown('Respawning...');
-          clearInterval(countdownInterval);
+          setCountdown('');
+          // Update gecko visibility in the database
+          const iconRef = ref(realtimeDb, 'geckoIcon');
+          set(iconRef, {
+            visible: true,
+            lastUpdated: serverTimestamp()
+          });
         } else {
-          const minutes = 
-
- Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+          const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
           const newCountdown = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
           setCountdown(newCountdown);
           console.log('Updated countdown:', newCountdown);
+          timeoutId = setTimeout(updateCountdown, 1000);
         }
-      }, 1000);
+      };
+
+      updateCountdown();
     } else {
       setCountdown('');
     }
 
     return () => {
-      if (countdownInterval) {
-        clearInterval(countdownInterval);
+      if (timeoutId) {
+        clearTimeout(timeoutId);
       }
     };
   }, [nextRespawnTime, isGeckoVisible]);
@@ -144,7 +153,7 @@ const Leaderboard = () => {
     } else if (nextRespawnTime) {
       return (
         <p className="next-respawn-time">
-          <FontAwesomeIcon icon={faClock} /> Next Gecko Sighting: {countdown}
+          <FontAwesomeIcon icon={faClock} /> Next Gecko Sighting: {countdown || 'Any moment now!'}
         </p>
       );
     }
