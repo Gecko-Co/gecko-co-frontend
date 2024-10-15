@@ -55,14 +55,14 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       page: newPage,
       visible: visible,
       lastUpdated: now,
-      nextTransferTime: now + transferTime,
-      nextRespawnTime: nextRespawnTime
+      nextTransferTime: visible ? now + transferTime : null,
+      nextRespawnTime: visible ? null : nextRespawnTime
     }).then(() => {
       console.log('Icon state updated:', {
         visible: visible,
         lastUpdated: now,
-        nextTransferTime: now + transferTime,
-        nextRespawnTime: nextRespawnTime
+        nextTransferTime: visible ? now + transferTime : null,
+        nextRespawnTime: visible ? null : nextRespawnTime
       });
     }).catch((error) => {
       console.error('Error updating icon state:', error);
@@ -219,6 +219,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
         setIsVisible(false);
         setShowTooltip(false);
         const nextRespawnTime = Date.now() + respawnTime;
+        console.log('Setting nextRespawnTime on click:', new Date(nextRespawnTime).toISOString());
         updateIconState(currentPage, false, nextRespawnTime);
 
         if (tooltipTimeoutRef.current) {
