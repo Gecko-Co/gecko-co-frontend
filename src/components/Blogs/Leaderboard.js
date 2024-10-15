@@ -43,16 +43,22 @@ const Leaderboard = () => {
       const iconRef = ref(realtimeDb, 'geckoIcon');
       onValue(iconRef, (snapshot) => {
         const data = snapshot.val();
+        console.log('Gecko data from realtime DB:', data);
         if (data) {
           setIsGeckoVisible(data.visible);
+          console.log('Is gecko visible:', data.visible);
           if (data.nextRespawnTime) {
-            setNextRespawnTime(new Date(data.nextRespawnTime));
+            const nextRespawn = new Date(data.nextRespawnTime);
+            setNextRespawnTime(nextRespawn);
+            console.log('Next respawn time:', nextRespawn);
           } else {
             setNextRespawnTime(null);
+            console.log('Next respawn time is null');
           }
         } else {
           setIsGeckoVisible(false);
           setNextRespawnTime(null);
+          console.log('No gecko data available');
         }
       });
     };
@@ -68,6 +74,7 @@ const Leaderboard = () => {
   }, []);
 
   useEffect(() => {
+    console.log('Countdown effect triggered. NextRespawnTime:', nextRespawnTime, 'IsGeckoVisible:', isGeckoVisible);
     let countdownInterval;
     if (nextRespawnTime && !isGeckoVisible) {
       countdownInterval = setInterval(() => {
@@ -80,7 +87,9 @@ const Leaderboard = () => {
         } else {
           const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
-          setCountdown(`${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+          const newCountdown = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+          setCountdown(newCountdown);
+          console.log('Updated countdown:', newCountdown);
         }
       }, 1000);
     }
@@ -118,6 +127,7 @@ const Leaderboard = () => {
   };
 
   const getGeckoStatus = () => {
+    console.log('getGeckoStatus called. IsGeckoVisible:', isGeckoVisible, 'NextRespawnTime:', nextRespawnTime, 'Countdown:', countdown);
     if (isGeckoVisible) {
       return (
         <p className="gecko-visible">

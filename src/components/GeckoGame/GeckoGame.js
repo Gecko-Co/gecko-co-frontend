@@ -77,7 +77,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
         if (data && data.nextTransferTime && Date.now() >= data.nextTransferTime) {
           console.log('Transferring gecko to new page');
           const newRandomPage = getRandomPage();
-          updateIconState(newRandomPage, true);
+          updateIconState(newRandomPage, true, null);
           setIsVisible(false);
         } else {
           console.log('Not time to transfer yet. Checking again in 1 second.');
@@ -132,9 +132,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     const nextRespawnTime = Date.now() + respawnTime;
     updateIconState(currentPage, false, nextRespawnTime);
     setTimeout(respawnGecko, respawnTime);
-  }, [respawnTime, 
-
- respawnGecko, updateIconState, currentPage]);
+  }, [respawnTime, respawnGecko, updateIconState, currentPage]);
 
   useEffect(() => {
     if (!geckoGameEnabled) {
@@ -220,7 +218,8 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
 
         setIsVisible(false);
         setShowTooltip(false);
-        updateIconState(currentPage, false, Date.now() + respawnTime);
+        const nextRespawnTime = Date.now() + respawnTime;
+        updateIconState(currentPage, false, nextRespawnTime);
 
         if (tooltipTimeoutRef.current) {
           clearTimeout(tooltipTimeoutRef.current);
