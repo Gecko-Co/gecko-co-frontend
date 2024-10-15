@@ -33,7 +33,7 @@ const Leaderboard = () => {
         setError(null);
       } catch (error) {
         console.error('Error fetching leaderboard data:', error);
-        setError('Failed to load leaderboard data. Please try logging-in.');
+        setError('Failed to load leaderboard data. Please try again later.');
       } finally {
         setLoading(false);
       }
@@ -89,12 +89,7 @@ const Leaderboard = () => {
 
         if (timeLeft <= 0) {
           setCountdown('');
-          // Update gecko visibility in the database
-          const iconRef = ref(realtimeDb, 'geckoIcon');
-          set(iconRef, {
-            visible: true,
-            lastUpdated: serverTimestamp()
-          });
+          // Remove the database update logic from here
         } else {
           const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);

@@ -59,6 +59,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       nextRespawnTime: visible ? null : nextRespawnTime
     }).then(() => {
       console.log('Icon state updated:', {
+        page: newPage,
         visible: visible,
         lastUpdated: now,
         nextTransferTime: visible ? now + transferTime : null,
@@ -79,6 +80,10 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
           const newRandomPage = getRandomPage();
           updateIconState(newRandomPage, true, null);
           setIsVisible(false);
+        } else if (!data || !data.nextTransferTime) {
+          console.log('No gecko data or nextTransferTime. Updating icon state.');
+          const newRandomPage = getRandomPage();
+          updateIconState(newRandomPage, true, null);
         } else {
           console.log('Not time to transfer yet. Checking again in 1 second.');
           setTimeout(checkAndTransfer, 1000);
@@ -130,9 +135,9 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
 
   const scheduleRespawn = useCallback(() => {
     const nextRespawnTime = Date.now() + respawnTime;
-    updateIconState(currentPage, false, nextRespawnTime);
+    updateIconState(currentPage || getRandomPage(), false, nextRespawnTime);
     setTimeout(respawnGecko, respawnTime);
-  }, [respawnTime, respawnGecko, updateIconState, currentPage]);
+  }, [respawnTime, respawnGecko, updateIconState, currentPage, getRandomPage]);
 
   useEffect(() => {
     if (!geckoGameEnabled) {
@@ -166,7 +171,12 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
         }
       } else {
         setIsVisible(false);
-        scheduleRespawn();
+        if (!data || (data && !data.nextRespawnTime)) {
+          console.log('No gecko data or nextRespawnTime. Scheduling respawn.');
+          scheduleRespawn();
+        } else {
+          console.log('Waiting for scheduled respawn.');
+        }
       }
     });
 
