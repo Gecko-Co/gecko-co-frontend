@@ -45,9 +45,12 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       velocityRef.current.y *= -1;
     }
 
-    document.documentElement.style.setProperty('--gecko-x', `${positionRef.current.x}px`);
-    document.documentElement.style.setProperty('--gecko-y', `${positionRef.current.y}px`);
-    document.documentElement.style.setProperty('--gecko-rotate', `${Math.atan2(velocityRef.current.y, velocityRef.current.x) * 180 / Math.PI}deg`);
+    const geckoElement = document.querySelector('.gecko-game-object');
+    if (geckoElement) {
+      geckoElement.style.left = `${positionRef.current.x}px`;
+      geckoElement.style.top = `${positionRef.current.y}px`;
+      geckoElement.style.transform = `rotate(${Math.atan2(velocityRef.current.y, velocityRef.current.x) * 180 / Math.PI}deg)`;
+    }
 
     animationRef.current = requestAnimationFrame(updatePosition);
   }, []);
@@ -158,7 +161,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
               x: (Math.random() * 0.004 - 0.002), 
               y: (Math.random() * 0.004 - 0.002) 
             };
-            updatePosition();
+            updatePosition(); // Start the animation
             startTooltipTimer();
             startTransferTimer();
           } else {
@@ -279,6 +282,12 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       tabIndex={0}
       role="button"
       aria-label={dailyBonusAvailable ? "Click to earn points and collect your daily bonus!" : "Click to earn points"}
+      style={{
+        position: 'fixed',
+        left: `${positionRef.current.x}px`,
+        top: `${positionRef.current.y}px`,
+        transition: 'left 0.1s linear, top 0.1s linear',
+      }}
     >
       <img src="/images/geckoco-png.png" alt="Gecko Co. Logo" />
       {dailyBonusAvailable && <div className="daily-bonus-indicator">Daily Bonus Available!</div>}
