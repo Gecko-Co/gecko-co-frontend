@@ -29,7 +29,7 @@ const Leaderboard = () => {
         setError(null);
       } catch (error) {
         console.error('Error fetching leaderboard data:', error);
-        setError('Failed to load leaderboard data. Please try again later.');
+        setError('Failed to load leaderboard data. Please log-in.');
       } finally {
         setLoading(false);
       }
