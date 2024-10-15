@@ -16,16 +16,15 @@ body {
   z-index: 10000;
 }
 
-
 .hero-section {
   background-color: #23283b;
-  padding: 140px 50px 100px; /* Updated padding for larger screens */
+  padding: 140px 50px 100px;
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  position: relative;
+  position:  relative;
   z-index: 1;
 
   .hero-container {
@@ -45,13 +44,13 @@ body {
     margin-bottom: 2rem;
     display: flex;
     flex-direction: column;
-    min-height: 300px; /* Add this line to set a minimum height */
+    min-height: 300px;
 
     .hero-text-container {
       position: relative;
       width: 100%;
-      height: 300px; // Fixed height
-      overflow: hidden; // Hide overflow
+      height: 300px;
+      overflow: hidden;
     }
 
     .hero-text {
@@ -72,7 +71,6 @@ body {
         opacity: 0;
       }
     }
-
 
     .hero-title {
       font-size: 3rem;
@@ -106,7 +104,7 @@ body {
   }
 
   @media (min-width: 320px) {
-    padding-top: 120px; /* Increased top padding for 320px and above */
+    padding-top: 120px;
   }
 
   @media (min-width: 1200px) {
@@ -126,11 +124,11 @@ body {
     .image-showcase {
       width: 50%;
     }
-    padding-top: 140px; /* Further increased top padding for full screen size */
+    padding-top: 140px;
   }
 
   @media (max-width: 768px) {
-    padding: 120px 20px 60px; /* Update top padding here */
+    padding: 120px 20px 60px;
 
     .hero-title {
       font-size: 2rem;
@@ -140,12 +138,12 @@ body {
       font-size: 1rem;
     }
     .hero-text-container {
-      height: 250px; // Slightly smaller fixed height for mobile
+      height: 250px;
     }
   }
 
   @media (max-width: 480px) {
-    padding: 120px 20px 40px; /* Update top padding here */
+    padding: 120px 20px 40px;
 
     .hero-title {
       font-size: 1.5rem;
@@ -155,7 +153,7 @@ body {
       font-size: 0.9rem;
     }
     .hero-text-container {
-      height: 200px; // Even smaller fixed height for very small screens
+      height: 200px;
     }
   }
 }
@@ -279,12 +277,12 @@ body {
       position: relative;
       border-radius: 15px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-      background-color: #f0f0f0; // Add this line to give a background color
+      background-color: #f0f0f0;
 
       .main-image {
         width: 100%;
         height: 100%;
-        object-fit: cover; // Change from 'contain' to 'cover'
+        object-fit: cover;
         transition: transform 0.3s ease;
 
         &:hover {
@@ -400,7 +398,7 @@ body {
   .second-section {
     .image-gallery {
       .main-image-container {
-        height: 300px; // Adjust this value as needed
+        height: 300px;
       }
     }
   }
@@ -410,7 +408,7 @@ body {
   .second-section {
     .image-gallery {
       .main-image-container {
-        height: 250px; // Adjust this value as needed
+        height: 250px;
       }
     }
   }
@@ -544,7 +542,7 @@ body {
 
     .card-image-container {
       position: relative;
-      padding-top: 100%; // Change this to create a perfect square
+      padding-top: 100%;
       overflow: hidden;
 
       .card-image {
@@ -553,7 +551,7 @@ body {
         left: 0;
         width: 100%;
         height: 100%;
-        object-fit: cover; // Change this to 'cover' to fill the container without white space
+        object-fit: cover;
       }
 
       .card-quick-info {
@@ -629,21 +627,20 @@ body {
           color: white;
 
           &:hover {
-            background-color: darken(#23283b, 10%);
+            background-color: #1a1f2e;
           }
         }
 
         &.btn-secondary {
-          background-color: #e0e0e0;
-          color: #23283b;
+          background-color: #bd692d;
+          color: white;
 
           &:hover {
-            background-color: darken(#e0e0e0, 10%);
+            background-color: #a55a25;
           }
 
           &:disabled {
-            background-color: #cccccc;
-            color: #666666;
+            background-color: #ccc;
             cursor: not-allowed;
           }
         }
@@ -985,7 +982,7 @@ body {
 
 .fifth-section {
   background-color: #23283b;
-  padding: 80px 50px;
+  padding: 80px 50px 100px;
   text-align: center;
   position: relative;
   z-index: 1;

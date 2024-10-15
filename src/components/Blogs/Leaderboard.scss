@@ -18,6 +18,24 @@
     p {
       margin-bottom: 10px;
     }
+
+    .user-stats {
+      font-size: 1.1rem;
+      color: #bd692d;
+      margin-top: 10px;
+      font-weight: bold;
+
+      svg {
+        margin-right: 5px;
+      }
+    }
+
+    .days-remaining {
+      font-size: 1.2rem;
+      color: #bd692d;
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
   }
 
   .leaderboard-table {
@@ -88,6 +106,11 @@
 
       &.eligible {
         background-color: #e8f5e9;
+      }
+
+      &.current-user {
+        background-color: #fff3e0;
+        font-weight: bold;
       }
     }
   }
