@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, limit, getDocs, doc, getDoc } from 'firebase/firestore';
 import { ref, onValue } from 'firebase/database';
 import { db, realtimeDb } from '../../firebase';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrophy, faStar, faSpinner, faClock, faEye } from '@fortawesome/free-solid-svg-icons';
+import { faTrophy, faStar, faSpinner, faClock, faEye, faUser } from '@fortawesome/free-solid-svg-icons';
+import { useAuth } from '../Auth/AuthContext';
 import './Leaderboard.scss';
 
 const Leaderboard = () => {
@@ -14,6 +15,9 @@ const Leaderboard = () => {
   const [nextRespawnTime, setNextRespawnTime] = useState(null);
   const [countdown, setCountdown] = useState('');
   const [isGeckoVisible, setIsGeckoVisible] = useState(false);
+  const [userScore, setUserScore] = useState(null);
+  const [userRank, setUserRank] = useState(null);
+  const { currentUser } = useAuth();
 
   const fetchLeaderboardData = useCallback(async () => {
     try {
@@ -30,19 +34,34 @@ const Leaderboard = () => {
       setLeaderboardData(data);
       setLastUpdated(new Date());
       setError(null);
+
+      // Update user's rank and score
+      if (currentUser) {
+        const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+        const userData = userDoc.data();
+        setUserScore(userData?.points || 0);
+
+        const userRankQuery = query(
+          collection(db, 'users'),
+          orderBy('points', 'desc')
+        );
+        const userRankSnapshot = await getDocs(userRankQuery);
+        const userRank = userRankSnapshot.docs.findIndex(doc => doc.id === currentUser.uid) + 1;
+        setUserRank(userRank);
+      }
     } catch (error) {
       console.error('Error fetching leaderboard data:', error);
       setError('Failed to load leaderboard data. Please try again later.');
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [currentUser]);
 
   const fetchGeckoState = useCallback(() => {
     const iconRef = ref(realtimeDb, 'geckoIcon');
     onValue(iconRef, (snapshot) => {
       const data = snapshot.val();
-      console.log('Gecko  data from realtime DB:', data);
+      console.log('Gecko data from realtime DB:', data);
       if (data) {
         setIsGeckoVisible(data.visible);
         console.log('Is gecko visible:', data.visible);
@@ -170,6 +189,11 @@ const Leaderboard = () => {
           <div className="leaderboard-info">
             <p>Players with 5000 points or more are eligible for the giveaway!</p>
             {getGeckoStatus()}
+            {currentUser && userScore !== null && userRank !== null && (
+              <div className="user-stats">
+                <FontAwesomeIcon icon={faUser} /> Your Stats: Rank {userRank} - {userScore} points
+              </div>
+            )}
           </div>
           <div className="leaderboard-table">
             <div className="leaderboard-header">
@@ -178,7 +202,7 @@ const Leaderboard = () => {
               <span className="points">Points</span>
             </div>
             {leaderboardData.map((user, index) => (
-              <div key={user.id} className={`leaderboard-row ${user.points >= 5000 ? 'eligible' : ''}`}>
+              <div key={user.id} className={`leaderboard-row ${user.points >= 5000 ? 'eligible' : ''} ${user.id === currentUser?.uid ? 'current-user' : ''}`}>
                 <span className="rank">
                   {getTrophyIcon(index)}
                   {index + 1}
