@@ -49,18 +49,20 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     animationRef.current = requestAnimationFrame(updatePosition);
   }, []);
 
-  const updateIconState = useCallback((newPage, visible) => {
+  const updateIconState = useCallback((newPage, visible, nextRespawnTime = null) => {
     const now = Date.now();
     set(ref(realtimeDb, 'geckoIcon'), {
       page: newPage,
       visible: visible,
       lastUpdated: now,
-      nextTransferTime: now + transferTime
+      nextTransferTime: now + transferTime,
+      nextRespawnTime: nextRespawnTime
     }).then(() => {
       console.log('Icon state updated:', {
         visible: visible,
         lastUpdated: now,
-        nextTransferTime: now + transferTime
+        nextTransferTime: now + transferTime,
+        nextRespawnTime: nextRespawnTime
       });
     }).catch((error) => {
       console.error('Error updating icon state:', error);
@@ -122,13 +124,17 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     if (geckoGameEnabled) {
       const newRandomPage = getRandomPage();
       setCurrentPage(newRandomPage);
-      updateIconState(newRandomPage, true);
+      updateIconState(newRandomPage, true, null);
     }
   }, [geckoGameEnabled, getRandomPage, updateIconState]);
 
   const scheduleRespawn = useCallback(() => {
+    const nextRespawnTime = Date.now() + respawnTime;
+    updateIconState(currentPage, false, nextRespawnTime);
     setTimeout(respawnGecko, respawnTime);
-  }, [respawnTime, respawnGecko]);
+  }, [respawnTime, 
+
+ respawnGecko, updateIconState, currentPage]);
 
   useEffect(() => {
     if (!geckoGameEnabled) {
@@ -214,7 +220,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
 
         setIsVisible(false);
         setShowTooltip(false);
-        updateIconState(currentPage, false);
+        updateIconState(currentPage, false, Date.now() + respawnTime);
 
         if (tooltipTimeoutRef.current) {
           clearTimeout(tooltipTimeoutRef.current);
@@ -233,7 +239,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     } else if (!currentUser) {
       customToast.info('Sign in to collect points!');
     }
-  }, [currentUser, calculateScore, isUpdating, dailyBonusAvailable, currentPage, geckoGameEnabled, updateIconState, scheduleRespawn]);
+  }, [currentUser, calculateScore, isUpdating, dailyBonusAvailable, currentPage, geckoGameEnabled, updateIconState, scheduleRespawn, respawnTime]);
 
   if (!geckoGameEnabled || !isVisible) return null;
 
