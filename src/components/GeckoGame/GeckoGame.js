@@ -255,7 +255,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       }
 
       let score = Math.floor(Math.random() * (maxScore - minScore + 1)) + minScore;
-      return Math.min(score, 100); // Ensure the score is not greater than 100
+      return score > 100 ? 100 : score; // Check if score is greater than 100, return 100 if it is false return score
     } catch (error) {
       console.error('Error calculating score:', error);
       return 1; // Return minimum score if there's an error
