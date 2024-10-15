@@ -33,11 +33,11 @@ import { inject } from '@vercel/analytics';
 inject();
 
 function App() {
-  const geckoGameEnabled = process.env.REACT_APP_ENABLE_GECKO_GAME === 'true';
-  const [transferTime] = useState(600000); // 10 minutes in milliseconds
-  const [respawnTime] = useState(600000); // 10 minutes in milliseconds
-  const [enabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', '/policies', '/cart', '/account', '/settings', '/blogs']);
-
+    const geckoGameEnabled = process.env.REACT_APP_ENABLE_GECKO_GAME === 'true';
+    const [transferTime] = useState(600000); // 10 minutes in milliseconds
+    const [respawnTime] = useState(600000); // 10 minutes in milliseconds
+    const [enabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', '/policies', '/cart', '/account', '/settings', '/blogs']);
+  
   return (
     <Router>
       <AuthProvider>
@@ -62,7 +62,7 @@ function App() {
                 <Route path="/settings" element={<Settings />} />
                 <Route path="/gecko/:name" element={<GeckoDetailsPage />} />
                 <Route path="/blogs" element={<Blogs />} />
-                <Route path="/blogs/rolling-icon-christmas-event" element={<RollingIconBlogPost />} />
+                <Route path="/blogs/gecko-hunt-christmas-event" element={<RollingIconBlogPost />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
               </Routes>
             </div>
