@@ -42,7 +42,7 @@ export default function EventPopup() {
           <FontAwesomeIcon icon={faGift} className="gift-icon" />
           <h2>Early Christmas Event!</h2>
           <p>Join our Gecko Hunt game and win a beautiful Sunglow gecko! Reach 5000 points to be eligible!</p>
-          <Link to="/blogs/rolling-icon-christmas-event" className="event-link">
+          <Link to="/blogs/gecko-hunt-christmas-event" className="event-link">
             Learn More
           </Link>
           <button onClick={dontShowAgain} className="dont-show-again">Don't show this again</button>
