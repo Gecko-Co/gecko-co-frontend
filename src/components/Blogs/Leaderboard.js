@@ -17,7 +17,7 @@ const Leaderboard = () => {
   const [isGeckoVisible, setIsGeckoVisible] = useState(false);
   const [userScore, setUserScore] = useState(null);
   const [userRank, setUserRank] = useState(null);
-  const [daysRemaining, setDaysRemaining] = useState(0); // Added state for days remaining
+  const [daysRemaining, setDaysRemaining] = useState(0);
   const { currentUser } = useAuth();
 
   const fetchLeaderboardData = useCallback(async () => {
@@ -36,19 +36,13 @@ const Leaderboard = () => {
       setLastUpdated(new Date());
       setError(null);
 
-      // Update user's rank and score
       if (currentUser) {
         const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
         const userData = userDoc.data();
         setUserScore(userData?.points || 0);
 
-        const userRankQuery = query(
-          collection(db, 'users'),
-          orderBy('points', 'desc')
-        );
-        const userRankSnapshot = await getDocs(userRankQuery);
-        const userRank = userRankSnapshot.docs.findIndex(doc => doc.id === currentUser.uid) + 1;
-        setUserRank(userRank);
+        const userRank = data.findIndex(user => user.id === currentUser.uid) + 1;
+        setUserRank(userRank > 0 ? userRank : 'Not in top 20');
       }
     } catch (error) {
       console.error('Error fetching leaderboard data:', error);
@@ -62,33 +56,27 @@ const Leaderboard = () => {
     const iconRef = ref(realtimeDb, 'geckoIcon');
     onValue(iconRef, (snapshot) => {
       const data = snapshot.val();
-      console.log('Gecko data from realtime DB:', data);
       if (data) {
         setIsGeckoVisible(data.visible);
-        console.log('Is gecko visible:', data.visible);
         if (data.visible) {
           setNextRespawnTime(null);
           setCountdown('');
-          console.log('Gecko is visible, next respawn time is null');
         } else if (data.nextRespawnTime) {
           const nextRespawn = new Date(data.nextRespawnTime);
           setNextRespawnTime(nextRespawn);
-          console.log('Next respawn time:', nextRespawn);
         } else {
           setNextRespawnTime(null);
           setCountdown('');
-          console.log('Next respawn time is null');
         }
       } else {
         setIsGeckoVisible(false);
         setNextRespawnTime(null);
         setCountdown('');
-        console.log('No gecko data available');
       }
     });
   }, []);
 
-  const calculateDaysRemaining = useCallback(() => { // Added function to calculate days remaining
+  const calculateDaysRemaining = useCallback(() => {
     const endDate = new Date('2024-12-20T23:59:59');
     const now = new Date();
     const timeDiff = endDate.getTime() - now.getTime();
@@ -99,19 +87,18 @@ const Leaderboard = () => {
   useEffect(() => {
     fetchLeaderboardData();
     fetchGeckoState();
-    calculateDaysRemaining(); // Call calculateDaysRemaining
+    calculateDaysRemaining();
 
-    const intervalId = setInterval(fetchLeaderboardData, 60000);
-    const daysIntervalId = setInterval(calculateDaysRemaining, 86400000); // Update once a day
+    const intervalId = setInterval(fetchLeaderboardData, 300000);
+    const daysIntervalId = setInterval(calculateDaysRemaining, 86400000);
 
     return () => {
       clearInterval(intervalId);
       clearInterval(daysIntervalId);
     };
-  }, [fetchLeaderboardData, fetchGeckoState, calculateDaysRemaining]); // Added calculateDaysRemaining to dependency array
+  }, [fetchLeaderboardData, fetchGeckoState, calculateDaysRemaining]);
 
   useEffect(() => {
-    console.log('Countdown effect triggered. NextRespawnTime:', nextRespawnTime, 'IsGeckoVisible:', isGeckoVisible);
     let intervalId;
     if (nextRespawnTime && !isGeckoVisible) {
       const updateCountdown = () => {
@@ -126,7 +113,6 @@ const Leaderboard = () => {
           const seconds = Math.floor((timeLeft % 60000) / 1000);
           const newCountdown = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
           setCountdown(newCountdown);
-          console.log('Updated countdown:', newCountdown);
         }
       };
 
@@ -169,7 +155,6 @@ const Leaderboard = () => {
   };
 
   const getGeckoStatus = () => {
-    console.log('getGeckoStatus called. IsGeckoVisible:', isGeckoVisible, 'NextRespawnTime:', nextRespawnTime, 'Countdown:', countdown);
     if (isGeckoVisible) {
       return (
         <p className="gecko-visible">
@@ -200,7 +185,7 @@ const Leaderboard = () => {
         <>
           <div className="leaderboard-info">
             <p>Players with 5000 points or more are eligible for the giveaway!</p>
-            <p className="days-remaining">Days remaining: {daysRemaining}</p> {/* Added days remaining */}
+            <p className="days-remaining">Days remaining: {daysRemaining}</p>
             {getGeckoStatus()}
             {currentUser && userScore !== null && userRank !== null && (
               <div className="user-stats">
