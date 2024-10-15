@@ -58,7 +58,7 @@ const Leaderboard = () => {
 
   return (
     <div className="leaderboard-container">
-      <h1 className="leaderboard-title">Rolling Icon Leaderboard</h1>
+      <h1 className="leaderboard-title">Gecko Hunt Leaderboard</h1>
       {loading ? (
         <div className="loading-spinner">
           <FontAwesomeIcon icon={faSpinner} spin />
