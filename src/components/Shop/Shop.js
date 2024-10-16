@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
-import { collection, getDocs, query, orderBy } from 'firebase/firestore';
-import { db } from '../../firebase';
 import { useCart } from '../Cart/CartContext';
 import Card from "../Card/Card";
 import Pagination from "../Pagination/Pagination";
@@ -9,6 +7,7 @@ import Filter from "../Filter/Filter";
 import { Helmet } from 'react-helmet';
 import { FaFilter } from 'react-icons/fa';
 import './Shop.scss';
+import placeholderData from '../../data';
 
 function Shop() {
   const navigate = useNavigate();
@@ -47,23 +46,18 @@ function Shop() {
     navigate(`${location.pathname}?${params.toString()}`, { replace: true });
   }, [location.pathname, navigate]);
 
-  const fetchGeckos = useCallback(async () => {
+  const fetchGeckos = useCallback(() => {
     setLoading(true);
     try {
-      const geckosCollection = collection(db, 'geckos');
-      const geckosQuery = query(geckosCollection, orderBy("price", sortOrder));
-      const querySnapshot = await getDocs(geckosQuery);
-      const geckosData = querySnapshot.docs.map(doc => ({
-        ...doc.data(),
-        id: doc.id
-      }));
+      // Use placeholder data instead of fetching from Firestore
+      const geckosData = placeholderData.results;
       setGeckos(geckosData);
     } catch (error) {
       console.error("Error fetching geckos:", error);
     } finally {
       setLoading(false);
     }
-  }, [sortOrder]);
+  }, []);
 
   useEffect(() => {
     updateFiltersFromUrl();
