@@ -10,11 +10,10 @@ import './Home.scss';
 import featuredData from '../../featured';
 import { useCart } from '../Cart/CartContext';
 import customToast from '../../utils/toast';
-// import { collection, getDocs, query, where } from 'firebase/firestore';
-// import { db } from '../../firebase';
+import { collection, getDocs, query, where } from 'firebase/firestore';
+import { db } from '../../firebase';
 import EventPopup from './EventPopup';
 import { getGeckoDetailUrl } from '../../utils/urlHelpers';
-import placeholderData from '../../data';
 
 const GeckoSliderCard = ({ gecko }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -94,7 +93,6 @@ const AnimatedSection = ({ children, className, animationDirection }) => {
 
     if (sectionRef.current) {
       observer.observe(sectionRef.current);
-    
     }
 
     return () => {
@@ -153,8 +151,15 @@ export default function Component() {
   ];
 
   useEffect(() => {
-    const availableGeckos = placeholderData.results.filter(gecko => gecko.status.toLowerCase() === 'available');
-    setAvailableGeckos(availableGeckos);
+    const fetchGeckos = async () => {
+      const geckosRef = collection(db, 'geckos');
+      const q = query(geckosRef, where("status", "==", "Available"));
+      const querySnapshot = await getDocs(q);
+      const geckos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setAvailableGeckos(geckos);
+    };
+
+    fetchGeckos();
   }, []);
 
   useEffect(() => {
