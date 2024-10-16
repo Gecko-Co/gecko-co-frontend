@@ -28,6 +28,7 @@ import GeckoGame from './components/GeckoGame/GeckoGame';
 import Blogs from './components/Blogs/Blogs';
 import Leaderboard from './components/Blogs/Leaderboard';
 import RollingIconBlogPost from './components/Blogs/RollingIconBlogPost';
+import BreederMap from './components/BreederMap/BreederMap';
 import { inject } from '@vercel/analytics';
 
 inject();
@@ -64,6 +65,7 @@ function App() {
                 <Route path="/blogs" element={<Blogs />} />
                 <Route path="/blogs/gecko-hunt-christmas-event" element={<RollingIconBlogPost />} />
                 <Route path="/leaderboard" element={<Leaderboard />} />
+                <Route path="/breeder-map" element={<BreederMap />} />
               </Routes>
             </div>
             <Scroll />
