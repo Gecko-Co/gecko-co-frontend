@@ -211,7 +211,7 @@ export default function Component() {
         <AnimatedSection className="hero-section" animationDirection="down">
           <div className="hero-container">
             <div className="hero-content">
-              <div className="hero-text-container" style={{ height: '300px' }}>
+              <div className="hero-text-container">
                 <div className={`hero-text ${isTransitioning ? 'fade-out' : 'fade-in'}`}>
                   <h1 className="hero-title">{heroContent[currentHeroIndex].title}</h1>
                   <p className="hero-subtitle">{heroContent[currentHeroIndex].subtitle}</p>
