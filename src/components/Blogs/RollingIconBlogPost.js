@@ -70,7 +70,7 @@ const RollingIconBlogPost = () => {
           </div>
         </div>
         <p>
-          The winner will receive this beautiful Sunglow gecko! Shipping is paid by the winner, only Philippine residents are eligible to win.
+          The winner will receive this beautiful Sunglow gecko! Shipping is paid by the winner, only Philippine residents are eligible to win and the winner will be responsible for shipping specially those outside NCR.
         </p>
         
         <h2>Current Leaderboard</h2>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import './Navbar.scss';
-import { FaUserCircle, FaUserPlus, FaShoppingCart } from 'react-icons/fa';
+import { FaUserCircle, FaUserPlus, FaShoppingCart, FaChevronDown } from 'react-icons/fa';
 import { useCart } from '../Cart/CartContext';
 import { useAuth } from '../Auth/AuthContext';
 import LoginPopup from '../Auth/LoginPopup';
@@ -13,11 +13,13 @@ const Navbar = () => {
   const [prevScrollPos, setPrevScrollPos] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
+  const [isToolsDropdownOpen, setIsToolsDropdownOpen] = useState(false);
   const { cart } = useCart();
   const { currentUser } = useAuth();
   
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+    setIsToolsDropdownOpen(false);
   };
 
   useEffect(() => {
@@ -39,6 +41,7 @@ const Navbar = () => {
   useEffect(() => {
     setIsOpen(false);
     setShowLoginPopup(false);
+    setIsToolsDropdownOpen(false);
   }, [location]);
 
   const handleAccountClick = () => {
@@ -49,6 +52,10 @@ const Navbar = () => {
     } else {
       // Do nothing if already on the sign-in page
     }
+  };
+
+  const toggleToolsDropdown = () => {
+    setIsToolsDropdownOpen(!isToolsDropdownOpen);
   };
 
   return (
@@ -62,7 +69,15 @@ const Navbar = () => {
         <NavLink to="/shop" text="Shop" toggleMenu={toggleMenu} />
         <NavLink to="/learn" text="Learn" toggleMenu={toggleMenu} />
         <NavLink to="/blogs" text="Blogs" toggleMenu={toggleMenu} />
-        <NavLink to="/genetic-calculator" text="Calculators" toggleMenu={toggleMenu} />
+        <div className={`nav-link-container tools-dropdown ${isToolsDropdownOpen ? 'open' : ''}`}>
+          <button className="nav-link" onClick={toggleToolsDropdown}>
+            Tools <FaChevronDown className={`dropdown-icon ${isToolsDropdownOpen ? 'open' : ''}`} />
+          </button>
+          <div className="tools-dropdown-menu">
+            <NavLink to="/genetic-calculator" text="Calculator" toggleMenu={toggleMenu} />
+            <NavLink to="/breeder-map" text="Breeder Map" toggleMenu={toggleMenu} />
+          </div>
+        </div>
         <NavLink to="/contact" text="Contact Us" toggleMenu={toggleMenu} />
       </div>
       <div className="menu-icons-container">
