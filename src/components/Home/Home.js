@@ -232,7 +232,8 @@ export default function Component() {
         </AnimatedSection>
 
         <div className="diagonal-transition"></div>
-
+        {/* add this to prevent ad intent */}
+        <div class="google-anno-skip"> 
         <AnimatedSection className="second-section" animationDirection="right">
           <h2 className="section-title">Species Highlight</h2>
           <div className="content-wrapper">
@@ -267,6 +268,7 @@ export default function Component() {
             </div>
           </div>
         </AnimatedSection>
+        </div>
 
         <div className="diagonal-transition reverse"></div>
 
