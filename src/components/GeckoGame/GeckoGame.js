@@ -245,13 +245,13 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
       let maxScore = 50;
 
       if (totalPoints >= 1000 && totalPoints < 2000) {
-        maxScore = 40;
+        maxScore = 45;
       } else if (totalPoints >= 2000 && totalPoints < 3000) {
-        maxScore = 30;
+        maxScore = 35;
       } else if (totalPoints >= 3000 && totalPoints < 4000) {
-        maxScore = 20;
+        maxScore = 25;
       } else if (totalPoints >= 4000) {
-        maxScore = 10;
+        maxScore = 20;
       }
 
       let score = Math.floor(Math.random() * (maxScore - minScore + 1)) + minScore;
