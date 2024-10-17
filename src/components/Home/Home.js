@@ -74,44 +74,6 @@ const GeckoSliderCard = ({ gecko }) => {
   );
 };
 
-const AnimatedSection = ({ children, className, animationDirection }) => {
-  const sectionRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(entry.target);
-        }
-      },
-      {
-        threshold: 0.1,
-      }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => {
-      if (sectionRef.current) {
-        observer.unobserve(sectionRef.current);
-      }
-    };
-  }, []);
-
-  return (
-    <div
-      ref={sectionRef}
-      className={`${className} ${isVisible ? `animate-fade-in-${animationDirection}` : 'opacity-0'}`}
-    >
-      {children}
-    </div>
-  );
-};
-
 export default function Component() {
   const [currentSecondSectionIndex, setCurrentSecondSectionIndex] = useState(0);
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
@@ -208,7 +170,7 @@ export default function Component() {
         <link rel="canonical" href="https://geckoco.ph" />
       </Helmet>
       <div className="App">
-        <AnimatedSection className="hero-section" animationDirection="down">
+        <section className="hero-section">
           <div className="hero-container">
             <div className="hero-content">
               <div className="hero-text-container">
@@ -229,50 +191,49 @@ export default function Component() {
               ))}
             </div>
           </div>
-        </AnimatedSection>
+        </section>
 
         <div className="diagonal-transition"></div>
-        {/* add this to prevent ad intent */}
-        <div class="google-anno-skip"> 
-        <AnimatedSection className="second-section" animationDirection="right">
-          <h2 className="section-title">Species Highlight</h2>
-          <div className="content-wrapper">
-            <div className="image-gallery">
-              <div className="main-image-container">
-                <img src={second_section_images[currentSecondSectionIndex]} alt="Main Display" className="main-image" />
+        <div className="google-anno-skip">
+          <section className="second-section">
+            <h2 className="section-title">Species Highlight</h2>
+            <div className="content-wrapper">
+              <div className="image-gallery">
+                <div className="main-image-container">
+                  <img src={second_section_images[currentSecondSectionIndex]} alt="Main Display" className="main-image" />
+                </div>
+                <div className="thumbnail-container">
+                  {second_section_images.map((image, index) => (
+                    <img
+                      key={index}
+                      src={image}
+                      alt={`Thumbnail ${index + 1}`}
+                      className={`thumbnail ${currentSecondSectionIndex === index ? 'active' : ''}`}
+                      onClick={() => setCurrentSecondSectionIndex(index)}
+                    />
+                  ))}
+                </div>
               </div>
-              <div className="thumbnail-container">
-                {second_section_images.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image}
-                    alt={`Thumbnail ${index + 1}`}
-                    className={`thumbnail ${currentSecondSectionIndex === index ? 'active' : ''}`}
-                    onClick={() => setCurrentSecondSectionIndex(index)}
-                  />
-                ))}
+              <div className="species-info">
+                <h2>{featuredData.name}</h2>
+                <p className="description">{featuredData.description}</p>
+                <ul>
+                  <li><strong>Species:</strong> {featuredData.species}</li>
+                  <li><strong>Origin:</strong> {featuredData.origin}</li>
+                  <li><strong>Size:</strong> {featuredData.size}</li>
+                  <li><strong>Range:</strong> {featuredData.range}</li>
+                  <li><strong>Diet:</strong> {featuredData.diet}</li>
+                  <li><strong>Lifespan:</strong> {featuredData.lifespan}</li>
+                </ul>
+                <Link to="/learn" className="learn-more-button">Learn More About Geckos</Link>
               </div>
             </div>
-            <div className="species-info">
-              <h2>{featuredData.name}</h2>
-              <p className="description">{featuredData.description}</p>
-              <ul>
-                <li><strong>Species:</strong> {featuredData.species}</li>
-                <li><strong>Origin:</strong> {featuredData.origin}</li>
-                <li><strong>Size:</strong> {featuredData.size}</li>
-                <li><strong>Range:</strong> {featuredData.range}</li>
-                <li><strong>Diet:</strong> {featuredData.diet}</li>
-                <li><strong>Lifespan:</strong> {featuredData.lifespan}</li>
-              </ul>
-              <Link to="/learn" className="learn-more-button">Learn More About Geckos</Link>
-            </div>
-          </div>
-        </AnimatedSection>
+          </section>
         </div>
 
         <div className="diagonal-transition reverse"></div>
 
-        <AnimatedSection className="third-section" animationDirection="left">
+        <section className="third-section">
           <h2 className="section-title">Featured Geckos</h2>
           <div className="content-wrapper">
             <div className="gecko-slider">
@@ -284,11 +245,11 @@ export default function Component() {
             </div>
           </div>
           <Link to="/shop" className="view-all-btn">View All Geckos</Link>
-        </AnimatedSection>
+        </section>
 
         <div className="diagonal-transition"></div>
 
-        <AnimatedSection className="fourth-section" animationDirection="right">
+        <section className="fourth-section">
           <h2 className="section-title">Gecko Genetics Hub</h2>
           <div className="content-wrapper">
             <div className="calculator-preview">
@@ -312,11 +273,11 @@ export default function Component() {
               </div>
             </div>
           </div>
-        </AnimatedSection>
+        </section>
 
         <div className="diagonal-transition reverse"></div>
 
-        <AnimatedSection className="fifth-section" animationDirection="left">
+        <section className="fifth-section">
           <h2 className="section-title">Why Choose Gecko Co.?</h2>
           <div className="content-wrapper">
             <div className="feature">
@@ -348,7 +309,7 @@ export default function Component() {
               <p>All our geckos undergo thorough health checks and come with a 30-day health guarantee for your peace of mind.</p>
             </div>
           </div>
-        </AnimatedSection>
+        </section>
 
         <EventPopup />
       </div>
