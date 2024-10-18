@@ -1,9 +1,10 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, OverlayView } from '@react-google-maps/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faMapMarkerAlt, faTimes, faPencilAlt, faCheck, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faMapMarkerAlt, faTimes, faPencilAlt, faCheck, faPlus, faTrash, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { collection, getDocs, doc, updateDoc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../../firebase';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { db, storage } from '../../firebase';
 import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
 import './BreederMap.scss';
@@ -34,6 +35,38 @@ const mapOptions = {
   minZoom: 2,
 };
 
+const PinView = ({ background, glyphColor, logoUrl }) => (
+  <div style={{
+    position: 'absolute',
+    transform: 'translate(-50%, -100%)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '48px',
+    height: '48px',
+    borderRadius: '50% 50% 50% 0',
+    background: background,
+    boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+    cursor: 'pointer',
+  }}>
+    <div style={{
+      width: '40px',
+      height: '40px',
+      borderRadius: '50%',
+      background: 'white',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+    }}>
+      {logoUrl ? (
+        <img src={logoUrl} alt="Breeder logo" style={{ width: '32px', height: '32px', borderRadius: '50%' }} />
+      ) : (
+        <FontAwesomeIcon icon={faMapMarkerAlt} style={{ fontSize: '24px', color: glyphColor }} />
+      )}
+    </div>
+  </div>
+);
+
 export default function BreederMap() {
   const { isLoaded, loadError } = useJsApiLoader({
     id: 'google-map-script',
@@ -52,6 +85,7 @@ export default function BreederMap() {
   const [editedMarker, setEditedMarker] = useState(null);
   const [userData, setUserData] = useState(null);
   const [species, setSpecies] = useState(['']);
+  const [logo, setLogo] = useState(null);
   const searchInputRef = useRef(null);
 
   useEffect(() => {
@@ -125,6 +159,7 @@ export default function BreederMap() {
       setIsModalOpen(true);
       setIsSidePanelOpen(false);
       setSpecies(['']);
+      setLogo(null);
     } else if (!currentUser) {
       customToast.error('Please sign in to add a breeder location.');
     } else if (userData?.breederData) {
@@ -140,10 +175,25 @@ export default function BreederMap() {
       setEditMode(false);
       setEditedMarker(null);
       setSpecies(marker.species || ['']);
+      setLogo(marker.logo || null);
     } catch (error) {
       console.error('Error in handleMarkerClick:', error);
       customToast.error('An error occurred. Please try again.');
     }
+  };
+
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      setLogo(file);
+    }
+  };
+
+  const uploadLogo = async (file) => {
+    if (!file) return null;
+    const storageRef = ref(storage, `logos/${currentUser.uid}_${Date.now()}`);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
   };
 
   const handlePinSubmit = async (e) => {
@@ -153,12 +203,14 @@ export default function BreederMap() {
     
     if (breeder && contactInfo && newPin && currentUser && !userData?.breederData) {
       try {
+        const logoUrl = await uploadLogo(logo);
         const userRef = doc(db, 'users', currentUser.uid);
         const newBreederData = {
           breeder,
           species: species.filter(s => s.trim() !== ''),
           contactInfo,
           location: { latitude: newPin.lat, longitude: newPin.lng },
+          logo: logoUrl,
         };
         await updateDoc(userRef, {
           breederData: newBreederData
@@ -174,6 +226,8 @@ export default function BreederMap() {
         }]);
         setNewPin(null);
         setIsModalOpen(false);
+        setLogo(null);
+        setSpecies(['']);
         customToast.success('Breeder location added successfully!');
       } catch (error) {
         console.error('Error adding breeder location:', error);
@@ -222,6 +276,7 @@ export default function BreederMap() {
     setIsModalOpen(false);
     setNewPin(null);
     setSpecies(['']);
+    setLogo(null);
   };
 
   const handleCloseSidePanel = () => {
@@ -230,31 +285,37 @@ export default function BreederMap() {
     setEditMode(false);
     setEditedMarker(null);
     setSpecies(['']);
+    setLogo(null);
   };
 
   const handleEditClick = () => {
     setEditMode(true);
     setEditedMarker({ ...activeMarker });
     setSpecies(activeMarker.species || ['']);
+    setLogo(activeMarker.logo || null);
   };
 
   const handleSaveEdit = async () => {
     try {
+      const logoUrl = logo instanceof File ? await uploadLogo(logo) : logo;
       const userRef = doc(db, 'users', editedMarker.id);
       await updateDoc(userRef, {
         'breederData.breeder': editedMarker.breeder,
         'breederData.species': species.filter(s => s.trim() !== ''),
         'breederData.contactInfo': editedMarker.contactInfo,
+        'breederData.logo': logoUrl,
       });
       const updatedMarker = {
         ...editedMarker,
         species: species.filter(s => s.trim() !== ''),
+        logo: logoUrl,
       };
       setMarkers(markers.map(marker => 
         marker.id === updatedMarker.id ? updatedMarker : marker
       ));
       setActiveMarker(updatedMarker);
       setEditMode(false);
+      setLogo(null);
       customToast.success('Breeder information updated successfully!');
     } catch (error) {
       console.error('Error updating breeder information:', error);
@@ -313,32 +374,23 @@ export default function BreederMap() {
             options={mapOptions}
           >
             {markers.map((marker) => (
-              <Marker
+              <OverlayView
                 key={marker.id}
                 position={{ lat: marker.lat, lng: marker.lng }}
-                onClick={() => handleMarkerClick(marker)}
-                icon={{
-                  path: faMapMarkerAlt.icon[4],
-                  fillColor: "#bd692d",
-                  fillOpacity: 1,
-                  strokeWeight: 1,
-                  strokeColor: "#ffffff",
-                  scale: 0.075,
-                }}
-              />
+                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+              >
+                <div onClick={() => handleMarkerClick(marker)}>
+                  <PinView background="#bd692d" glyphColor="#bd692d" logoUrl={marker.logo} />
+                </div>
+              </OverlayView>
             ))}
             {newPin && (
-              <Marker
+              <OverlayView
                 position={{ lat: newPin.lat, lng: newPin.lng }}
-                icon={{
-                  path: faMapMarkerAlt.icon[4],
-                  fillColor: "#ff6b6b",
-                  fillOpacity: 1,
-                  strokeWeight: 1,
-                  strokeColor: "#ffffff",
-                  scale: 0.075,
-                }}
-              />
+                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+              >
+                <PinView background="#ff6b6b" glyphColor="#ff6b6b" />
+              </OverlayView>
             )}
           </GoogleMap>
         </div>
@@ -347,7 +399,12 @@ export default function BreederMap() {
             <button className="close-button" onClick={handleCloseSidePanel}>
               <FontAwesomeIcon icon={faTimes} />
             </button>
-            <h3>{activeMarker.breeder}</h3>
+            <div className="breeder-header">
+              {activeMarker.logo && (
+                <img src={activeMarker.logo} alt="Breeder logo" className="breeder-logo" />
+              )}
+              <h3>{activeMarker.breeder}</h3>
+            </div>
             {editMode ? (
               <form onSubmit={(e) => { e.preventDefault(); handleSaveEdit(); }}>
                 <div className="info-item">
@@ -388,6 +445,22 @@ export default function BreederMap() {
                     onChange={handleInputChange}
                   />
                 </div>
+                <div className="info-item">
+                  <label htmlFor="logo" className="file-input-label">
+                    <FontAwesomeIcon icon={faUpload} /> Choose Logo
+                    <input
+                      type="file"
+                      id="logo"
+                      name="logo"
+                      accept="image/*"
+                      onChange={handleFileChange}
+                      className="file-input"
+                    />
+                  </label>
+                  {(logo || editedMarker.logo) && (
+                    <img src={logo instanceof File ? URL.createObjectURL(logo) : editedMarker.logo} alt="Logo preview" className="logo-preview" />
+                  )}
+                </div>
                 <button type="submit" className="save-button">
                   <FontAwesomeIcon icon={faCheck} /> Save
                 </button>
@@ -407,7 +480,6 @@ export default function BreederMap() {
                   </ul>
                 </div>
                 <div className="info-item">
-                  
                   <strong>Contact:</strong>
                   <span>{activeMarker.contactInfo}</span>
                 </div>
@@ -428,13 +500,13 @@ export default function BreederMap() {
               <FontAwesomeIcon icon={faTimes} />
             </button>
             <h3>Add Your Breeder Location</h3>
-            <form onSubmit={handlePinSubmit}>
-              <div className="form-group">
+            <form onSubmit={handlePinSubmit} className="add-location-form">
+              <div className="info-item">
                 <label htmlFor="breeder">Breeder Name:</label>
                 <input type="text" id="breeder" name="breeder" placeholder="Breeder Name" required />
               </div>
-              <div className="form-group">
-                <label>Gecko Species:</label>
+              <div className="info-item">
+                <label>Species:</label>
                 {species.map((s, index) => (
                   <div key={index} className="species-input">
                     <input
@@ -443,22 +515,38 @@ export default function BreederMap() {
                       onChange={(e) => handleSpeciesChange(index, e.target.value)}
                       placeholder="Gecko Species"
                     />
-                    {index > 0 && (
-                      <button type="button" onClick={() => handleRemoveSpecies(index)}>
-                        <FontAwesomeIcon icon={faTrash} />
-                      </button>
-                    )}
+                    <button type="button" onClick={() => handleRemoveSpecies(index)} className="remove-species">
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
                   </div>
                 ))}
                 <button type="button" onClick={handleAddSpecies} className="add-species">
                   <FontAwesomeIcon icon={faPlus} /> Add Species
                 </button>
               </div>
-              <div className="form-group">
+              <div className="info-item">
                 <label htmlFor="contactInfo">Contact Info:</label>
                 <input type="text" id="contactInfo" name="contactInfo" placeholder="Contact Info" required />
               </div>
-              <button type="submit">Add Location</button>
+              <div className="info-item">
+                <label htmlFor="logo" className="file-input-label">
+                  <FontAwesomeIcon icon={faUpload} /> Choose Logo
+                  <input
+                    type="file"
+                    id="logo"
+                    name="logo"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="file-input"
+                  />
+                </label>
+                {logo && (
+                  <img src={URL.createObjectURL(logo)} alt="Logo preview" className="logo-preview" />
+                )}
+              </div>
+              <button type="submit" className="save-button">
+                <FontAwesomeIcon icon={faCheck} /> Add Location
+              </button>
             </form>
           </div>
         </div>
