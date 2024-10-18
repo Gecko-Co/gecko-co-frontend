@@ -42,7 +42,7 @@ const Leaderboard = () => {
         setUserScore(userData?.points || 0);
 
         const userRank = data.findIndex(user => user.id === currentUser.uid) + 1;
-        setUserRank(userRank > 0 ? userRank : 'Not in top 20');
+        setUserRank(userRank > 0 ? userRank : 'Unranked');
       }
     } catch (error) {
       console.error('Error fetching leaderboard data:', error);
