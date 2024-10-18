@@ -193,7 +193,7 @@ export default function Component() {
           </div>
         </section>
 
-        <div className="diagonal-transition"></div>
+        {/* <div className="diagonal-transition"></div> */}
         <div className="google-anno-skip">
           <section className="second-section">
             <h2 className="section-title">Species Highlight</h2>
@@ -231,7 +231,7 @@ export default function Component() {
           </section>
         </div>
 
-        <div className="diagonal-transition reverse"></div>
+        {/* <div className="diagonal-transition reverse"></div> */}
 
         <section className="third-section">
           <h2 className="section-title">Featured Geckos</h2>
@@ -247,7 +247,7 @@ export default function Component() {
           <Link to="/shop" className="view-all-btn">View All Geckos</Link>
         </section>
 
-        <div className="diagonal-transition"></div>
+        {/* <div className="diagonal-transition"></div> */}
 
         <section className="fourth-section">
           <h2 className="section-title">Gecko Genetics Hub</h2>
@@ -275,7 +275,7 @@ export default function Component() {
           </div>
         </section>
 
-        <div className="diagonal-transition reverse"></div>
+        {/* <div className="diagonal-transition reverse"></div> */}
 
         <section className="fifth-section">
           <h2 className="section-title">Why Choose Gecko Co.?</h2>
