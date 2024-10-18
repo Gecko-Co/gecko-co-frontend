@@ -62,7 +62,7 @@ const GeckoSliderCard = ({ gecko }) => {
             {isHovered ? (
               <FontAwesomeIcon icon={faShoppingCart} />
             ) : (
-              gecko.status.toLowerCase() === 'available' ? 'Add to Cart' : 'Not Available'
+              gecko.status.toLowerCase() === 'available' ? 'Add to Cart' : 'Unvailable'
             )}
           </button>
         </div>

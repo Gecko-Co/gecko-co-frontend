@@ -67,7 +67,7 @@ const Card = ({ results, addToCart }) => {
                   {hoveredGecko === id ? (
                     <FontAwesomeIcon icon={faShoppingCart} />
                   ) : (
-                    status.toLowerCase() === 'available' ? 'Add to Cart' : 'Not Available'
+                    status.toLowerCase() === 'available' ? 'Add to Cart' : 'Unvailable'
                   )}
                 </button>
               </div>

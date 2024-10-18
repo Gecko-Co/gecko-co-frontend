@@ -134,7 +134,7 @@ const GeckoDetails = () => {
                   <>
                     <FontAwesomeIcon icon={faShoppingCart} /> Add to Cart
                   </>
-                ) : 'Not Available')}
+                ) : 'Unvailable')}
             </button>
           </div>
         </div>
