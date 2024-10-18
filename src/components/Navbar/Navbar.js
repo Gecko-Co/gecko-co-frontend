@@ -74,7 +74,7 @@ const Navbar = () => {
             Tools <FaChevronDown className={`dropdown-icon ${isToolsDropdownOpen ? 'open' : ''}`} />
           </button>
           <div className="tools-dropdown-menu">
-            <NavLink to="/genetic-calculator" text="Calculator" toggleMenu={toggleMenu} />
+            <NavLink to="/genetic-calculator" text="Calculators" toggleMenu={toggleMenu} />
             <NavLink to="/breeder-map" text="Breeder Map" toggleMenu={toggleMenu} />
           </div>
         </div>
