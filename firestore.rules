@@ -1,0 +1,42 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Existing rules for user documents
+    match /users/{userId} {
+      allow create: if request.auth != null 
+                    && request.auth.uid == userId
+                    && !exists(/databases/$(database)/documents/users/$(request.auth.uid))
+                    && request.time > get(/databases/$(database)/documents/userCreationLimits/$(request.auth.uid)).data.nextAllowedCreation;
+      allow read: if true;  // Allow public read access for leaderboard
+      allow update, delete: if request.auth != null && request.auth.uid == userId;
+    }
+    
+    // Existing rules for userCreationLimits
+    match /userCreationLimits/{userId} {
+      allow read, write: if false;  // Only accessible by server
+    }
+
+    // Existing rules for gecko data
+    match /geckos/{geckoId} {
+      allow read: if true;  // Anyone can read gecko data
+      allow create, delete: if request.auth != null;  // Only authenticated users can create or delete
+      allow update: if true;  // Allow updates for cart functionality
+    }
+
+    // New rules for breeder locations
+		match /databases/{database}/documents {
+    	match /users/{userId} {
+        allow read: if true;
+        allow create: if request.auth != null && request.auth.uid == userId;
+        allow update: if request.auth != null && request.auth.uid == userId && 
+                      (request.resource.data.breederLocations == null || 
+                       request.resource.data.breederLocations.size() <= 5);
+    }
+  }
+
+    // Default rule for other collections
+    match /{document=**} {
+      allow read, write: if request.auth != null;  // Authenticated users have full access to other collections
+    }
+  }
+}
