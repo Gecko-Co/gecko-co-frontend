@@ -1,17 +1,18 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
-import { GoogleMap, useJsApiLoader, MarkerF, MarkerClusterer } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, OverlayView } from '@react-google-maps/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes, faPencilAlt, faCheck, faPlus, faTrash, faUpload, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes, faPencilAlt, faCheck, faPlus, faTrash, faUpload } from '@fortawesome/free-solid-svg-icons';
 import { collection, getDocs, doc, updateDoc, getDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase';
 import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
+import supercluster from 'supercluster';
 import './BreederMap.scss';
 
 const mapContainerStyle = {
   width: '100%',
-  height: '100%',
+  height: '400px',
 };
 
 const center = {
@@ -36,16 +37,6 @@ const mapOptions = {
   mapId: '3c0cbad635cf86d2',
 };
 
-const createClusterIcon = (count) => {
-  const svg = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" width="50" height="50">
-      <circle cx="25" cy="25" r="22" fill="#bd692d" stroke="#ffffff" stroke-width="2" />
-      <text x="25" y="30" font-size="14" font-weight="bold" text-anchor="middle" fill="white" font-family="Arial, sans-serif">${count}</text>
-    </svg>
-  `;
-  return `data:image/svg+xml;base64,${btoa(svg)}`;
-};
-
 export default function BreederMap() {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || '',
@@ -55,6 +46,9 @@ export default function BreederMap() {
   const { currentUser } = useAuth();
   const [map, setMap] = useState(null);
   const [markers, setMarkers] = useState([]);
+  const [clusters, setClusters] = useState([]);
+  const [zoom, setZoom] = useState(2);
+  const [bounds, setBounds] = useState(null);
   const [activeMarker, setActiveMarker] = useState(null);
   const [newPin, setNewPin] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -66,84 +60,7 @@ export default function BreederMap() {
   const [logo, setLogo] = useState(null);
   const searchInputRef = useRef(null);
   const mapRef = useRef(null);
-
-  const createCustomMarker = useCallback((marker) => {
-    console.log('Creating custom marker:', marker);
-    const size = 40;
-    const canvas = document.createElement('canvas');
-    canvas.width = size;
-    canvas.height = size;
-    const ctx = canvas.getContext('2d');
-
-    // Draw circular background
-    ctx.beginPath();
-    ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
-    ctx.fillStyle = '#bd692d';
-    ctx.fill();
-    ctx.strokeStyle = '#ffffff';
-    ctx.lineWidth = 2;
-    ctx.stroke();
-
-    if (marker.logo) {
-      console.log('Marker has logo:', marker.logo);
-      // Load the logo image
-      const img = new Image();
-      img.crossOrigin = 'Anonymous';
-      img.src = marker.logo;
-      img.onload = () => {
-        console.log('Logo image loaded');
-        // Create a circular clipping path
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc(size / 2, size / 2, size / 2 - 2, 0, 2 * Math.PI);
-        ctx.clip();
-
-        // Draw the logo image
-        ctx.drawImage(img, 0, 0, size, size);
-        ctx.restore();
-
-        // Update the marker icon
-        if (marker.marker) {
-          console.log('Updating marker icon');
-          marker.marker.setIcon({
-            url: canvas.toDataURL(),
-            scaledSize: new window.google.maps.Size(size, size),
-          });
-        }
-      };
-      img.onerror = (error) => {
-        console.error('Error loading logo image:', error);
-        // Draw 'G' text as fallback
-        ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 20px Arial';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText('G', size / 2, size / 2);
-
-        if (marker.marker) {
-          marker.marker.setIcon({
-            url: canvas.toDataURL(),
-            scaledSize: new window.google.maps.Size(size, size),
-          });
-        }
-      };
-    } else {
-      console.log('Marker does not have logo, using default');
-      // Draw 'G' text
-      ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 20px Arial';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('G', size / 2, size / 2);
-    }
-
-    const icon = {
-      url: canvas.toDataURL(),
-      scaledSize: new window.google.maps.Size(size, size),
-    };
-    console.log('Returning icon:', icon);
-    return icon;
-  }, []);
+  const clusterIndexRef = useRef(null);
 
   useEffect(() => {
     if (loadError) {
@@ -177,11 +94,18 @@ export default function BreederMap() {
       const fetchedMarkers = usersSnapshot.docs.flatMap(doc => {
         const data = doc.data();
         return (data.breederLocations || []).map((location, index) => ({
-          id: `${doc.id}_${index}`,
-          ...location,
-          position: { lat: parseFloat(location.latitude), lng: parseFloat(location.longitude) },
-          ownerName: `${data.firstName} ${data.lastName}`,
-          ownerId: doc.id,
+          type: 'Feature',
+          properties: {
+            cluster: false,
+            markerId: `${doc.id}_${index}`,
+            ...location,
+            ownerName: `${data.firstName} ${data.lastName}`,
+            ownerId: doc.id,
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [parseFloat(location.longitude), parseFloat(location.latitude)],
+          },
         }));
       });
       setMarkers(fetchedMarkers);
@@ -189,30 +113,53 @@ export default function BreederMap() {
       console.error('Error fetching breeder locations:', error);
       customToast.error('Failed to fetch breeder locations. Please try again later.');
     }
-  }, [createCustomMarker]);
+  }, []);
 
   useEffect(() => {
     fetchBreederLocations();
   }, [fetchBreederLocations]);
 
+  useEffect(() => {
+    if (markers.length > 0) {
+      clusterIndexRef.current = new supercluster({
+        radius: 75,
+        maxZoom: 20,
+      });
+      clusterIndexRef.current.load(markers);
+    }
+  }, [markers]);
+
+  useEffect(() => {
+    if (clusterIndexRef.current && bounds) {
+      const newClusters = clusterIndexRef.current.getClusters(
+        [bounds.west, bounds.south, bounds.east, bounds.north],
+        Math.floor(zoom)
+      );
+      setClusters(newClusters);
+    }
+  }, [zoom, bounds]);
+
   const onLoad = useCallback((map) => {
-    const bounds = new window.google.maps.LatLngBounds(
-      new window.google.maps.LatLng(-85, -180),
-      new window.google.maps.LatLng(85, 180)
-    );
-    map.fitBounds(bounds);
-    setMap(map);
     mapRef.current = map;
+    setMap(map);
   }, []);
 
   const onUnmount = useCallback(() => {
     setMap(null);
   }, []);
 
+  const onIdle = () => {
+    if (mapRef.current) {
+      const newBounds = mapRef.current.getBounds().toJSON();
+      const newZoom = mapRef.current.getZoom();
+      setZoom(newZoom);
+      setBounds(newBounds);
+    }
+  };
 
   const handleMapClick = (event) => {
     if (currentUser) {
-      const userLocations = markers.filter(marker => marker.ownerId === currentUser.uid);
+      const userLocations = markers.filter(marker => marker.properties.ownerId === currentUser.uid);
       if (userLocations.length < 5) {
         const lat = event.latLng.lat();
         const lng = event.latLng.lng();
@@ -230,18 +177,18 @@ export default function BreederMap() {
   };
 
   const handleMarkerClick = (marker) => {
-    try {
-      console.log('Marker clicked:', marker);
-      setActiveMarker(marker);
-      setIsSidePanelOpen(true);
-      setEditMode(false);
-      setEditedMarker(null);
-      setSpecies(marker.species || ['']);
-      setLogo(marker.logo || null);
-    } catch (error) {
-      console.error('Error in handleMarkerClick:', error);
-      customToast.error('An error occurred. Please try again.');
-    }
+    setActiveMarker(marker);
+    setIsSidePanelOpen(true);
+    setEditMode(false);
+    setEditedMarker(null);
+    setSpecies(marker.properties.species || ['']);
+    setLogo(marker.properties.logo || null);
+  };
+
+  const handleClusterClick = (clusterId, latitude, longitude) => {
+    const expansionZoom = clusterIndexRef.current.getClusterExpansionZoom(clusterId);
+    mapRef.current.setZoom(expansionZoom);
+    mapRef.current.panTo({ lat: latitude, lng: longitude });
   };
 
   const handleSearch = () => {
@@ -253,29 +200,10 @@ export default function BreederMap() {
           map.setCenter(location);
           map.setZoom(8);
         } else {
-          let errorMessage = 'Search was not successful.';
-          switch (status) {
-            case 'ZERO_RESULTS':
-              errorMessage += ' No results found for the given search term. Maybe add city/county to be more specific';
-              break;
-            case 'OVER_QUERY_LIMIT':
-              errorMessage += ' You have exceeded your quota for Geocoding requests.';
-              break;
-            case 'REQUEST_DENIED':
-              errorMessage += ' The request was denied. Please check your API key configuration.';
-              break;
-            case 'INVALID_REQUEST':
-              errorMessage += ' The request was invalid. Please try a different search term.';
-              break;
-            default:
-              errorMessage += ` Error: ${status}`;
-          }
-          console.error(errorMessage);
-          customToast.error(errorMessage);
+          customToast.error('Search was not successful. Please try a different location.');
         }
       });
     } else {
-      console.error('Google Maps not loaded or map not initialized');
       customToast.error('Unable to perform search. Please try again later.');
     }
   };
@@ -320,13 +248,21 @@ export default function BreederMap() {
         };
         setUserData(updatedUserData);
         const newMarker = {
-          id: `${currentUser.uid}_${markers.length}`,
-          ...newBreederLocation,
-          position: { lat: newPin.lat, lng: newPin.lng },
-          ownerName: `${userData?.firstName} ${userData?.lastName}`,
-          ownerId: currentUser.uid,
+          type: 'Feature',
+          properties: {
+            cluster: false,
+            markerId: `${currentUser.uid}_${markers.length}`,
+            ...newBreederLocation,
+            ownerName: `${userData?.firstName} ${userData?.lastName}`,
+            ownerId: currentUser.uid,
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [newPin.lng, newPin.lat],
+          },
         };
         setMarkers([...markers, newMarker]);
+        clusterIndexRef.current.load([...markers, newMarker]);
         setNewPin(null);
         setIsModalOpen(false);
         setLogo(null);
@@ -358,8 +294,8 @@ export default function BreederMap() {
   const handleEditClick = () => {
     setEditMode(true);
     setEditedMarker({ ...activeMarker });
-    setSpecies(activeMarker.species || ['']);
-    setLogo(activeMarker.logo || null);
+    setSpecies(activeMarker.properties.species || ['']);
+    setLogo(activeMarker.properties.logo || null);
   };
 
   const handleSaveEdit = async () => {
@@ -367,31 +303,37 @@ export default function BreederMap() {
 
     try {
       const logoUrl = logo instanceof File ? await uploadLogo(logo) : logo;
-      const userRef = doc(db, 'users', activeMarker.ownerId);
+      const userRef = doc(db, 'users', activeMarker.properties.ownerId);
       const userDoc = await getDoc(userRef);
       const userData = userDoc.data();
       if (!userData) throw new Error('User data not found');
 
       const updatedLocations = userData.breederLocations.map(location =>
-        location.latitude === activeMarker.position.lat && location.longitude === activeMarker.position.lng
+        location.latitude === activeMarker.geometry.coordinates[1] && location.longitude === activeMarker.geometry.coordinates[0]
           ? {
             ...location,
-            breeder: editedMarker.breeder,
+            breeder: editedMarker.properties.breeder,
             species: species.filter(s => s.trim() !== ''),
-            contactInfo: editedMarker.contactInfo,
+            contactInfo: editedMarker.properties.contactInfo,
             logo: logoUrl,
           }
           : location
       );
       await updateDoc(userRef, { breederLocations: updatedLocations });
       const updatedMarker = {
-        ...editedMarker,
-        species: species.filter(s => s.trim() !== ''),
-        logo: logoUrl,
+        ...activeMarker,
+        properties: {
+          ...activeMarker.properties,
+          breeder: editedMarker.properties.breeder,
+          species: species.filter(s => s.trim() !== ''),
+          contactInfo: editedMarker.properties.contactInfo,
+          logo: logoUrl,
+        },
       };
       setMarkers(markers.map(marker =>
-        marker.id === updatedMarker.id ? updatedMarker : marker
+        marker.properties.markerId === updatedMarker.properties.markerId ? updatedMarker : marker
       ));
+      clusterIndexRef.current.load(markers);
       setActiveMarker(updatedMarker);
       setEditMode(false);
       setLogo(null);
@@ -403,7 +345,13 @@ export default function BreederMap() {
   };
 
   const handleInputChange = (e) => {
-    setEditedMarker({ ...editedMarker, [e.target.name]: e.target.value });
+    setEditedMarker({
+      ...editedMarker,
+      properties: {
+        ...editedMarker.properties,
+        [e.target.name]: e.target.value
+      }
+    });
   };
 
   const handleAddSpecies = () => {
@@ -417,12 +365,11 @@ export default function BreederMap() {
   const handleSpeciesChange = (index, value) => {
     const newSpecies = [...species];
     newSpecies[index] = value;
-
     setSpecies(newSpecies);
   };
 
   const handleRemoveLocation = async () => {
-    if (currentUser && activeMarker && currentUser.uid === activeMarker.ownerId) {
+    if (currentUser && activeMarker && currentUser.uid === activeMarker.properties.ownerId) {
       try {
         const userRef = doc(db, 'users', currentUser.uid);
         const userDoc = await getDoc(userRef);
@@ -430,7 +377,7 @@ export default function BreederMap() {
         if (!userData) throw new Error('User data not found');
 
         const locationToRemove = userData.breederLocations.find(
-          location => location.latitude === activeMarker.position.lat && location.longitude === activeMarker.position.lng
+          location => location.latitude === activeMarker.geometry.coordinates[1] && location.longitude === activeMarker.geometry.coordinates[0]
         );
 
         if (locationToRemove) {
@@ -438,7 +385,9 @@ export default function BreederMap() {
             breederLocations: arrayRemove(locationToRemove)
           });
 
-          setMarkers(markers.filter(marker => marker.id !== activeMarker.id));
+          const updatedMarkers = markers.filter(marker => marker.properties.markerId !== activeMarker.properties.markerId);
+          setMarkers(updatedMarkers);
+          clusterIndexRef.current.load(updatedMarkers);
           setActiveMarker(null);
           setIsSidePanelOpen(false);
           customToast.success('Location removed successfully!');
@@ -450,7 +399,7 @@ export default function BreederMap() {
         customToast.error('Failed to remove location. Please try again.');
       }
     } else {
-      customToast.error('You do not have permission to remove this location.');
+      customToast.error('You do not have  permission to remove this location.');
     }
   };
 
@@ -470,193 +419,206 @@ export default function BreederMap() {
           ref={searchInputRef}
           type="text"
           placeholder="Search for a location"
+          className="search-input"
         />
-        <button onClick={handleSearch}>
+        <button onClick={handleSearch} className="search-button">
           <FontAwesomeIcon icon={faSearch} /> Search
         </button>
       </div>
       <div className="map-wrapper">
-        <div className="map-container">
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={center}
-            zoom={2}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-            onClick={handleMapClick}
-            options={mapOptions}
-          >
-            <MarkerClusterer
-              options={{
-                imagePath:
-                  'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
-                styles: [
-                  {
-                    url: createClusterIcon(1),
-                    height: 50,
-                    width: 50,
-                    textColor: '#ffffff',
-                    textSize: 14,
-                  },
-                  {
-                    url: createClusterIcon(10),
-                    height: 50,
-                    width: 50,
-                    textColor: '#ffffff',
-                    textSize: 14,
-                  },
-                  {
-                    url: createClusterIcon(100),
-                    height: 50,
-                    width: 50,
-                    textColor: '#ffffff',
-                    textSize: 14,
-                  },
-                ],
-              }}
+        <GoogleMap
+          mapContainerStyle={mapContainerStyle}
+          center={center}
+          zoom={2}
+          onLoad={onLoad}
+          onUnmount={onUnmount}
+          onClick={handleMapClick}
+          onIdle={onIdle}
+          options={mapOptions}
+        >
+          {clusters.map((cluster) => {
+            const [longitude, latitude] = cluster.geometry.coordinates;
+            const {
+              cluster: isCluster,
+              point_count: pointCount,
+            } = cluster.properties;
+
+            if (isCluster) {
+              return (
+                <OverlayView
+                  key={`cluster-${cluster.id}`}
+                  position={{ lat: latitude, lng: longitude }}
+                  mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                  getPixelPositionOffset={(width, height) => ({
+                    x: -(width / 2),
+                    y: -(height / 2),
+                  })}
+                >
+                  <div
+                    className="cluster-marker"
+                    onClick={() => handleClusterClick(cluster.id, latitude, longitude)}
+                  >
+                    <div className="cluster-count">{pointCount}</div>
+                  </div>
+                </OverlayView>
+              );
+            }
+
+            return (
+              <OverlayView
+                key={`marker-${cluster.properties.markerId}`}
+                position={{ lat: latitude, lng: longitude }}
+                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                getPixelPositionOffset={(width, height) => ({
+                  x: -(width / 2),
+                  y: -(height / 2),
+                })}
+              >
+                <div
+                  className="marker-wrapper"
+                  onClick={() => handleMarkerClick(cluster)}
+                >
+                  <div className="pulse"></div>
+                  <div className="custom-marker">
+                    {cluster.properties.logo ? (
+                      <img src={cluster.properties.logo} alt={cluster.properties.breeder} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+                    ) : (
+                      'G'
+                    )}
+                  </div>
+                </div>
+              </OverlayView>
+            );
+          })}
+          {newPin && (
+            <OverlayView
+              position={newPin}
+              mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+              getPixelPositionOffset={(width, height) => ({
+                x: -(width / 2),
+                y: -(height / 2),
+              })}
             >
-              {(clusterer) =>
-                markers.map((marker) => (
-                  <MarkerF
-                    key={marker.id}
-                    position={marker.position}
-                    onClick={() => handleMarkerClick(marker)}
-                    clusterer={clusterer}
-                    icon={createCustomMarker(marker)}
-                    onLoad={(markerInstance) => {
-                      console.log('Marker loaded:', marker.id);
-                      marker.marker = markerInstance;
-                      const icon = createCustomMarker(marker);
-                      console.log('Setting icon for marker:', marker.id, icon);
-                      markerInstance.setIcon(icon);
-                    }}
-                  />
-                ))
-              }
-            </MarkerClusterer>
-            {newPin && (
-              <MarkerF
-                position={newPin}
-                icon={createCustomMarker({ logo: null })}
-                onLoad={(markerInstance) => {
-                  console.log('New pin marker loaded');
-                  const icon = createCustomMarker({ logo: null });
-                  console.log('Setting icon for new pin:', icon);
-                  markerInstance.setIcon(icon);
-                }}
-              />
+              <div className="new-pin-marker">
+                <div className="pulse"></div>
+                <div className="custom-marker">New</div>
+              </div>
+            </OverlayView>
+          )}
+        </GoogleMap>
+      </div>
+
+      {isSidePanelOpen && activeMarker && (
+        <div className="side-panel">
+          <button className="close-button" onClick={handleCloseSidePanel}>
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+          <div className="breeder-header">
+            {activeMarker.properties.logo && (
+              <img src={activeMarker.properties.logo} alt="Breeder logo" className="breeder-logo" />
             )}
-          </GoogleMap>
-        </div>
-        {isSidePanelOpen && activeMarker && (
-          <div className="side-panel">
-            <button className="close-button" onClick={handleCloseSidePanel}>
-              <FontAwesomeIcon icon={faTimes} />
-            </button>
-            <div className="breeder-header">
-              {activeMarker.logo && (
-                <img src={activeMarker.logo} alt="Breeder logo" className="breeder-logo" />
-              )}
-              <h3>{activeMarker.breeder}</h3>
-            </div>
-            {editMode ? (
-              <form onSubmit={(e) => { e.preventDefault(); handleSaveEdit(); }}>
-                <div className="info-item">
-                  <label htmlFor="breeder">Breeder:</label>
-                  <input
-                    type="text"
-                    id="breeder"
-                    name="breeder"
-                    value={editedMarker.breeder}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="info-item">
-                  <label>Species:</label>
-                  {species.map((s, index) => (
-                    <div key={index} className="species-input">
-                      <input
-                        type="text"
-                        value={s}
-                        onChange={(e) => handleSpeciesChange(index, e.target.value)}
-                        placeholder="Gecko Species"
-                      />
-                      <button type="button" onClick={() => handleRemoveSpecies(index)} className="btn-icon">
-                        <FontAwesomeIcon icon={faTrash} />
-                      </button>
-                    </div>
-                  ))}
-                  <button type="button" onClick={handleAddSpecies} className="btn-secondary">
-                    <FontAwesomeIcon icon={faPlus} /> Add Species
-                  </button>
-                </div>
-                <div className="info-item">
-                  <label htmlFor="contactInfo">Contact:</label>
-                  <input
-                    type="text"
-                    id="contactInfo"
-                    name="contactInfo"
-                    value={editedMarker.contactInfo}
-                    onChange={handleInputChange}
-                  />
-                </div>
-                <div className="info-item">
-                  <label htmlFor="logo" className="file-input-label">
-                    <FontAwesomeIcon icon={faUpload} /> Upload Logo
-                  </label>
-                  <input
-                    type="file"
-                    id="logo"
-                    name="logo"
-                    accept="image/*"
-                    onChange={handleFileChange}
-                    className="file-input"
-                  />
-                  {(logo || editedMarker.logo) && (
-                    <img
-                      src={logo instanceof File ? URL.createObjectURL(logo) : editedMarker.logo}
-                      alt="Logo preview"
-                      className="logo-preview"
+            <h3>{activeMarker.properties.breeder}</h3>
+          </div>
+          {editMode ? (
+            <form onSubmit={(e) => { e.preventDefault(); handleSaveEdit(); }} className="edit-form">
+              <div className="info-item">
+                <label htmlFor="breeder">Breeder:</label>
+                <input
+                  type="text"
+                  id="breeder"
+                  name="breeder"
+                  value={editedMarker.properties.breeder}
+                  onChange={handleInputChange}
+                  className="form-input"
+                />
+              </div>
+              <div className="info-item">
+                <label>Species:</label>
+                {species.map((s, index) => (
+                  <div key={index} className="species-input">
+                    <input
+                      type="text"
+                      value={s}
+                      onChange={(e) => handleSpeciesChange(index, e.target.value)}
+                      placeholder="Gecko Species"
+                      className="form-input"
                     />
-                  )}
-                </div>
-                <button type="submit" className="btn btn-primary">
-                  <FontAwesomeIcon icon={faCheck} /> Save
-                </button>
-              </form>
-            ) : (
-              <>
-                <div className="info-item">
-                  <strong>Owner:</strong>
-                  <span>{activeMarker.ownerName}</span>
-                </div>
-                <div className="info-item">
-                  <strong>Species:</strong>
-                  <ul>
-                    {activeMarker.species && activeMarker.species.map((s, index) => (
-                      <li key={index}>{s}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div className="info-item">
-                  <strong>Contact:</strong>
-                  <span>{activeMarker.contactInfo}</span>
-                </div>
-                {currentUser && currentUser.uid === activeMarker.ownerId && (
-                  <div className="button-group">
-                    <button className="edit-button" onClick={handleEditClick}>
-                      <FontAwesomeIcon icon={faPencilAlt} /> Edit
-                    </button>
-                    <button className="remove-button" onClick={handleRemoveLocation}>
-                      <FontAwesomeIcon icon={faTrash} /> Remove
+                    <button type="button" onClick={() => handleRemoveSpecies(index)} className="btn-icon">
+                      <FontAwesomeIcon icon={faTrash} />
                     </button>
                   </div>
+                ))}
+                <button type="button" onClick={handleAddSpecies} className="btn-secondary">
+                  <FontAwesomeIcon icon={faPlus} /> Add Species
+                </button>
+              </div>
+              <div className="info-item">
+                <label htmlFor="contactInfo">Contact:</label>
+                <input
+                  type="text"
+                  id="contactInfo"
+                  name="contactInfo"
+                  value={editedMarker.properties.contactInfo}
+                  onChange={handleInputChange}
+                  className="form-input"
+                />
+              </div>
+              <div className="info-item">
+                <label htmlFor="logo" className="file-input-label">
+                  <FontAwesomeIcon icon={faUpload} /> Upload Logo
+                </label>
+                <input
+                  type="file"
+                  id="logo"
+                  name="logo"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  className="file-input"
+                />
+                {(logo || editedMarker.properties.logo) && (
+                  <img
+                    src={logo instanceof File ? URL.createObjectURL(logo) : editedMarker.properties.logo}
+                    alt="Logo preview"
+                    className="logo-preview"
+                  />
                 )}
-              </>
-            )}
-          </div>
-        )}
-      </div>
+              </div>
+              <button type="submit" className="btn btn-primary">
+                <FontAwesomeIcon icon={faCheck} /> Save
+              </button>
+            </form>
+          ) : (
+            <>
+              <div className="info-item">
+                <strong>Owner:</strong>
+                <span>{activeMarker.properties.ownerName}</span>
+              </div>
+              <div className="info-item">
+                <strong>Species:</strong>
+                <ul className="species-list">
+                  {activeMarker.properties.species && activeMarker.properties.species.map((s, index) => (
+                    <li key={index}>{s}</li>
+                  ))}
+                </ul>
+              </div>
+              <div className="info-item">
+                <strong>Contact:</strong>
+                <span>{activeMarker.properties.contactInfo}</span>
+              </div>
+              {currentUser && currentUser.uid === activeMarker.properties.ownerId && (
+                <div className="button-group">
+                  <button className="edit-button" onClick={handleEditClick}>
+                    <FontAwesomeIcon icon={faPencilAlt} /> Edit
+                  </button>
+                  <button className="remove-button" onClick={handleRemoveLocation}>
+                    <FontAwesomeIcon icon={faTrash} /> Remove
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
 
       {isModalOpen && (
         <div className="modal-overlay">
@@ -671,6 +633,7 @@ export default function BreederMap() {
                   name="breeder"
                   placeholder="Breeder Name"
                   required
+                  className="form-input"
                 />
               </div>
               <div className="info-item">
@@ -682,6 +645,7 @@ export default function BreederMap() {
                       value={s}
                       onChange={(e) => handleSpeciesChange(index, e.target.value)}
                       placeholder="Gecko Species"
+                      className="form-input"
                     />
                     <button type="button" onClick={() => handleRemoveSpecies(index)} className="btn-icon">
                       <FontAwesomeIcon icon={faTrash} />
@@ -700,6 +664,7 @@ export default function BreederMap() {
                   name="contactInfo"
                   placeholder="Contact Info"
                   required
+                  className="form-input"
                 />
               </div>
               <div className="info-item">

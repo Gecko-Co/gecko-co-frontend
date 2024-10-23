@@ -358,10 +358,88 @@
   }
 }
 
-.custom-marker {
-  animation: pulse 1.5s infinite;
+.marker-wrapper {
+  position: absolute;
+  transform: translate(-50%, -50%);
 }
 
+.pulse {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(189, 105, 45, 0.4);
+  opacity: 0;
+  animation: pulse 2s infinite;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+@keyframes pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+.marker-wrapper {
+  position: relative;
+  width: 40px;
+  height: 40px;
+}
+
+.pulse {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: rgba(189, 105, 45, 0.4);
+  opacity: 0;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+.custom-marker {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: #bd692d;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 20px;
+  z-index: 1;
+}
+
+// New styles for marker clustering and pulsating effect
 @keyframes pulse {
   0% {
     transform: scale(1);
@@ -374,5 +452,61 @@
   100% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+.custom-marker {
+  animation: pulse 1.5s infinite;
+}
+
+// Ensure the custom marker is visible above the cluster
+.custom-marker {
+  z-index: 1;
+}
+
+// Style for cluster markers
+.cluster-marker {
+  color: #fff;
+  background: #bd692d;
+  border-radius: 50%;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  border: 2px solid #fff;
+}
+
+.cluster-marker {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #bd692d;
+  border: 2px solid #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-weight: bold;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.cluster-count {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(189, 105, 45, 0.7);
+  }
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(189, 105, 45, 0);
+  }
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(189, 105, 45, 0);
   }
 }
