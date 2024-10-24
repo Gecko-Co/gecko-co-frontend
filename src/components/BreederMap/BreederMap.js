@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, OverlayView } from '@react-google-maps/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes, faPencilAlt, faCheck, faPlus, faTrash, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes, faPencilAlt, faCheck, faPlus, faTrash, faUpload, faLink } from '@fortawesome/free-solid-svg-icons';
 import { collection, getDocs, doc, updateDoc, getDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase';
@@ -57,6 +57,7 @@ export default function BreederMap() {
   const [editedMarker, setEditedMarker] = useState(null);
   const [userData, setUserData] = useState(null);
   const [species, setSpecies] = useState(['']);
+  const [links, setLinks] = useState(['']);
   const [logo, setLogo] = useState(null);
   const searchInputRef = useRef(null);
   const mapRef = useRef(null);
@@ -167,6 +168,7 @@ export default function BreederMap() {
         setIsModalOpen(true);
         setIsSidePanelOpen(false);
         setSpecies(['']);
+        setLinks(['']);
         setLogo(null);
       } else {
         customToast.error('You have reached the maximum limit of 5 locations.');
@@ -182,6 +184,7 @@ export default function BreederMap() {
     setEditMode(false);
     setEditedMarker(null);
     setSpecies(marker.properties.species || ['']);
+    setLinks(marker.properties.links || ['']);
     setLogo(marker.properties.logo || null);
   };
 
@@ -237,6 +240,7 @@ export default function BreederMap() {
           latitude: newPin.lat,
           longitude: newPin.lng,
           logo: logoUrl,
+          links: links.filter(link => link.trim() !== ''),
         };
         const userRef = doc(db, 'users', currentUser.uid);
         await updateDoc(userRef, {
@@ -267,6 +271,7 @@ export default function BreederMap() {
         setIsModalOpen(false);
         setLogo(null);
         setSpecies(['']);
+        setLinks(['']);
         customToast.success('Breeder location added successfully!');
       } catch (error) {
         console.error('Error adding breeder location:', error);
@@ -279,6 +284,7 @@ export default function BreederMap() {
     setIsModalOpen(false);
     setNewPin(null);
     setSpecies(['']);
+    setLinks(['']);
     setLogo(null);
   };
 
@@ -288,6 +294,7 @@ export default function BreederMap() {
     setEditMode(false);
     setEditedMarker(null);
     setSpecies(['']);
+    setLinks(['']);
     setLogo(null);
   };
 
@@ -295,6 +302,7 @@ export default function BreederMap() {
     setEditMode(true);
     setEditedMarker({ ...activeMarker });
     setSpecies(activeMarker.properties.species || ['']);
+    setLinks(activeMarker.properties.links || ['']);
     setLogo(activeMarker.properties.logo || null);
   };
 
@@ -316,6 +324,7 @@ export default function BreederMap() {
             species: species.filter(s => s.trim() !== ''),
             contactInfo: editedMarker.properties.contactInfo,
             logo: logoUrl,
+            links: links.filter(link => link.trim() !== ''),
           }
           : location
       );
@@ -328,6 +337,7 @@ export default function BreederMap() {
           species: species.filter(s => s.trim() !== ''),
           contactInfo: editedMarker.properties.contactInfo,
           logo: logoUrl,
+          links: links.filter(link => link.trim() !== ''),
         },
       };
       setMarkers(markers.map(marker =>
@@ -368,6 +378,20 @@ export default function BreederMap() {
     setSpecies(newSpecies);
   };
 
+  const handleAddLink = () => {
+    setLinks([...links, '']);
+  };
+
+  const handleRemoveLink = (index) => {
+    setLinks(links.filter((_, i) => i !== index));
+  };
+
+  const handleLinkChange = (index, value) => {
+    const newLinks = [...links];
+    newLinks[index] = value;
+    setLinks(newLinks);
+  };
+
   const handleRemoveLocation = async () => {
     if (currentUser && activeMarker && currentUser.uid === activeMarker.properties.ownerId) {
       try {
@@ -385,7 +409,9 @@ export default function BreederMap() {
             breederLocations: arrayRemove(locationToRemove)
           });
 
-          const updatedMarkers = markers.filter(marker => marker.properties.markerId !== activeMarker.properties.markerId);
+          const updatedMarkers = 
+ markers.filter(marker => marker.properties.markerId !== activeMarker.properties.markerId);
+          
           setMarkers(updatedMarkers);
           clusterIndexRef.current.load(updatedMarkers);
           setActiveMarker(null);
@@ -408,7 +434,7 @@ export default function BreederMap() {
   }
 
   if (!isLoaded) {
-    return <div  className="breeder-map__loading">Loading...</div>;
+    return <div className="breeder-map__loading">Loading...</div>;
   }
 
   return (
@@ -477,7 +503,10 @@ export default function BreederMap() {
                 >
                   <div
                     className="marker-wrapper"
-                    onClick={() => handleMarkerClick(cluster)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleMarkerClick(cluster);
+                    }}
                   >
                     <div className="pulse"></div>
                     <div className="custom-marker">
@@ -564,6 +593,26 @@ export default function BreederMap() {
                   />
                 </div>
                 <div className="info-item">
+                  <label>Links:</label>
+                  {links.map((link, index) => (
+                    <div key={index} className="link-input">
+                      <input
+                        type="url"
+                        value={link}
+                        onChange={(e) => handleLinkChange(index, e.target.value)}
+                        placeholder="Website or Social Media Link"
+                        className="form-input"
+                      />
+                      <button type="button" onClick={() => handleRemoveLink(index)} className="btn-icon">
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </div>
+                  ))}
+                  <button type="button" onClick={handleAddLink} className="add-link-button">
+                    <FontAwesomeIcon icon={faPlus} /> Add Link
+                  </button>
+                </div>
+                <div className="info-item">
                   <label htmlFor="logo" className="file-input-label">
                     <FontAwesomeIcon icon={faUpload} /> Upload Logo
                   </label>
@@ -604,6 +653,18 @@ export default function BreederMap() {
                 <div className="info-item">
                   <strong>Contact:</strong>
                   <span>{activeMarker.properties.contactInfo}</span>
+                </div>
+                <div className="info-item">
+                  <strong>Links:</strong>
+                  <ul className="links-list">
+                    {activeMarker.properties.links && activeMarker.properties.links.map((link, index) => (
+                      <li key={index}>
+                        <a href={link} target="_blank" rel="noopener noreferrer">
+                          <FontAwesomeIcon icon={faLink} /> {link}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
                 {currentUser && currentUser.uid === activeMarker.properties.ownerId && (
                   <div className="button-group">
@@ -648,12 +709,12 @@ export default function BreederMap() {
                       placeholder="Gecko Species"
                       className="form-input"
                     />
-                    <button type="button" onClick={() => handleRemoveSpecies(index)} className="btn-icon">
+                    <button type="button" onClick={() => handleRemoveSpecies(index)} className="btn-icon btn-remove">
                       <FontAwesomeIcon icon={faTrash} />
                     </button>
                   </div>
                 ))}
-                <button type="button" onClick={handleAddSpecies} className="add-species-button">
+                <button type="button" onClick={handleAddSpecies} className="btn-add">
                   <FontAwesomeIcon icon={faPlus} /> Add Species
                 </button>
               </div>
@@ -667,6 +728,26 @@ export default function BreederMap() {
                   required
                   className="form-input"
                 />
+              </div>
+              <div className="form-group">
+                <label>Links:</label>
+                {links.map((link, index) => (
+                  <div key={index} className="link-input">
+                    <input
+                      type="url"
+                      value={link}
+                      onChange={(e) => handleLinkChange(index, e.target.value)}
+                      placeholder="Website or Social Media Link"
+                      className="form-input"
+                    />
+                    <button type="button" onClick={() => handleRemoveLink(index)} className="btn-icon btn-remove">
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
+                ))}
+                <button type="button" onClick={handleAddLink} className="btn-add">
+                  <FontAwesomeIcon icon={faPlus} /> Add Link
+                </button>
               </div>
               <div className="form-group">
                 <label htmlFor="logo" className="file-input-label">
