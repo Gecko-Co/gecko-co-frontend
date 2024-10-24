@@ -309,7 +309,7 @@
     }
 
     .add-location-form {
-      .info-item {
+      .form-group {
         margin-bottom: 20px;
 
         label {
@@ -326,6 +326,74 @@
           border-radius: 4px;
           font-size: 16px;
         }
+      }
+
+      .species-input {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+
+        input {
+          flex-grow: 1;
+          margin-right: 10px;
+        }
+
+        .btn-icon {
+          background-color: #f0f2f5;
+          border: none;
+          color: #d32f2f;
+          cursor: pointer;
+          font-size: 14px;
+          padding: 10px;
+          border-radius: 4px;
+          transition: background-color 0.3s, color 0.3s;
+
+          &:hover {
+            background-color: #ffcdd2;
+          }
+        }
+      }
+
+      .add-species-button {
+        border: none;
+        color: #a55a25;
+        cursor: pointer;
+        font-size: 14px;
+        padding: 8px 12px;
+        border-radius: 4px;
+        margin-top: 10px;
+        transition: background-color 0.3s, color 0.3s;
+  
+        &:hover {
+          background-color: #a55a25;
+          color: white;
+        }
+      }
+
+      .file-input-label {
+        display: inline-block;
+        padding: 10px 15px;
+        background-color: #f0f2f5;
+        color: #23283b;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+
+        &:hover {
+          background-color: #e4e6e9;
+        }
+      }
+
+      .file-input {
+        display: none;
+      }
+
+      .logo-preview {
+        max-width: 100%;
+        height: auto;
+        margin-top: 10px;
+        border-radius: 4px;
       }
 
       .save-button {

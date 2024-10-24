@@ -626,7 +626,7 @@ export default function BreederMap() {
           <div className="modal-content">
             <h3>Add Your Breeder Location</h3>
             <form onSubmit={handlePinSubmit} className="add-location-form">
-              <div className="info-item">
+              <div className="form-group">
                 <label htmlFor="breeder">Breeder Name:</label>
                 <input
                   type="text"
@@ -637,7 +637,7 @@ export default function BreederMap() {
                   className="form-input"
                 />
               </div>
-              <div className="info-item">
+              <div className="form-group">
                 <label>Species:</label>
                 {species.map((s, index) => (
                   <div key={index} className="species-input">
@@ -657,7 +657,7 @@ export default function BreederMap() {
                   <FontAwesomeIcon icon={faPlus} /> Add Species
                 </button>
               </div>
-              <div className="info-item">
+              <div className="form-group">
                 <label htmlFor="contactInfo">Contact Info:</label>
                 <input
                   type="text"
@@ -668,7 +668,7 @@ export default function BreederMap() {
                   className="form-input"
                 />
               </div>
-              <div className="info-item">
+              <div className="form-group">
                 <label htmlFor="logo" className="file-input-label">
                   <FontAwesomeIcon icon={faUpload} /> Upload Logo
                 </label>
@@ -688,7 +688,7 @@ export default function BreederMap() {
                 <FontAwesomeIcon icon={faCheck} /> Add Location
               </button>
             </form>
-            <button className="btn btn-icon btn-secondary close-button" onClick={handleCloseModal}>
+            <button className="close-button" onClick={handleCloseModal}>
               <FontAwesomeIcon icon={faTimes} />
             </button>
           </div>
