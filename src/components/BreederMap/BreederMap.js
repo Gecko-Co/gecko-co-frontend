@@ -12,7 +12,7 @@ import './BreederMap.scss';
 
 const mapContainerStyle = {
   width: '100%',
-  height: '400px',
+  height: '100%',
 };
 
 const center = {
@@ -399,7 +399,7 @@ export default function BreederMap() {
         customToast.error('Failed to remove location. Please try again.');
       }
     } else {
-      customToast.error('You do not have  permission to remove this location.');
+      customToast.error('You do not have permission to remove this location.');
     }
   };
 
@@ -408,7 +408,7 @@ export default function BreederMap() {
   }
 
   if (!isLoaded) {
-    return <div className="breeder-map__loading">Loading...</div>;
+    return <div  className="breeder-map__loading">Loading...</div>;
   }
 
   return (
@@ -425,28 +425,49 @@ export default function BreederMap() {
           <FontAwesomeIcon icon={faSearch} /> Search
         </button>
       </div>
-      <div className="map-wrapper">
-        <GoogleMap
-          mapContainerStyle={mapContainerStyle}
-          center={center}
-          zoom={2}
-          onLoad={onLoad}
-          onUnmount={onUnmount}
-          onClick={handleMapClick}
-          onIdle={onIdle}
-          options={mapOptions}
-        >
-          {clusters.map((cluster) => {
-            const [longitude, latitude] = cluster.geometry.coordinates;
-            const {
-              cluster: isCluster,
-              point_count: pointCount,
-            } = cluster.properties;
+      <div className="map-and-panel-container">
+        <div className="map-wrapper">
+          <GoogleMap
+            mapContainerStyle={mapContainerStyle}
+            center={center}
+            zoom={2}
+            onLoad={onLoad}
+            onUnmount={onUnmount}
+            onClick={handleMapClick}
+            onIdle={onIdle}
+            options={mapOptions}
+          >
+            {clusters.map((cluster) => {
+              const [longitude, latitude] = cluster.geometry.coordinates;
+              const {
+                cluster: isCluster,
+                point_count: pointCount,
+              } = cluster.properties;
 
-            if (isCluster) {
+              if (isCluster) {
+                return (
+                  <OverlayView
+                    key={`cluster-${cluster.id}`}
+                    position={{ lat: latitude, lng: longitude }}
+                    mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                    getPixelPositionOffset={(width, height) => ({
+                      x: -(width / 2),
+                      y: -(height / 2),
+                    })}
+                  >
+                    <div
+                      className="cluster-marker"
+                      onClick={() => handleClusterClick(cluster.id, latitude, longitude)}
+                    >
+                      <div className="cluster-count">{pointCount}</div>
+                    </div>
+                  </OverlayView>
+                );
+              }
+
               return (
                 <OverlayView
-                  key={`cluster-${cluster.id}`}
+                  key={`marker-${cluster.properties.markerId}`}
                   position={{ lat: latitude, lng: longitude }}
                   mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                   getPixelPositionOffset={(width, height) => ({
@@ -455,170 +476,150 @@ export default function BreederMap() {
                   })}
                 >
                   <div
-                    className="cluster-marker"
-                    onClick={() => handleClusterClick(cluster.id, latitude, longitude)}
+                    className="marker-wrapper"
+                    onClick={() => handleMarkerClick(cluster)}
                   >
-                    <div className="cluster-count">{pointCount}</div>
+                    <div className="pulse"></div>
+                    <div className="custom-marker">
+                      {cluster.properties.logo ? (
+                        <img src={cluster.properties.logo} alt={cluster.properties.breeder} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+                      ) : (
+                        'G'
+                      )}
+                    </div>
                   </div>
                 </OverlayView>
               );
-            }
-
-            return (
+            })}
+            {newPin && (
               <OverlayView
-                key={`marker-${cluster.properties.markerId}`}
-                position={{ lat: latitude, lng: longitude }}
+                position={newPin}
                 mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                 getPixelPositionOffset={(width, height) => ({
                   x: -(width / 2),
                   y: -(height / 2),
                 })}
               >
-                <div
-                  className="marker-wrapper"
-                  onClick={() => handleMarkerClick(cluster)}
-                >
+                <div className="new-pin-marker">
                   <div className="pulse"></div>
-                  <div className="custom-marker">
-                    {cluster.properties.logo ? (
-                      <img src={cluster.properties.logo} alt={cluster.properties.breeder} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
-                    ) : (
-                      'G'
-                    )}
-                  </div>
+                  <div className="custom-marker">New</div>
                 </div>
               </OverlayView>
-            );
-          })}
-          {newPin && (
-            <OverlayView
-              position={newPin}
-              mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-              getPixelPositionOffset={(width, height) => ({
-                x: -(width / 2),
-                y: -(height / 2),
-              })}
-            >
-              <div className="new-pin-marker">
-                <div className="pulse"></div>
-                <div className="custom-marker">New</div>
-              </div>
-            </OverlayView>
-          )}
-        </GoogleMap>
-      </div>
-
-      {isSidePanelOpen && activeMarker && (
-        <div className="side-panel">
-          <button className="close-button" onClick={handleCloseSidePanel}>
-            <FontAwesomeIcon icon={faTimes} />
-          </button>
-          <div className="breeder-header">
-            {activeMarker.properties.logo && (
-              <img src={activeMarker.properties.logo} alt="Breeder logo" className="breeder-logo" />
             )}
-            <h3>{activeMarker.properties.breeder}</h3>
-          </div>
-          {editMode ? (
-            <form onSubmit={(e) => { e.preventDefault(); handleSaveEdit(); }} className="edit-form">
-              <div className="info-item">
-                <label htmlFor="breeder">Breeder:</label>
-                <input
-                  type="text"
-                  id="breeder"
-                  name="breeder"
-                  value={editedMarker.properties.breeder}
-                  onChange={handleInputChange}
-                  className="form-input"
-                />
-              </div>
-              <div className="info-item">
-                <label>Species:</label>
-                {species.map((s, index) => (
-                  <div key={index} className="species-input">
-                    <input
-                      type="text"
-                      value={s}
-                      onChange={(e) => handleSpeciesChange(index, e.target.value)}
-                      placeholder="Gecko Species"
-                      className="form-input"
-                    />
-                    <button type="button" onClick={() => handleRemoveSpecies(index)} className="btn-icon">
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </div>
-                ))}
-                <button type="button" onClick={handleAddSpecies} className="btn-secondary">
-                  <FontAwesomeIcon icon={faPlus} /> Add Species
-                </button>
-              </div>
-              <div className="info-item">
-                <label htmlFor="contactInfo">Contact:</label>
-                <input
-                  type="text"
-                  id="contactInfo"
-                  name="contactInfo"
-                  value={editedMarker.properties.contactInfo}
-                  onChange={handleInputChange}
-                  className="form-input"
-                />
-              </div>
-              <div className="info-item">
-                <label htmlFor="logo" className="file-input-label">
-                  <FontAwesomeIcon icon={faUpload} /> Upload Logo
-                </label>
-                <input
-                  type="file"
-                  id="logo"
-                  name="logo"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="file-input"
-                />
-                {(logo || editedMarker.properties.logo) && (
-                  <img
-                    src={logo instanceof File ? URL.createObjectURL(logo) : editedMarker.properties.logo}
-                    alt="Logo preview"
-                    className="logo-preview"
+          </GoogleMap>
+        </div>
+        {isSidePanelOpen && activeMarker && (
+          <div className="side-panel">
+            <button className="close-button" onClick={handleCloseSidePanel}>
+              <FontAwesomeIcon icon={faTimes} />
+            </button>
+            <div className="breeder-header">
+              {activeMarker.properties.logo && (
+                <img src={activeMarker.properties.logo} alt="Breeder logo" className="breeder-logo" />
+              )}
+              <h3>{activeMarker.properties.breeder}</h3>
+            </div>
+            {editMode ? (
+              <form onSubmit={(e) => { e.preventDefault(); handleSaveEdit(); }} className="edit-form">
+                <div className="info-item">
+                  <label htmlFor="breeder">Breeder:</label>
+                  <input
+                    type="text"
+                    id="breeder"
+                    name="breeder"
+                    value={editedMarker.properties.breeder}
+                    onChange={handleInputChange}
+                    className="form-input"
                   />
-                )}
-              </div>
-              <button type="submit" className="btn btn-primary">
-                <FontAwesomeIcon icon={faCheck} /> Save
-              </button>
-            </form>
-          ) : (
-            <>
-              <div className="info-item">
-                <strong>Owner:</strong>
-                <span>{activeMarker.properties.ownerName}</span>
-              </div>
-              <div className="info-item">
-                <strong>Species:</strong>
-                <ul className="species-list">
-                  {activeMarker.properties.species && activeMarker.properties.species.map((s, index) => (
-                    <li key={index}>{s}</li>
+                </div>
+                <div className="info-item">
+                  <label>Species:</label>
+                  {species.map((s, index) => (
+                    <div key={index} className="species-input">
+                      <input
+                        type="text"
+                        value={s}
+                        onChange={(e) => handleSpeciesChange(index, e.target.value)}
+                        placeholder="Gecko Species"
+                        className="form-input"
+                      />
+                      <button type="button" onClick={() => handleRemoveSpecies(index)} className="btn-icon">
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </div>
                   ))}
-                </ul>
-              </div>
-              <div className="info-item">
-                <strong>Contact:</strong>
-                <span>{activeMarker.properties.contactInfo}</span>
-              </div>
-              {currentUser && currentUser.uid === activeMarker.properties.ownerId && (
-                <div className="button-group">
-                  <button className="edit-button" onClick={handleEditClick}>
-                    <FontAwesomeIcon icon={faPencilAlt} /> Edit
-                  </button>
-                  <button className="remove-button" onClick={handleRemoveLocation}>
-                    <FontAwesomeIcon icon={faTrash} /> Remove
+                  <button type="button" onClick={handleAddSpecies} className="add-species-button">
+                    <FontAwesomeIcon icon={faPlus} /> Add Species
                   </button>
                 </div>
-              )}
-            </>
-          )}
-        </div>
-      )}
+                <div className="info-item">
+                  <label htmlFor="contactInfo">Contact:</label>
+                  <input
+                    type="text"
+                    id="contactInfo"
+                    name="contactInfo"
+                    value={editedMarker.properties.contactInfo}
+                    onChange={handleInputChange}
+                    className="form-input"
+                  />
+                </div>
+                <div className="info-item">
+                  <label htmlFor="logo" className="file-input-label">
+                    <FontAwesomeIcon icon={faUpload} /> Upload Logo
+                  </label>
+                  <input
+                    type="file"
+                    id="logo"
+                    name="logo"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="file-input"
+                  />
+                  {(logo || editedMarker.properties.logo) && (
+                    <img
+                      src={logo instanceof File ? URL.createObjectURL(logo) : editedMarker.properties.logo}
+                      alt="Logo preview"
+                      className="logo-preview"
+                    />
+                  )}
+                </div>
+                <button type="submit" className="save-button">
+                  <FontAwesomeIcon icon={faCheck} /> Save
+                </button>
+              </form>
+            ) : (
+              <>
+                <div className="info-item">
+                  <strong>Owner:</strong>
+                  <span>{activeMarker.properties.ownerName}</span>
+                </div>
+                <div className="info-item">
+                  <strong>Species:</strong>
+                  <ul className="species-list">
+                    {activeMarker.properties.species && activeMarker.properties.species.map((s, index) => (
+                      <li key={index}>{s}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div className="info-item">
+                  <strong>Contact:</strong>
+                  <span>{activeMarker.properties.contactInfo}</span>
+                </div>
+                {currentUser && currentUser.uid === activeMarker.properties.ownerId && (
+                  <div className="button-group">
+                    <button className="edit-button" onClick={handleEditClick}>
+                      <FontAwesomeIcon icon={faPencilAlt} /> Edit
+                    </button>
+                    <button className="remove-button" onClick={handleRemoveLocation}>
+                      <FontAwesomeIcon icon={faTrash} /> Remove
+                    </button>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        )}
+      </div>
 
       {isModalOpen && (
         <div className="modal-overlay">
@@ -652,7 +653,7 @@ export default function BreederMap() {
                     </button>
                   </div>
                 ))}
-                <button type="button" onClick={handleAddSpecies} className="btn-secondary">
+                <button type="button" onClick={handleAddSpecies} className="add-species-button">
                   <FontAwesomeIcon icon={faPlus} /> Add Species
                 </button>
               </div>
