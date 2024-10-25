@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, OverlayView } from '@react-google-maps/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes, faPencilAlt, faCheck, faPlus, faTrash, faUpload, faLink } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes, faPencilAlt, faCheck, faPlus, faTrash, faUpload, faLink, faMapPin } from '@fortawesome/free-solid-svg-icons';
 import { collection, getDocs, doc, updateDoc, getDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase';
@@ -59,6 +59,7 @@ export default function BreederMap() {
   const [species, setSpecies] = useState(['']);
   const [links, setLinks] = useState(['']);
   const [logo, setLogo] = useState(null);
+  const [isAddingLocation, setIsAddingLocation] = useState(false);
   const searchInputRef = useRef(null);
   const mapRef = useRef(null);
   const clusterIndexRef = useRef(null);
@@ -159,7 +160,7 @@ export default function BreederMap() {
   };
 
   const handleMapClick = (event) => {
-    if (currentUser) {
+    if (isAddingLocation && currentUser) {
       const userLocations = markers.filter(marker => marker.properties.ownerId === currentUser.uid);
       if (userLocations.length < 5) {
         const lat = event.latLng.lat();
@@ -170,11 +171,10 @@ export default function BreederMap() {
         setSpecies(['']);
         setLinks(['']);
         setLogo(null);
+        setIsAddingLocation(false);
       } else {
         customToast.error('You have reached the maximum limit of 5 locations.');
       }
-    } else {
-      customToast.error('Please sign in to add a breeder location.');
     }
   };
 
@@ -395,7 +395,8 @@ export default function BreederMap() {
   const handleRemoveLocation = async () => {
     if (currentUser && activeMarker && currentUser.uid === activeMarker.properties.ownerId) {
       try {
-        const userRef = doc(db, 'users', currentUser.uid);
+        const userRef = doc(db, 
+ 'users', currentUser.uid);
         const userDoc = await getDoc(userRef);
         const userData = userDoc.data();
         if (!userData) throw new Error('User data not found');
@@ -409,8 +410,7 @@ export default function BreederMap() {
             breederLocations: arrayRemove(locationToRemove)
           });
 
-          const updatedMarkers = 
- markers.filter(marker => marker.properties.markerId !== activeMarker.properties.markerId);
+          const updatedMarkers = markers.filter(marker => marker.properties.markerId !== activeMarker.properties.markerId);
           
           setMarkers(updatedMarkers);
           clusterIndexRef.current.load(updatedMarkers);
@@ -426,6 +426,17 @@ export default function BreederMap() {
       }
     } else {
       customToast.error('You do not have permission to remove this location.');
+    }
+  };
+
+  const toggleAddLocationMode = () => {
+    if (!currentUser) {
+      customToast.error('Please sign in to add a breeder location.');
+      return;
+    }
+    setIsAddingLocation(!isAddingLocation);
+    if (!isAddingLocation) {
+      customToast.info('Click on the map to add a new breeder location.');
     }
   };
 
@@ -450,9 +461,15 @@ export default function BreederMap() {
         <button onClick={handleSearch} className="search-button">
           <FontAwesomeIcon icon={faSearch} /> Search
         </button>
+        <button
+          onClick={toggleAddLocationMode}
+          className={`add-location-button ${isAddingLocation ? 'active' : ''}`}
+        >
+          <FontAwesomeIcon icon={faMapPin} /> {isAddingLocation ? 'Cancel' : 'Add Location'}
+        </button>
       </div>
       <div className="map-and-panel-container">
-        <div className="map-wrapper">
+        <div className={`map-wrapper ${isAddingLocation ? 'adding-location' : ''}`}>
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
             center={center}
