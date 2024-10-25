@@ -6,11 +6,9 @@ import { Toaster } from 'react-hot-toast';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap';
 import './App.scss';
-import Navbar from './components/Navbar/Navbar';
+import PageWrapper from './components/PageWrapper/PageWrapper';
 import Home from './components/Home/Home';
 import Shop from './components/Shop/Shop';
-import Flag from './components/Flag/Flag';
-import Footer from './components/Footer/Footer';
 import Learn from './components/Learn/Learn';
 import GeckoSpecies from './components/GeckoSpecies/GeckoSpecies';
 import Cart from './components/Cart/Cart';
@@ -33,20 +31,18 @@ import { inject } from '@vercel/analytics';
 
 inject();
 
-function App() {
-    const geckoGameEnabled = process.env.REACT_APP_ENABLE_GECKO_GAME === 'true';
-    const [transferTime] = useState(600000); // 10 minutes in milliseconds
-    const [respawnTime] = useState(600000); // 10 minutes in milliseconds
-    const [enabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', '/cart', '/account', '/settings', '/blogs', '/policies', '/leaderboard']);
-  
+export default function App() {
+  const geckoGameEnabled = process.env.REACT_APP_ENABLE_GECKO_GAME === 'true';
+  const [transferTime] = useState(600000); // 10 minutes in milliseconds
+  const [respawnTime] = useState(600000); // 10 minutes in milliseconds
+  const [enabledPages] = useState(['/shop', '/learn', '/genetic-calculator', '/contact', '/', '/cart', '/account', '/settings', '/blogs', '/policies', '/leaderboard']);
+
   return (
     <Router>
       <AuthProvider>
         <CartProvider>
           <div className="App">
-            <Flag />
-            <Navbar />
-            <div className="main-content">
+            <PageWrapper>
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/shop" element={<Shop />} />
@@ -67,9 +63,8 @@ function App() {
                 <Route path="/leaderboard" element={<Leaderboard />} />
                 <Route path="/breeder-map" element={<BreederMap />} />
               </Routes>
-            </div>
+            </PageWrapper>
             <Scroll />
-            <Footer />
             {geckoGameEnabled && (
               <GeckoGame
                 transferTime={transferTime}
@@ -92,18 +87,10 @@ function App() {
                 maxWidth: '350px',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
               },
-              success: {
-                icon: '✅',
-              },
-              error: {
-                icon: '❌',
-              },
-              warning: {
-                icon: '⚠️',
-              },
-              info: {
-                icon: '🔔',
-              },
+              success: { icon: '✅' },
+              error: { icon: '❌' },
+              warning: { icon: '⚠️' },
+              info: { icon: '🔔' },
             }}
             containerStyle={{
               bottom: 20,
@@ -116,5 +103,3 @@ function App() {
     </Router>
   );
 }
-
-export default App;
