@@ -1,5 +1,6 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet';
 import './RollingIconBlogPost.scss';
 
 const RollingIconBlogPost = () => {
@@ -14,35 +15,84 @@ const RollingIconBlogPost = () => {
     }
   }, [closeModal]);
 
+  useEffect(() => {
+    // Add schema.org structured data
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.text = JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "BlogPosting",
+      "headline": "Early Christmas Gecko Hunt Event: Win a Real Gecko!",
+      "image": "https://geckoco.ph/images/giveaway.jpg",
+      "datePublished": "2023-10-15",
+      "author": {
+        "@type": "Organization",
+        "name": "Gecko Co."
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Gecko Co.",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://geckoco.ph/logo.png"
+        }
+      },
+      "description": "Join our exciting Gecko Hunt event for a chance to win a real gecko! Reach 5000 points by December 20th to enter the giveaway."
+    });
+    document.head.appendChild(script);
+
+    return () => {
+      document.head.removeChild(script);
+    };
+  }, []);
+
   return (
-    <div className="blog-post-container">
+    <article className="blog-post-container">
+      <Helmet>
+        <title>Early Christmas Gecko Hunt Event: Win a Real Gecko! | Gecko Co.</title>
+        <meta name="description" content="Join our exciting Gecko Hunt event for a chance to win a real gecko! Reach 5000 points by December 20th to enter the giveaway." />
+        <meta name="keywords" content="gecko hunt, christmas event, gecko giveaway, online game, pet gecko, Gecko Co" />
+        <meta property="og:title" content="Early Christmas Gecko Hunt Event: Win a Real Gecko!" />
+        <meta property="og:description" content="Join our exciting Gecko Hunt event for a chance to win a real gecko! Reach 5000 points by December 20th to enter the giveaway." />
+        <meta property="og:image" content="https://geckoco.ph/images/giveaway.jpg" />
+        <meta property="og:type" content="article" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Early Christmas Gecko Hunt Event: Win a Real Gecko!" />
+        <meta name="twitter:description" content="Join our exciting Gecko Hunt event for a chance to win a real gecko! Reach 5000 points by December 20th to enter the giveaway." />
+        <meta name="twitter:image" content="https://geckoco.ph/images/giveaway.jpg" />
+      </Helmet>
+
       <h1 className="blog-post-title">Early Christmas Gecko Hunt Event</h1>
       <p className="blog-post-date">Published on October 15, 2023</p>
       
-      <div className="blog-post-content">
+      <section className="blog-post-content">
         <h2>Win a Gecko this Early Christmas Season!</h2>
         <p>
           Join our exciting Gecko Hunt event for an early Christmas celebration! All players who reach 5000 points or more by December 20th, 5:00 PM PH time, will have a chance to win an adorable gecko as their prize!
         </p>
         
         <h2>How the Game Works</h2>
-        <div className="image-container rolling-icon-examples">
+        <figure className="image-container rolling-icon-examples">
           <div className="image-wrapper">
             <img 
               src="/images/click1.jpg" 
-              alt="Gecko Hunt Example 1" 
+              alt="Gecko Hunt Example 1: Gecko icon on website" 
               className="blog-image"
+              width="300"
+              height="300"
             />
           </div>
           <div className="image-wrapper">
             <img 
               src="/images/click2.jpg" 
-              alt="Gecko Hunt Example 2" 
+              alt="Gecko Hunt Example 2: Gecko icon in different position" 
               className="blog-image"
+              width="300"
+              height="300"
             />
           </div>
-        </div>
-        <p className="image-description">Examples of the gecko icon as it appears on our website</p>
+          <figcaption className="image-description">Examples of the gecko icon as it appears on our website</figcaption>
+        </figure>
         <ol>
           <li>Our icon will appear randomly on different pages of our website.</li>
           <li>The icon moves around the page, making it a fun challenge to catch!</li>
@@ -63,18 +113,21 @@ const RollingIconBlogPost = () => {
         </p>
         
         <h2>Prize Details</h2>
-        <div className="image-container giveaway-image">
+        <figure className="image-container giveaway-image">
           <div className="image-wrapper" onClick={openModal}>
             <img 
               src="/images/giveaway.jpg" 
-              alt="Gecko Prize" 
+              alt="Sunglow gecko prize for the Gecko Hunt event" 
               className="blog-image"
+              width="600"
+              height="400"
             />
             <div className="image-overlay">
               <span>Click to zoom</span>
             </div>
           </div>
-        </div>
+          <figcaption className="image-caption">The beautiful Sunglow gecko prize for our Gecko Hunt event</figcaption>
+        </figure>
         <p>
           The winner will receive this beautiful Sunglow gecko! Shipping is paid by the winner, only Philippine residents are eligible to win and the winner will be responsible for shipping specially those outside NCR.
         </p>
@@ -93,13 +146,13 @@ const RollingIconBlogPost = () => {
           <p><strong>Goal:</strong> Reach 5000 points to be eligible for the giveaway</p>
           <p><strong>Good luck and happy gecko hunting!</strong></p>
         </div>
-      </div>
+      </section>
 
       {isModalOpen && (
-        <div className="modal" onClick={closeModal} onKeyDown={handleKeyDown} tabIndex={-1}>
+        <div className="modal" onClick={closeModal} onKeyDown={handleKeyDown} tabIndex={-1} role="dialog" aria-modal="true">
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <div className="modal-image-container">
-              <img src="/images/giveaway.jpg" alt="Gecko Prize" className="modal-image" />
+              <img src="/images/giveaway.jpg" alt="Full view of the Sunglow gecko prize" className="modal-image" />
               <button className="close-button" onClick={closeModal} aria-label="Close modal">
                 &times;
               </button>
@@ -107,7 +160,7 @@ const RollingIconBlogPost = () => {
           </div>
         </div>
       )}
-    </div>
+    </article>
   );
 };
 
