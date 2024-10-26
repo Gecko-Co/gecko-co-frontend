@@ -15,11 +15,6 @@ const mapContainerStyle = {
   height: '100%',
 };
 
-const center = {
-  lat: 20,
-  lng: 0
-};
-
 const mapOptions = {
   streetViewControl: false,
   mapTypeControl: false,
@@ -60,6 +55,7 @@ export default function BreederMap() {
   const [links, setLinks] = useState(['']);
   const [logo, setLogo] = useState(null);
   const [isAddingLocation, setIsAddingLocation] = useState(false);
+  const [center, setCenter] = useState({ lat: 20, lng: 0 });
   const searchInputRef = useRef(null);
   const mapRef = useRef(null);
   const clusterIndexRef = useRef(null);
@@ -98,6 +94,39 @@ export default function BreederMap() {
 
     fetchUserData();
   }, [currentUser]);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setCenter({ lat: latitude, lng: longitude });
+          setZoom(6);
+        },
+        () => {
+          fetch('https://ipapi.co/json/')
+            .then(response => response.json())
+            .then(data => {
+              setCenter({ lat: data.latitude, lng: data.longitude });
+              setZoom(6);
+            })
+            .catch(error => {
+              console.error('Error fetching location:', error);
+            });
+        }
+      );
+    } else {
+      fetch('https://ipapi.co/json/')
+        .then(response => response.json())
+        .then(data => {
+          setCenter({ lat: data.latitude, lng: data.longitude });
+          setZoom(6);
+        })
+        .catch(error => {
+          console.error('Error fetching location:', error);
+        });
+    }
+  }, []);
 
   const fetchBreederLocations = useCallback(async () => {
     if (!db) return;
@@ -370,6 +399,7 @@ export default function BreederMap() {
       properties: {
         ...editedMarker.properties,
         [e.target.name]: e.target.value
+      
       }
     });
   };
@@ -408,7 +438,7 @@ export default function BreederMap() {
         const userRef = doc(db, 'users', currentUser.uid);
         const userDoc = await getDoc(userRef);
         const userData = userDoc.data();
-        if  (!userData) throw new Error('User data not found');
+        if (!userData) throw new Error('User data not found');
 
         const locationToRemove = userData.breederLocations.find(
           location => location.latitude === activeMarker.geometry.coordinates[1] && location.longitude === activeMarker.geometry.coordinates[0]
@@ -482,7 +512,7 @@ export default function BreederMap() {
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
             center={center}
-            zoom={2}
+            zoom={zoom}
             onLoad={onLoad}
             onUnmount={onUnmount}
             onClick={handleMapClick}
@@ -712,93 +742,101 @@ export default function BreederMap() {
       {isModalOpen && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <h3>Add Your Breeder Location</h3>
-            <form onSubmit={handlePinSubmit} className="add-location-form">
-              <div className="form-group">
-                <label htmlFor="breeder">Breeder Name:</label>
-                <input
-                  type="text"
-                  id="breeder"
-                  name="breeder"
-                  placeholder="Breeder Name"
-                  required
-                  className="form-input"
-                />
-              </div>
-              <div className="form-group">
-                <label>Species:</label>
-                {species.map((s, index) => (
-                  <div key={index} className="species-input">
-                    <input
-                      type="text"
-                      value={s}
-                      onChange={(e) => handleSpeciesChange(index, e.target.value)}
-                      placeholder="Gecko Species"
-                      className="form-input"
-                    />
-                    <button type="button" onClick={() => handleRemoveSpecies(index)} className="btn-icon btn-remove">
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </div>
-                ))}
-                <button type="button" onClick={handleAddSpecies} className="btn-add">
-                  <FontAwesomeIcon icon={faPlus} /> Add Species
-                </button>
-              </div>
-              <div className="form-group">
-                <label htmlFor="contactInfo">Contact Info:</label>
-                <input
-                  type="text"
-                  id="contactInfo"
-                  name="contactInfo"
-                  placeholder="Contact Info"
-                  required
-                  className="form-input"
-                />
-              </div>
-              <div className="form-group">
-                <label>Links:</label>
-                {links.map((link, index) => (
-                  <div key={index} className="link-input">
-                    <input
-                      type="url"
-                      value={link}
-                      onChange={(e) => handleLinkChange(index, e.target.value)}
-                      placeholder="Website or Social Media Link"
-                      className="form-input"
-                    />
-                    <button type="button" onClick={() => handleRemoveLink(index)} className="btn-icon btn-remove">
-                      <FontAwesomeIcon icon={faTrash} />
-                    </button>
-                  </div>
-                ))}
-                <button type="button" onClick={handleAddLink} className="btn-add">
-                  <FontAwesomeIcon icon={faPlus} /> Add Link
-                </button>
-              </div>
-              <div className="form-group">
-                <label htmlFor="logo" className="file-input-label">
-                  <FontAwesomeIcon icon={faUpload} /> Upload Logo
-                </label>
-                <input
-                  type="file"
-                  id="logo"
-                  name="logo"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="file-input"
-                />
-                {logo && (
-                  <img src={URL.createObjectURL(logo)} alt="Logo preview" className="logo-preview" />
-                )}
-              </div>
-              <button type="submit" className="save-button">
-                <FontAwesomeIcon icon={faCheck} /> Add Location
-              </button>
-            </form>
             <button className="close-button" onClick={handleCloseModal}>
               <FontAwesomeIcon icon={faTimes} />
             </button>
+            <div className="modal-inner-content">
+              <h3>Add Your Breeder Location</h3>
+              <form onSubmit={handlePinSubmit} className="add-location-form">
+                <div className="form-group">
+                  <label htmlFor="breeder">Breeder Name:</label>
+                  <input
+                    type="text"
+                    id="breeder"
+                    name="breeder"
+                    placeholder="Breeder Name"
+                    required
+                    className="form-input"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Species:</label>
+                  {species.map((s, index) => (
+                    <div key={index} className="species-input">
+                      <input
+                        type="text"
+                        value={s}
+                        onChange={(e) => handleSpeciesChange(index, e.target.value)}
+                        placeholder="Gecko Species"
+                        className="form-input"
+                      />
+                      <button type="button" onClick={() => handleRemoveSpecies(index)} className="btn-icon btn-remove">
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </div>
+                  ))}
+                  <button type="button" onClick={handleAddSpecies} className="btn-add">
+                    <FontAwesomeIcon icon={faPlus} /> Add Species
+                  </button>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="contactInfo">Contact Info:</label>
+                  <input
+                    type="text"
+                    id="contactInfo"
+                    name="contactInfo"
+                    placeholder="Contact Info"
+                    required
+                    className="form-input"
+                  />
+                </div>
+                <div className="form-group">
+                  <label>Links:</label>
+                  {links.map((link, index) => (
+                    <div key={index} className="link-input">
+                      <input
+                        type="url"
+                        value={link}
+                        onChange={(e) => handleLinkChange(index, e.target.value)}
+                        placeholder="Website or Social Media Link"
+                        className="form-input"
+                      />
+                      <button type="button" onClick={() => handleRemoveLink(index)} className="btn-icon btn-remove">
+                        <FontAwesomeIcon icon={faTrash} />
+                      </button>
+                    </div>
+                  ))}
+                  <button type="button" onClick={handleAddLink} className="btn-add">
+                    <FontAwesomeIcon icon={faPlus} /> Add Link
+                  </button>
+                </div>
+                <div className="form-group">
+                  <label htmlFor="logo" className="file-input-label">
+                    <FontAwesomeIcon icon={faUpload} /> Upload Logo
+                  </label>
+                  <input
+                    type="file"
+                    id="logo"
+                    name="logo"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="file-input"
+                  />
+                  {logo && (
+                    <img
+                      src={URL.createObjectURL(logo)}
+                      alt="Logo preview"
+                      className="logo-preview"
+                    />
+                  )}
+                </div>
+                <div className="button-group">
+                  <button type="submit" className="btn-submit">
+                    <FontAwesomeIcon icon={faCheck} /> Submit
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
