@@ -1,13 +1,37 @@
-.shop-container {
-  padding-top: 210px;
-  min-height: 100vh;
-  background-color: #f4f4f4;
-  transition: padding 0.3s ease;
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
 
-  .container {
+.shop-container {
+  background-color: white;
+  padding: 210px 50px 100px;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #23283b;
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100%25' height='100%25' viewBox='0 0 800 800'%3E%3Cg fill-opacity='0.3'%3E%3Cpath fill='%2323283b' d='M769 229L1037 260.9M927 880L731 737 520 660 309 538 40 599 295 764 126.5 879.5 40 599-197 493 102 382-31 229 126.5 79.5-69-63'/%3E%3Cpath fill='%23343b56' d='M-31 229L237 261 390 382 603 494 308.5 537.5 101.5 381.5M370 905L295 764'/%3E%3Cpath fill='%23454e71' d='M520 660L578 842 731 737 840 599 603 493 520 660 295 764 309 538 390 382 539 269 769 229 577.5 41.5 370 105 295 -36 126.5 79.5 237 261 102 382 40 599 -69 737 127 880'/%3E%3Cpath fill='%2357628c' d='M520-140L578.5 42.5 731-63M603 493L539 269 237 261 370 105M902 382L539 269M390 382L102 382'/%3E%3Cpath fill='%236976a7' d='M-222 42L126.5 79.5 370 105 539 269 577.5 41.5 927 80 769 229 902 382 603 493 731 737M295-36L577.5 41.5M578 842L295 764M40-201L127 80M102 382L-261 269'/%3E%3C/g%3E%3C/svg%3E");
+    background-size: cover;
+    opacity: 0.25;
+    z-index: -1;
+    animation: rotateBrushStroke 60s linear infinite;
+  }
+
+  .shop-content {
+    width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 20px;
+    position: relative;
+    z-index: 1;
   }
 
   .shop-title {
@@ -16,6 +40,7 @@
     color: #23283b;
     margin-bottom: 2rem;
     text-align: center;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .row {
@@ -124,13 +149,13 @@
   justify-content: center;
   align-items: flex-start;
   z-index: 1000;
-  padding-top: 80px; // Default padding-top
+  padding-top: 80px;
 
   .filter-modal-content {
     background-color: white;
     padding: 20px;
     border-radius: 8px;
-    max-width: 90%; // Default max-width
+    max-width: 90%;
     max-height: calc(100% - 100px);
     overflow-y: auto;
     position: relative;
@@ -147,6 +172,15 @@
   }
 }
 
+@keyframes rotateBrushStroke {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 @media (max-width: 1280px) {
   .shop-container {
     padding-top: 180px;
@@ -156,11 +190,10 @@
     }
   }
 
-  // Increase modal size for larger screens
   .filter-modal {
     .filter-modal-content {
-      max-width: 80%; // Increased from 90%
-      max-height: calc(100% - 120px); // Increased height
+      max-width: 80%;
+      max-height: calc(100% - 120px);
     }
   }
 }
@@ -175,10 +208,9 @@
     }
   }
 
-  // Adjust modal size for medium screens
   .filter-modal {
     .filter-modal-content {
-      max-width: 85%; // Slightly smaller than larger screens
+      max-width: 85%;
       max-height: calc(100% - 110px);
     }
   }
@@ -216,10 +248,9 @@
   .filter-modal {
     padding-top: 150px;
 
-    // Increase modal size for tablets and large phones
     .filter-modal-content {
-      max-width: 95%; // Wider on smaller screens
-      max-height: calc(100% - 80px); // More vertical space
+      max-width: 95%;
+      max-height: calc(100% - 80px);
     }
   }
 }
@@ -262,10 +293,9 @@
   .filter-modal {
     padding-top: 140px;
 
-    // Adjust modal size for small phones
     .filter-modal-content {
-      max-width: 98%; // Almost full width
-      max-height: calc(100% - 60px); // More vertical space
+      max-width: 98%;
+      max-height: calc(100% - 60px);
     }
   }
 }
@@ -276,7 +306,7 @@
     padding-left: 10px;
     padding-right: 10px;
 
-    .container {
+    .shop-content {
       padding: 0 10px;
     }
 
@@ -318,13 +348,12 @@
   }
 
   .filter-modal {
-    padding-top: 150px; // Adjusted padding-top for 320px screens
+    padding-top: 150px;
 
-    // Maximize modal size for very small screens
     .filter-modal-content {
-      max-width: 100%; // Full width
-      max-height: calc(100% - 50px); // Almost full height
-      border-radius: 0; // Remove border radius for full-screen effect
+      max-width: 100%;
+      max-height: calc(100% - 50px);
+      border-radius: 0;
     }
   }
 }

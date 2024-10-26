@@ -107,21 +107,20 @@
       color: white;
 
       &:hover {
-        background-color: darken(#23283b, 10%);
+        background-color: #1a1f2e;
       }
     }
 
     &.btn-secondary {
-      background-color: #e0e0e0;
-      color: #23283b;
+      background-color: #bd692d;
+      color: white;
 
       &:hover {
-        background-color: darken(#e0e0e0, 10%);
+        background-color: #a55a25;
       }
 
       &:disabled {
-        background-color: #cccccc;
-        color: #666666;
+        background-color: #ccc;
         cursor: not-allowed;
       }
     }
