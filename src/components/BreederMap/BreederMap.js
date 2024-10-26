@@ -813,7 +813,7 @@ export default function BreederMap() {
                   </button>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="contactInfo">Contact Info:</label>
+                  <label htmlFor="contactInfo">Contact Info(Optional):</label>
                   <input
                     type="text"
                     id="contactInfo"
