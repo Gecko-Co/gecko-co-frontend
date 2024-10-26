@@ -185,6 +185,21 @@ export default function BreederMap() {
     setMap(map);
   }, []);
 
+  useEffect(() => {
+    if (isLoaded && map) {
+      // Wait for the map to be fully loaded before getting bounds
+      const listener = map.addListener('idle', () => {
+        const initialBounds = map.getBounds();
+        if (initialBounds) {
+          setBounds(initialBounds.toJSON());
+          setZoom(map.getZoom());
+        }
+        // Remove the listener after it's been called
+        window.google.maps.event.removeListener(listener);
+      });
+    }
+  }, [isLoaded, map]);
+
   const onUnmount = useCallback(() => {
     setMap(null);
   }, []);
@@ -384,6 +399,7 @@ export default function BreederMap() {
       ));
       clusterIndexRef.current.load(markers);
       setActiveMarker(updatedMarker);
+      
       setEditMode(false);
       setLogo(null);
       customToast.success('Breeder information updated successfully!');
@@ -399,7 +415,6 @@ export default function BreederMap() {
       properties: {
         ...editedMarker.properties,
         [e.target.name]: e.target.value
-      
       }
     });
   };
@@ -509,27 +524,48 @@ export default function BreederMap() {
       </div>
       <div className={`map-and-panel-container ${isMobile ? 'mobile' : ''}`}>
         <div className={`map-wrapper ${isAddingLocation ? 'adding-location' : ''}`}>
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={center}
-            zoom={zoom}
-            onLoad={onLoad}
-            onUnmount={onUnmount}
-            onClick={handleMapClick}
-            onIdle={onIdle}
-            options={mapOptions}
-          >
-            {clusters.map((cluster) => {
-              const [longitude, latitude] = cluster.geometry.coordinates;
-              const {
-                cluster: isCluster,
-                point_count: pointCount,
-              } = cluster.properties;
+          {isLoaded ? (
+            <GoogleMap
+              mapContainerStyle={mapContainerStyle}
+              center={center}
+              zoom={zoom}
+              onLoad={onLoad}
+              onUnmount={onUnmount}
+              onClick={handleMapClick}
+              onIdle={onIdle}
+              options={mapOptions}
+            >
+              {clusters.map((cluster) => {
+                const [longitude, latitude] = cluster.geometry.coordinates;
+                const {
+                  cluster: isCluster,
+                  point_count: pointCount,
+                } = cluster.properties;
 
-              if (isCluster) {
+                if (isCluster) {
+                  return (
+                    <OverlayView
+                      key={`cluster-${cluster.id}`}
+                      position={{ lat: latitude, lng: longitude }}
+                      mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+                      getPixelPositionOffset={(width, height) => ({
+                        x: -(width / 2),
+                        y: -(height / 2),
+                      })}
+                    >
+                      <div
+                        className="cluster-marker"
+                        onClick={() => handleClusterClick(cluster.id, latitude, longitude)}
+                      >
+                        <div className="cluster-count">{pointCount}</div>
+                      </div>
+                    </OverlayView>
+                  );
+                }
+
                 return (
                   <OverlayView
-                    key={`cluster-${cluster.id}`}
+                    key={`marker-${cluster.properties.markerId}`}
                     position={{ lat: latitude, lng: longitude }}
                     mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                     getPixelPositionOffset={(width, height) => ({
@@ -538,60 +574,43 @@ export default function BreederMap() {
                     })}
                   >
                     <div
-                      className="cluster-marker"
-                      onClick={() => handleClusterClick(cluster.id, latitude, longitude)}
+                      className="marker-wrapper"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMarkerClick(cluster);
+                      }}
                     >
-                      <div className="cluster-count">{pointCount}</div>
+                      <div className="pulse"></div>
+                      <div className="custom-marker">
+                        {cluster.properties.logo ? (
+                          <img src={cluster.properties.logo} alt={cluster.properties.breeder} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
+                        ) : (
+                          'G'
+                        )}
+                      </div>
                     </div>
                   </OverlayView>
                 );
-              }
-
-              return (
+              })}
+              {newPin && (
                 <OverlayView
-                  key={`marker-${cluster.properties.markerId}`}
-                  position={{ lat: latitude, lng: longitude }}
+                  position={newPin}
                   mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
                   getPixelPositionOffset={(width, height) => ({
                     x: -(width / 2),
                     y: -(height / 2),
                   })}
                 >
-                  <div
-                    className="marker-wrapper"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleMarkerClick(cluster);
-                    }}
-                  >
+                  <div className="new-pin-marker">
                     <div className="pulse"></div>
-                    <div className="custom-marker">
-                      {cluster.properties.logo ? (
-                        <img src={cluster.properties.logo} alt={cluster.properties.breeder} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
-                      ) : (
-                        'G'
-                      )}
-                    </div>
+                    <div className="custom-marker">New</div>
                   </div>
                 </OverlayView>
-              );
-            })}
-            {newPin && (
-              <OverlayView
-                position={newPin}
-                mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-                getPixelPositionOffset={(width, height) => ({
-                  x: -(width / 2),
-                  y: -(height / 2),
-                })}
-              >
-                <div className="new-pin-marker">
-                  <div className="pulse"></div>
-                  <div className="custom-marker">New</div>
-                </div>
-              </OverlayView>
-            )}
-          </GoogleMap>
+              )}
+            </GoogleMap>
+          ) : (
+            <div>Loading map...</div>
+          )}
         </div>
         {isSidePanelOpen && activeMarker && (
           <div className={`side-panel ${isMobile ? 'mobile' : ''}`}>
