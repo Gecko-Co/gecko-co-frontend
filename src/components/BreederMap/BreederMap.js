@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, OverlayView } from '@react-google-maps/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes, faPencilAlt, faCheck, faPlus, faTrash, faUpload, faLink, faMapPin } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes, faPencilAlt, faCheck, faPlus, faTrash, faUpload, faLink, faMapPin, faDragon } from '@fortawesome/free-solid-svg-icons';
 import { collection, getDocs, doc, updateDoc, getDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase';
@@ -187,14 +187,12 @@ export default function BreederMap() {
 
   useEffect(() => {
     if (isLoaded && map) {
-      // Wait for the map to be fully loaded before getting bounds
       const listener = map.addListener('idle', () => {
         const initialBounds = map.getBounds();
         if (initialBounds) {
           setBounds(initialBounds.toJSON());
           setZoom(map.getZoom());
         }
-        // Remove the listener after it's been called
         window.google.maps.event.removeListener(listener);
       });
     }
@@ -402,6 +400,7 @@ export default function BreederMap() {
       
       setEditMode(false);
       setLogo(null);
+      
       customToast.success('Breeder information updated successfully!');
     } catch (error) {
       console.error('Error updating breeder information:', error);
@@ -585,7 +584,7 @@ export default function BreederMap() {
                         {cluster.properties.logo ? (
                           <img src={cluster.properties.logo} alt={cluster.properties.breeder} style={{ width: '100%', height: '100%', borderRadius: '50%' }} />
                         ) : (
-                          'G'
+                          <FontAwesomeIcon icon={faDragon} />
                         )}
                       </div>
                     </div>

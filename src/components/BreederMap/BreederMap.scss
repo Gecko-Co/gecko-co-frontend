@@ -397,7 +397,7 @@
         font-size: 14px;
         padding: 8px;
         border-radius: 4px;
-        transition: background-color 0.3s, color 0.3s;
+        transition:  background-color 0.3s, color 0.3s;
   
         &:hover {
           background-color: #ffcdd2;
@@ -501,10 +501,10 @@
     }
 
     .modal-inner-content {
-      padding: 20px 20px 10px; // Added padding-top here
+      padding: 20px 20px 10px;
 
       @media (max-width: 600px) {
-        padding: 40px 15px 15px; // Adjusted for smaller screens
+        padding: 40px 15px 15px;
       }
 
       h3 {
