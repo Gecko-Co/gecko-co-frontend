@@ -118,6 +118,13 @@
     </url>
 
     <url>
+        <loc>https://geckoco.ph/blogs/breeder-map-introduction</loc>
+        <lastmod>2024-10-30</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.7</priority>
+    </url>
+
+    <url>
         <loc>https://geckoco.ph/leaderboard</loc>
         <lastmod>2024-10-30</lastmod>
         <changefreq>weekly</changefreq>
