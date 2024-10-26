@@ -63,6 +63,16 @@ export default function BreederMap() {
   const searchInputRef = useRef(null);
   const mapRef = useRef(null);
   const clusterIndexRef = useRef(null);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (loadError) {
@@ -395,11 +405,10 @@ export default function BreederMap() {
   const handleRemoveLocation = async () => {
     if (currentUser && activeMarker && currentUser.uid === activeMarker.properties.ownerId) {
       try {
-        const userRef = doc(db, 
- 'users', currentUser.uid);
+        const userRef = doc(db, 'users', currentUser.uid);
         const userDoc = await getDoc(userRef);
         const userData = userDoc.data();
-        if (!userData) throw new Error('User data not found');
+        if  (!userData) throw new Error('User data not found');
 
         const locationToRemove = userData.breederLocations.find(
           location => location.latitude === activeMarker.geometry.coordinates[1] && location.longitude === activeMarker.geometry.coordinates[0]
@@ -468,7 +477,7 @@ export default function BreederMap() {
           <FontAwesomeIcon icon={faMapPin} /> {isAddingLocation ? 'Cancel' : 'Add Location'}
         </button>
       </div>
-      <div className="map-and-panel-container">
+      <div className={`map-and-panel-container ${isMobile ? 'mobile' : ''}`}>
         <div className={`map-wrapper ${isAddingLocation ? 'adding-location' : ''}`}>
           <GoogleMap
             mapContainerStyle={mapContainerStyle}
@@ -555,7 +564,8 @@ export default function BreederMap() {
           </GoogleMap>
         </div>
         {isSidePanelOpen && activeMarker && (
-          <div className="side-panel">
+          <div className={`side-panel ${isMobile ? 'mobile' : ''}`}>
+            {isMobile && <div className="drag-handle" />}
             <button className="close-button" onClick={handleCloseSidePanel}>
               <FontAwesomeIcon icon={faTimes} />
             </button>

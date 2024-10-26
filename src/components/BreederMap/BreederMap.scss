@@ -121,6 +121,11 @@
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    position: relative;
+
+    &.mobile {
+      height: calc(100vh - 200px);
+    }
 
     @media (min-width: 768px) {
       flex-direction: row;
@@ -144,9 +149,10 @@
   }
 
   .side-panel {
-    width: 100%;
-    height: auto;
-    max-height: 50vh;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
     background-color: white;
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
     padding: 20px;
@@ -154,15 +160,38 @@
     transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
     transform: translateY(0);
     opacity: 1;
+    max-height: 50%;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+
+    &.mobile {
+      max-height: 60%;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
 
     @media (min-width: 768px) {
+      position: relative;
       width: 280px;
       height: 100%;
       max-height: none;
       box-shadow: -4px 0 20px rgba(0, 0, 0, 0.15);
       transform: translateX(0);
+      border-radius: 0;
     }
 
+    .drag-handle {
+      width: 40px;
+      height: 4px;
+      background-color: #ccc;
+      border-radius: 2px;
+      margin: 0 auto 10px;
+      display: block;
+
+      @media (min-width: 768px) {
+        display: none;
+      }
+    }
     .close-button {
       position: absolute;
       top: 10px;
