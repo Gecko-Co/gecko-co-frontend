@@ -1,12 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import './RollingIconBlogPost.scss';
 
 const RollingIconBlogPost = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const openModal = useCallback(() => setIsModalOpen(true), []);
+  const closeModal = useCallback(() => setIsModalOpen(false), []);
+
+  const handleKeyDown = useCallback((event) => {
+    if (event.key === 'Escape') {
+      closeModal();
+    }
+  }, [closeModal]);
 
   return (
     <div className="blog-post-container">
@@ -70,7 +76,7 @@ const RollingIconBlogPost = () => {
           </div>
         </div>
         <p>
-          The winner will receive this beautiful Sunglow gecko! Shipping is paid by the winner, only Philippine residents are eligible to win.
+          The winner will receive this beautiful Sunglow gecko! Shipping is paid by the winner, only Philippine residents are eligible to win and the winner will be responsible for shipping specially those outside NCR.
         </p>
         
         <h2>Current Leaderboard</h2>
@@ -90,10 +96,14 @@ const RollingIconBlogPost = () => {
       </div>
 
       {isModalOpen && (
-        <div className="modal" onClick={closeModal}>
+        <div className="modal" onClick={closeModal} onKeyDown={handleKeyDown} tabIndex={-1}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
-            <img src="/images/giveaway.jpg" alt="Gecko Prize" className="modal-image" />
-            <button className="close-button" onClick={closeModal}>&times;</button>
+            <div className="modal-image-container">
+              <img src="/images/giveaway.jpg" alt="Gecko Prize" className="modal-image" />
+              <button className="close-button" onClick={closeModal} aria-label="Close modal">
+                &times;
+              </button>
+            </div>
           </div>
         </div>
       )}
