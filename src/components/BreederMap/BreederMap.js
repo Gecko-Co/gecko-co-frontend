@@ -264,9 +264,24 @@ export default function BreederMap() {
   };
 
   const handleFileChange = (event) => {
-    const file = event.target.files[0];
+    const file = event.target.files?.[0];
     if (file) {
+      // Check file type
+      const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+      if (!allowedTypes.includes(file.type)) {
+        customToast.error('Invalid file type. Please upload a JPEG, PNG, or GIF image.');
+        return;
+      }
+
+      // Check file size (limit to 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      if (file.size > maxSize) {
+        customToast.error('File is too large. Please upload an image smaller than 5MB.');
+        return;
+      }
+
       setLogo(file);
+      customToast.success('File selected successfully.');
     }
   };
 
@@ -386,7 +401,7 @@ export default function BreederMap() {
         properties: {
           ...activeMarker.properties,
           breeder: editedMarker.properties.breeder,
-          species: species.filter(s => s.trim() !== ''),
+          species:  species.filter(s => s.trim() !== ''),
           contactInfo: editedMarker.properties.contactInfo,
           logo: logoUrl,
           links: links.filter(link => link.trim() !== ''),
@@ -689,13 +704,13 @@ export default function BreederMap() {
                 </div>
                 <div className="info-item">
                   <label htmlFor="logo" className="file-input-label">
-                    <FontAwesomeIcon icon={faUpload} /> Upload Logo
+                    <FontAwesomeIcon icon={faUpload} /> Upload Logo (JPEG, PNG, or GIF, max 5MB)
                   </label>
                   <input
                     type="file"
                     id="logo"
                     name="logo"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/gif"
                     onChange={handleFileChange}
                     className="file-input"
                   />
@@ -830,13 +845,13 @@ export default function BreederMap() {
                 </div>
                 <div className="form-group">
                   <label htmlFor="logo" className="file-input-label">
-                    <FontAwesomeIcon icon={faUpload} /> Upload Logo
+                    <FontAwesomeIcon icon={faUpload} /> Upload Logo (JPEG, PNG, or GIF, max 5MB)
                   </label>
                   <input
                     type="file"
                     id="logo"
                     name="logo"
-                    accept="image/*"
+                    accept="image/jpeg,image/png,image/gif"
                     onChange={handleFileChange}
                     className="file-input"
                   />
