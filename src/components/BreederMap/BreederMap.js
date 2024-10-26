@@ -122,11 +122,18 @@ export default function BreederMap() {
         }));
       });
       setMarkers(fetchedMarkers);
+      if (clusterIndexRef.current && bounds) {
+        const newClusters = clusterIndexRef.current.getClusters(
+          [bounds.west, bounds.south, bounds.east, bounds.north],
+          Math.floor(zoom)
+        );
+        setClusters(newClusters);
+      }
     } catch (error) {
       console.error('Error fetching breeder locations:', error);
       customToast.error('Failed to fetch breeder locations. Please try again later.');
     }
-  }, []);
+  }, [bounds, zoom]);
 
   useEffect(() => {
     fetchBreederLocations();
@@ -139,49 +146,38 @@ export default function BreederMap() {
         maxZoom: 20,
       });
       clusterIndexRef.current.load(markers);
+      if (bounds) {
+        const newClusters = clusterIndexRef.current.getClusters(
+          [bounds.west, bounds.south, bounds.east, bounds.north],
+          Math.floor(zoom)
+        );
+        setClusters(newClusters);
+      }
     }
-  }, [markers]);
-
-  useEffect(() => {
-    if (clusterIndexRef.current && bounds) {
-      const newClusters = clusterIndexRef.current.getClusters(
-        [bounds.west, bounds.south, bounds.east, bounds.north],
-        Math.floor(zoom)
-      );
-      setClusters(newClusters);
-    }
-  }, [zoom, bounds]);
+  }, [markers, bounds, zoom]);
 
   const onLoad = useCallback((map) => {
     mapRef.current = map;
     setMap(map);
-  }, []);
-
-  useEffect(() => {
-    if (isLoaded && map) {
-      const listener = map.addListener('idle', () => {
-        const initialBounds = map.getBounds();
-        if (initialBounds) {
-          setBounds(initialBounds.toJSON());
-          setZoom(map.getZoom());
-        }
-        window.google.maps.event.removeListener(listener);
-      });
+    const initialBounds = map.getBounds();
+    if (initialBounds) {
+      setBounds(initialBounds.toJSON());
+      setZoom(map.getZoom());
     }
-  }, [isLoaded, map]);
+  }, []);
 
   const onUnmount = useCallback(() => {
     setMap(null);
   }, []);
 
-  const onIdle = () => {
+  const onIdle = useCallback(() => {
     if (mapRef.current) {
       const newBounds = mapRef.current.getBounds().toJSON();
       const newZoom = mapRef.current.getZoom();
       setZoom(newZoom);
       setBounds(newBounds);
     }
-  };
+  }, []);
 
   const handleMapClick = (event) => {
     if (isAddingLocation && currentUser) {
@@ -241,10 +237,10 @@ export default function BreederMap() {
         (position) => {
           const { latitude, longitude } = position.coords;
           setCenter({ lat: latitude, lng: longitude });
-          setZoom(10);
+          setZoom(6); // Set zoom to country level
           if (mapRef.current) {
             mapRef.current.panTo({ lat: latitude, lng: longitude });
-            mapRef.current.setZoom(10);
+            mapRef.current.setZoom(6);
           }
           customToast.success('Showing breeders around your location.');
         },
@@ -391,6 +387,7 @@ export default function BreederMap() {
       );
       await updateDoc(userRef, { breederLocations: updatedLocations });
       const updatedMarker = {
+        
         ...activeMarker,
         properties: {
           ...activeMarker.properties,
@@ -754,7 +751,7 @@ export default function BreederMap() {
                   </ul>
                 </div>
                 <div className="info-item">
-                  <strong>Contact(Optional):</strong>
+                  <strong>Contact:</strong>
                   <span>{activeMarker.properties.contactInfo}</span>
                 </div>
                 <div className="info-item">
@@ -837,13 +834,12 @@ export default function BreederMap() {
                   </button>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="contactInfo">Contact Info:</label>
+                  <label htmlFor="contactInfo">Contact Info(Optional):</label>
                   <input
                     type="text"
                     id="contactInfo"
                     name="contactInfo"
                     placeholder="Contact Info"
-                    required
                     className="form-input"
                   />
                 </div>
