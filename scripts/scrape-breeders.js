@@ -1,7 +1,7 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
 import { initializeApp } from 'firebase/app';
-import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getFirestore, collection, addDoc, query, where, getDocs } from 'firebase/firestore';
 import dotenv from 'dotenv';
 import fs from 'fs/promises';
 
@@ -31,10 +31,35 @@ async function readStoreList() {
   }
 }
 
+const countryCoordinates = {
+  GB: { lat: 55.3781, lng: -3.4360 },
+  DK: { lat: 56.2639, lng: 9.5018 },
+  CA: { lat: 56.1304, lng: -106.3468 },
+  FR: { lat: 46.2276, lng: 2.2137 },
+  ZA: { lat: -30.5595, lng: 22.9375 },
+  MX: { lat: 23.6345, lng: -102.5528 },
+  DE: { lat: 51.1657, lng: 10.4515 },
+  IT: { lat: 41.8719, lng: 12.5674 },
+  BE: { lat: 50.5039, lng: 4.4699 },
+  PL: { lat: 51.9194, lng: 19.1451 },
+  CZ: { lat: 49.8175, lng: 15.4730 },
+  SE: { lat: 60.1282, lng: 18.6435 },
+  ES: { lat: 40.4637, lng: -3.7492 },
+  BG: { lat: 42.7339, lng: 25.4858 },
+  NL: { lat: 52.1326, lng: 5.2913 },
+  SK: { lat: 48.6690, lng: 19.6990 }
+};
+
 async function geocodeLocation(location, region, countryCode) {
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   const maxRetries = 3;
   
+  // Use predefined coordinates for non-US countries if available
+  if (countryCode !== 'US' && countryCoordinates[countryCode]) {
+    console.log(`Using predefined coordinates for ${countryCode}`);
+    return countryCoordinates[countryCode];
+  }
+
   // Primary query formats using location details
   const queryFormats = [
     { q: `${location}, ${region}, ${countryCode}` },
@@ -113,7 +138,6 @@ async function geocodeLocation(location, region, countryCode) {
   return null;
 }
 
-
 async function scrapeStoreInfo(storeName, breederName, region, countryCode) {
   try {
     const response = await axios.get(`https://www.morphmarket.com/stores/${storeName}/`);
@@ -153,6 +177,17 @@ async function scrapeStoreInfo(storeName, breederName, region, countryCode) {
   }
 }
 
+async function checkDuplicate(breederData) {
+  const q = query(collection(db, "breeders"), 
+    where("breeder", "==", breederData.breeder),
+    where("name", "==", breederData.name),
+    where("countryCode", "==", breederData.countryCode)
+  );
+
+  const querySnapshot = await getDocs(q);
+  return !querySnapshot.empty;
+}
+
 async function scrapeBreeders() {
   try {
     const storeList = await readStoreList();
@@ -176,6 +211,12 @@ async function scrapeBreeders() {
         region,
         countryCode
       };
+
+      const isDuplicate = await checkDuplicate(breederData);
+      if (isDuplicate) {
+        console.log(`Duplicate found for ${breederName}. Skipping...`);
+        continue;
+      }
 
       breeders.push(breederData);
 
