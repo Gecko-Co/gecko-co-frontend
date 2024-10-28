@@ -159,6 +159,10 @@ export default function BreederMap() {
       const breederSnapshot = await getDocs(breederQuery);
       const breederLocations = breederSnapshot.docs.map(doc => {
         const data = doc.data();
+        if (!data.markerPosition || typeof data.markerPosition.lng === 'undefined' || typeof data.markerPosition.lat === 'undefined') {
+          console.warn(`Invalid marker position for breeder ${doc.id}:`, data.markerPosition);
+          return null;
+        }
         return {
           type: 'Feature',
           properties: {
@@ -171,7 +175,7 @@ export default function BreederMap() {
             coordinates: [data.markerPosition.lng, data.markerPosition.lat],
           },
         };
-      });
+      }).filter(location => location !== null);
 
       setCachedBreederLocations(breederLocations);
       setLastFetchTime(Date.now());
