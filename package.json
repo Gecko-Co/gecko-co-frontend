@@ -25,7 +25,9 @@
     "@testing-library/user-event": "^12.8.3",
     "@types/supercluster": "^7.1.3",
     "@vercel/analytics": "^1.2.2",
+    "axios": "^1.7.7",
     "bootstrap": "^5.1.3",
+    "cheerio": "^1.0.0",
     "express-rate-limit": "^7.4.1",
     "firebase": "^10.14.0",
     "framer-motion": "^11.9.0",
@@ -65,7 +67,8 @@
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
-    "add-geckos": "node scripts/add-geckos.js"
+    "add-geckos": "node scripts/add-geckos.js",
+    "scrape-breeders": "node scripts/scrape-breeders.js"
   },
   "eslintConfig": {
     "extends": [

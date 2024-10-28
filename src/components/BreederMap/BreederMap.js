@@ -2,12 +2,13 @@ import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, OverlayView } from '@react-google-maps/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faTimes, faPencilAlt, faCheck, faPlus, faTrash, faUpload, faLink, faMapPin, faDragon, faLocationArrow } from '@fortawesome/free-solid-svg-icons';
-import { collection, getDocs, doc, updateDoc, getDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, getDoc, arrayUnion, arrayRemove, query, limit } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase';
 import { useAuth } from '../Auth/AuthContext';
 import customToast from '../../utils/toast';
 import supercluster from 'supercluster';
+import axios from 'axios';
 import './BreederMap.scss';
 
 const mapContainerStyle = {
@@ -31,6 +32,8 @@ const mapOptions = {
   minZoom: 2,
   mapId: '3c0cbad635cf86d2',
 };
+
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 export default function BreederMap() {
   const { isLoaded, loadError } = useJsApiLoader({
@@ -60,6 +63,9 @@ export default function BreederMap() {
   const mapRef = useRef(null);
   const clusterIndexRef = useRef(null);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isLoading, setIsLoading] = useState(true);
+  const [cachedBreederLocations, setCachedBreederLocations] = useState(null);
+  const [lastFetchTime, setLastFetchTime] = useState(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -96,15 +102,99 @@ export default function BreederMap() {
   }, [currentUser]);
 
   useEffect(() => {
-    setCenter({ lat: 20, lng: 0 });
-    setZoom(3);
+    const getIPBasedLocation = async () => {
+      try {
+        const response = await axios.get('https://ipapi.co/json/');
+        const { latitude, longitude, country_name } = response.data;
+        setCenter({ lat: latitude, lng: longitude });
+        
+        // Set initial zoom based on country
+        if (country_name === "United States") {
+          setZoom(4);
+        } else {
+          setZoom(5);
+        }
+        
+        if (mapRef.current) {
+          mapRef.current.panTo({ lat: latitude, lng: longitude });
+          mapRef.current.setZoom(zoom);
+        }
+      } catch (error) {
+        console.error('Error fetching IP-based location:', error);
+        // Fallback to default center and zoom
+        setCenter({ lat: 20, lng: 0 });
+        setZoom(3);
+      }
+    };
+
+    getIPBasedLocation();
+  }, []);
+
+  const loadCachedBreederLocations = useCallback(() => {
+    const cachedData = localStorage.getItem('cachedBreederLocations');
+    if (cachedData) {
+      const { locations, timestamp } = JSON.parse(cachedData);
+      if (Date.now() - timestamp < CACHE_DURATION) {
+        setCachedBreederLocations(locations);
+        setLastFetchTime(timestamp);
+        return locations;
+      }
+    }
+    return null;
   }, []);
 
   const fetchBreederLocations = useCallback(async () => {
     if (!db) return;
+    setIsLoading(true);
+
+    const cachedLocations = loadCachedBreederLocations();
+    if (cachedLocations) {
+      setMarkers(prevMarkers => [...prevMarkers, ...cachedLocations]);
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const breederQuery = query(collection(db, 'breeders'), limit(1000));
+      const breederSnapshot = await getDocs(breederQuery);
+      const breederLocations = breederSnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+          type: 'Feature',
+          properties: {
+            cluster: false,
+            markerId: doc.id,
+            ...data,
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [data.markerPosition.lng, data.markerPosition.lat],
+          },
+        };
+      });
+
+      setCachedBreederLocations(breederLocations);
+      setLastFetchTime(Date.now());
+      localStorage.setItem('cachedBreederLocations', JSON.stringify({
+        locations: breederLocations,
+        timestamp: Date.now()
+      }));
+
+      setMarkers(prevMarkers => [...prevMarkers, ...breederLocations]);
+    } catch (error) {
+      console.error('Error fetching breeder locations:', error);
+      customToast.error('Failed to fetch breeder locations. Please try again later.');
+    } finally {
+      setIsLoading(false);
+    }
+  }, [loadCachedBreederLocations]);
+
+  const fetchUserLocations = useCallback(async () => {
+    if (!db) return;
+    setIsLoading(true);
     try {
       const usersSnapshot = await getDocs(collection(db, 'users'));
-      const fetchedMarkers = usersSnapshot.docs.flatMap(doc => {
+      const userLocations = usersSnapshot.docs.flatMap(doc => {
         const data = doc.data();
         return (data.breederLocations || []).map((location, index) => ({
           type: 'Feature',
@@ -121,23 +211,23 @@ export default function BreederMap() {
           },
         }));
       });
-      setMarkers(fetchedMarkers);
-      if (clusterIndexRef.current && bounds) {
-        const newClusters = clusterIndexRef.current.getClusters(
-          [bounds.west, bounds.south, bounds.east, bounds.north],
-          Math.floor(zoom)
-        );
-        setClusters(newClusters);
-      }
+      setMarkers(userLocations);
     } catch (error) {
-      console.error('Error fetching breeder locations:', error);
-      customToast.error('Failed to fetch breeder locations. Please try again later.');
+      console.error('Error fetching user locations:', error);
+      customToast.error('Failed to fetch user locations. Please try again later.');
+    } finally {
+      setIsLoading(false);
     }
-  }, [bounds, zoom]);
+  }, []);
 
   useEffect(() => {
-    fetchBreederLocations();
-  }, [fetchBreederLocations]);
+    const fetchAllLocations = async () => {
+      await fetchUserLocations();
+      await fetchBreederLocations();
+    };
+
+    fetchAllLocations();
+  }, [fetchUserLocations, fetchBreederLocations]);
 
   useEffect(() => {
     if (markers.length > 0) {
@@ -237,15 +327,15 @@ export default function BreederMap() {
         (position) => {
           const { latitude, longitude } = position.coords;
           setCenter({ lat: latitude, lng: longitude });
-          setZoom(6); // Set zoom to country level
+          setZoom(7); // Zoom in closer when user clicks "Show breeders around me"
           if (mapRef.current) {
             mapRef.current.panTo({ lat: latitude, lng: longitude });
-            mapRef.current.setZoom(6);
+            mapRef.current.setZoom(7);
           }
-          customToast.success('Showing breeders around your location.');
+          customToast.success('Showing breeders around your precise location.');
         },
         () => {
-          customToast.error('Unable to get your location. Please check your browser settings.');
+          customToast.error('Unable to get your precise location. Please check your browser settings.');
         }
       );
     } else {
@@ -299,7 +389,7 @@ export default function BreederMap() {
           links: links.filter(link => link.trim() !== ''),
           ownerName,
         };
-        const userRef = doc(db, 'users', currentUser.uid);
+        const userRef =   doc(db, 'users', currentUser.uid);
         await updateDoc(userRef, {
           breederLocations: arrayUnion(newBreederLocation)
         });
@@ -321,7 +411,7 @@ export default function BreederMap() {
             coordinates: [newPin.lng, newPin.lat],
           },
         };
-        setMarkers([...markers, newMarker]);
+        setMarkers(prevMarkers => [...prevMarkers, newMarker]);
         clusterIndexRef.current.load([...markers, newMarker]);
         setNewPin(null);
         setIsModalOpen(false);
@@ -387,12 +477,11 @@ export default function BreederMap() {
       );
       await updateDoc(userRef, { breederLocations: updatedLocations });
       const updatedMarker = {
-        
         ...activeMarker,
         properties: {
           ...activeMarker.properties,
           breeder: editedMarker.properties.breeder,
-          species:  species.filter(s => s.trim() !== ''),
+          species: species.filter(s => s.trim() !== ''),
           contactInfo: editedMarker.properties.contactInfo,
           logo: logoUrl,
           links: links.filter(link => link.trim() !== ''),
@@ -404,10 +493,8 @@ export default function BreederMap() {
       ));
       clusterIndexRef.current.load(markers);
       setActiveMarker(updatedMarker);
-      
       setEditMode(false);
       setLogo(null);
-      
       customToast.success('Breeder information updated successfully!');
     } catch (error) {
       console.error('Error updating breeder information:', error);
@@ -471,7 +558,6 @@ export default function BreederMap() {
           });
 
           const updatedMarkers = markers.filter(marker => marker.properties.markerId !== activeMarker.properties.markerId);
-          
           setMarkers(updatedMarkers);
           clusterIndexRef.current.load(updatedMarkers);
           setActiveMarker(null);
@@ -504,7 +590,7 @@ export default function BreederMap() {
     return <div className="breeder-map__error">Error loading maps: {loadError.message}</div>;
   }
 
-  if (!isLoaded) {
+  if (!isLoaded || isLoading) {
     return <div className="breeder-map__loading">Loading...</div>;
   }
 
@@ -759,8 +845,8 @@ export default function BreederMap() {
                   <ul className="links-list">
                     {activeMarker.properties.links && activeMarker.properties.links.map((link, index) => (
                       <li key={index}>
-                        <a href={link} target="_blank" rel="noopener noreferrer">
-                          <FontAwesomeIcon icon={faLink} /> {link}
+                        <a href={link} target="_blank" rel="noopener noreferrer" title={link}>
+                          <FontAwesomeIcon icon={faLink} /> {link.length > 30 ? link.substring(0, 20) + '...' : link}
                         </a>
                       </li>
                     ))}
@@ -844,7 +930,7 @@ export default function BreederMap() {
                   />
                 </div>
                 <div className="form-group">
-                  <label>Links:</label>
+                                    <label>Links:</label>
                   {links.map((link, index) => (
                     <div key={index} className="link-input">
                       <input
