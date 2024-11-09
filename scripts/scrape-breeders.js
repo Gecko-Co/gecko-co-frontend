@@ -31,6 +31,20 @@ async function readStoreList() {
   }
 }
 
+async function readCheckpoint() {
+  try {
+    const data = await fs.readFile('checkpoint.json', 'utf8');
+    return JSON.parse(data);
+  } catch (error) {
+    console.log('No checkpoint found, starting from the beginning');
+    return { lastProcessedIndex: -1 };
+  }
+}
+
+async function writeCheckpoint(index) {
+  await fs.writeFile('checkpoint.json', JSON.stringify({ lastProcessedIndex: index }));
+}
+
 const countryCoordinates = {
   GB: { lat: 55.3781, lng: -3.4360 },
   DK: { lat: 56.2639, lng: 9.5018 },
@@ -50,27 +64,33 @@ const countryCoordinates = {
   SK: { lat: 48.6690, lng: 19.6990 }
 };
 
+function addRandomOffset(coordinates) {
+  const offsetRange = 0.1; // Adjust this value to control the spread
+  const latOffset = (Math.random() - 0.5) * offsetRange;
+  const lngOffset = (Math.random() - 0.5) * offsetRange;
+  return {
+    lat: coordinates.lat + latOffset,
+    lng: coordinates.lng + lngOffset
+  };
+}
+
 async function geocodeLocation(location, region, countryCode) {
   const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
   const maxRetries = 3;
   
-  // Use predefined coordinates for non-US countries if available
   if (countryCode !== 'US' && countryCoordinates[countryCode]) {
-    console.log(`Using predefined coordinates for ${countryCode}`);
-    return countryCoordinates[countryCode];
+    console.log(`Using predefined coordinates for ${countryCode} with random offset`);
+    return addRandomOffset(countryCoordinates[countryCode]);
   }
 
-  // Primary query formats using location details
   const queryFormats = [
     { q: `${location}, ${region}, ${countryCode}` },
     { q: `${location}, ${countryCode}` },
     { q: `${region}, ${countryCode}` }
   ];
 
-  // Fallback format that uses only the country code
   const fallbackFormat = { q: `${countryCode}` };
 
-  // Try primary query formats with retries
   for (let format of queryFormats) {
     for (let attempt = 0; attempt < maxRetries; attempt++) {
       try {
@@ -101,13 +121,11 @@ async function geocodeLocation(location, region, countryCode) {
                       error.response ? error.response.data : error.message);
       }
 
-      // Exponential backoff delay
       await delay(2000 * Math.pow(2, attempt));
     }
   }
 
-  // Fallback to country-only geocoding
-  console.warn(`Falling back to country-only geocoding for ${countryCode}`);
+  console.warn(`Falling back to country-only geocoding for ${countryCode} with random offset`);
   try {
     const response = await axios.get('https://nominatim.openstreetmap.org/search', {
       params: {
@@ -122,10 +140,10 @@ async function geocodeLocation(location, region, countryCode) {
 
     if (response.data && response.data.length > 0) {
       console.log(`Country-only geocoding successful for ${countryCode}`);
-      return {
+      return addRandomOffset({
         lat: parseFloat(response.data[0].lat),
         lng: parseFloat(response.data[0].lon)
-      };
+      });
     } else {
       console.warn(`Country-only geocoding failed for ${countryCode}`);
     }
@@ -191,11 +209,13 @@ async function checkDuplicate(breederData) {
 async function scrapeBreeders() {
   try {
     const storeList = await readStoreList();
-    const breeders = [];
+    const checkpoint = await readCheckpoint();
+    const startIndex = checkpoint.lastProcessedIndex + 1;
 
     console.log(`Total stores in JSON: ${storeList.length}`);
+    console.log(`Resuming from index: ${startIndex}`);
 
-    for (let i = 0; i < storeList.length; i++) {
+    for (let i = startIndex; i < storeList.length; i++) {
       const [storeName, breederName, , name, region, countryCode] = storeList[i];
       console.log(`Scraping store ${i + 1}/${storeList.length}: ${storeName}`);
       const { location, logo, species, markerPosition } = await scrapeStoreInfo(storeName, breederName, region, countryCode);
@@ -215,24 +235,24 @@ async function scrapeBreeders() {
       const isDuplicate = await checkDuplicate(breederData);
       if (isDuplicate) {
         console.log(`Duplicate found for ${breederName}. Skipping...`);
+        await writeCheckpoint(i);
         continue;
       }
-
-      breeders.push(breederData);
 
       try {
         const docRef = await addDoc(collection(db, "breeders"), breederData);
         console.log(`Breeder document written with ID: ${docRef.id}`);
+        await writeCheckpoint(i);
       } catch (e) {
         console.error("Error adding breeder document: ", e);
+        // Don't update checkpoint if there's an error, so we can retry this store
       }
 
       // Add a delay to avoid overwhelming the server
       await new Promise(resolve => setTimeout(resolve, 2000));
     }
 
-    console.log(JSON.stringify(breeders, null, 2));
-    console.log(`Total breeders scraped and added to Firestore: ${breeders.length}`);
+    console.log(`Scraping process completed. Last processed index: ${storeList.length - 1}`);
   } catch (error) {
     console.error('An error occurred during the scraping process:', error);
   }

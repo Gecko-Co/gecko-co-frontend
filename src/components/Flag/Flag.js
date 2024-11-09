@@ -3,25 +3,33 @@ import './Flag.scss';
 
 const Flag = () => {
     const [isFloating, setIsFloating] = useState(false);
-    const environment = process.env.REACT_APP_NEXT_PUBLIC_DEPLOYMENT_ENVIRONMENT === 'dev' ? 'DEV' : 'PROD';
-    const environmentStyle = environment === 'DEV' ? { color: 'blue', fontWeight: 'bold' } : { color: 'red', fontWeight: 'bold' };
+    const [animate, setAnimate] = useState(false);
+
+    const environment = "20%"
+    const environmentStyle = { color: '#fff', fontWeight: 'bold', fontSize: '1.2em' };
 
     useEffect(() => {
         const handleScroll = () => {
             const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            setIsFloating(scrollTop > 100); // Adjust threshold as needed
+            setIsFloating(scrollTop > 100);
         };
 
         window.addEventListener('scroll', handleScroll);
 
+        // Add animation effect
+        const animationInterval = setInterval(() => {
+            setAnimate(prev => !prev);
+        }, 3000);
+
         return () => {
             window.removeEventListener('scroll', handleScroll);
+            clearInterval(animationInterval);
         };
     }, []);
 
     return (
         <div className={`development-banner ${isFloating ? 'floating' : ''}`}>
-            <span style={environmentStyle}>{environment}</span> - This site is still in development.
+            <span style={{...environmentStyle, transform: animate ? 'scale(1.1)' : 'scale(1)', transition: 'transform 0.3s ease'}}>{environment}</span> OFF 🎉 Limited Time Offer on Selected Items!
         </div>
     );
 };

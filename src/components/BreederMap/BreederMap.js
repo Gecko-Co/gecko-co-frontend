@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { GoogleMap, useJsApiLoader, OverlayView } from '@react-google-maps/api';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch, faTimes, faPencilAlt, faCheck, faPlus, faTrash, faUpload, faLink, faMapPin, faDragon, faLocationArrow } from '@fortawesome/free-solid-svg-icons';
+import { faSearch, faTimes, faPencilAlt, faCheck, faPlus, faTrash, faUpload, faLink, faMapPin, faDragon, faLocationArrow, faSpinner } from '@fortawesome/free-solid-svg-icons';
 import { collection, getDocs, doc, updateDoc, getDoc, arrayUnion, arrayRemove, query, limit } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { db, storage } from '../../firebase';
@@ -14,23 +14,6 @@ import './BreederMap.scss';
 const mapContainerStyle = {
   width: '100%',
   height: '100%',
-};
-
-const mapOptions = {
-  streetViewControl: false,
-  mapTypeControl: false,
-  fullscreenControl: false,
-  restriction: {
-    latLngBounds: {
-      north: 85,
-      south: -85,
-      west: -180,
-      east: 180,
-    },
-    strictBounds: false,
-  },
-  minZoom: 2,
-  mapId: '3c0cbad635cf86d2',
 };
 
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
@@ -59,23 +42,44 @@ export default function BreederMap() {
   const [logo, setLogo] = useState(null);
   const [isAddingLocation, setIsAddingLocation] = useState(false);
   const [center, setCenter] = useState({ lat: 20, lng: 0 });
-  const searchInputRef = useRef(null);
-  const mapRef = useRef(null);
-  const clusterIndexRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [cachedBreederLocations, setCachedBreederLocations] = useState(null);
   const [lastFetchTime, setLastFetchTime] = useState(null);
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
 
+  const searchInputRef = useRef(null);
+  const mapRef = useRef(null);
+  const clusterIndexRef = useRef(null);
+
   useEffect(() => {
-    const handleResize = () => {
+    const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
+
+  const mapOptions = {
+    streetViewControl: false,
+    mapTypeControl: false,
+    fullscreenControl: false,
+    restriction: {
+      latLngBounds: {
+        north: 85,
+        south: -85,
+        west: -180,
+        east: 180,
+      },
+      strictBounds: false,
+    },
+    minZoom: 2,
+    mapId: '3c0cbad635cf86d2',
+    gestureHandling: isMobile ? 'greedy' : 'cooperative',
+  };
 
   useEffect(() => {
     if (loadError) {
@@ -259,6 +263,7 @@ export default function BreederMap() {
       setBounds(initialBounds.toJSON());
       setZoom(map.getZoom());
     }
+    setIsLoading(false);
   }, []);
 
   const onUnmount = useCallback(() => {
@@ -477,7 +482,7 @@ export default function BreederMap() {
             contactInfo: editedMarker.properties.contactInfo,
             logo: logoUrl,
             links: links.filter(link => link.trim() !== ''),
-            ownerName: editedMarker.properties.ownerName,
+            ownerName: editedMarker.properties.name || editedMarker.properties.ownerName,
           }
           : location
       );
@@ -491,7 +496,7 @@ export default function BreederMap() {
           contactInfo: editedMarker.properties.contactInfo,
           logo: logoUrl,
           links: links.filter(link => link.trim() !== ''),
-          ownerName: editedMarker.properties.ownerName,
+          ownerName: editedMarker.properties.name || editedMarker.properties.ownerName,
         },
       };
       setMarkers(markers.map(marker =>
@@ -593,18 +598,24 @@ export default function BreederMap() {
   };
 
   if (loadError) {
-    return <div className="breeder-map__error">Error loading maps: {loadError.message}</div>;
-  }
-
-  if (!isLoaded || isLoading) {
-    return <div className="breeder-map__loading">Loading...</div>;
+    return (
+      <div className="breeder-map__error" role="alert">
+        <p>Error loading maps: {loadError.message}</p>
+        <p>Please try again later or contact support if the problem persists.</p>
+      </div>
+    );
   }
 
   return (
     <div className="breeder-map">
       <div className={`map-and-panel-container ${isMobile ? 'mobile' : ''}`}>
         <div className={`map-wrapper ${isAddingLocation ? 'adding-location' : ''}`}>
-          {isLoaded ? (
+          {!isLoaded || isLoading ? (
+            <div className="breeder-map__loading" aria-live="polite">
+              <FontAwesomeIcon icon={faSpinner} spin size="3x" />
+              <p>Loading map...</p>
+            </div>
+          ) : (
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
               center={center}
@@ -716,8 +727,6 @@ export default function BreederMap() {
                 </OverlayView>
               )}
             </GoogleMap>
-          ) : (
-            <div>Loading map...</div>
           )}
         </div>
         {isSidePanelOpen && activeMarker && (
@@ -751,47 +760,47 @@ export default function BreederMap() {
                     type="text"
                     id="ownerName"
                     name="ownerName"
-                    value={editedMarker.properties.ownerName}
+                    value={editedMarker.properties.name || editedMarker.properties.ownerName}
                     onChange={handleInputChange}
                     className="form-input"
                   />
                 </div>
                 <div className="info-item">
-                  <label>Species:</label>
-                  {species.map((s, index) => (
-                    <div key={index} className="species-input">
-                      <input
-                        type="text"
-                        value={s}
-                        onChange={(e) => handleSpeciesChange(index, e.target.value)}
-                        placeholder="Gecko Species"
-                        className="form-input"
-                      />
-                      <button type="button" onClick={() => handleRemoveSpecies(index)} className="btn-icon">
-                        <FontAwesomeIcon icon={faTrash} />
-                      </button>
-                    </div>
-                  ))}
-                  <button type="button" onClick={handleAddSpecies} className="add-species-button">
-                    <FontAwesomeIcon icon={faPlus} /> Add Species
-                  </button>
-                </div>
-                <div className="info-item">
-                  <label htmlFor="contactInfo">Contact:</label>
-                  <input
-                    type="text"
-                    id="contactInfo"
-                    name="contactInfo"
-                    value={editedMarker.properties.contactInfo}
-                    onChange={handleInputChange}
-                    className="form-input"
-                  />
-                </div>
-                <div className="info-item">
-                  <label>Links:</label>
-                  {links.map((link, index) => (
-                    <div key={index} className="link-input">
-                      <input
+                    <label>Species:</label>
+                    {species.map((s, index) => (
+                      <div key={index} className="species-input">
+                        <input
+                          type="text"
+                          value={s}
+                          onChange={(e) => handleSpeciesChange(index, e.target.value)}
+                          placeholder="Gecko Species"
+                          className="form-input"
+                        />
+                        <button type="button" onClick={() => handleRemoveSpecies(index)} className="btn-icon">
+                          <FontAwesomeIcon icon={faTrash} />
+                        </button>
+                      </div>
+                    ))}
+                    <button type="button" onClick={handleAddSpecies} className="add-species-button">
+                      <FontAwesomeIcon icon={faPlus} /> Add Species
+                    </button>
+                  </div>
+                  <div className="info-item">
+                    <label htmlFor="contactInfo">Contact:</label>
+                    <input
+                      type="text"
+                      id="contactInfo"
+                      name="contactInfo"
+                      value={editedMarker.properties.contactInfo}
+                      onChange={handleInputChange}
+                      className="form-input"
+                    />
+                  </div>
+                  <div className="info-item">
+                    <label>Links:</label>
+                    {links.map((link, index) => (
+                      <div key={index} className="link-input">
+                        <input
                         type="url"
                         value={link}
                         onChange={(e) => handleLinkChange(index, e.target.value)}
@@ -830,18 +839,18 @@ export default function BreederMap() {
                 <button type="submit" className="save-button">
                   <FontAwesomeIcon icon={faCheck} /> Save
                 </button>
-              </form>
-            ) : (
-              <>
-                <div className="info-item">
+            </form>
+          ) : (
+            <>
+                            <div className="info-item">
                   <strong>Breeder Name:</strong>
                   <span>{activeMarker.properties.breeder}</span>
                 </div>
-                <div className="info-item">
-                  <strong>Owner:</strong>
-                  <span>{activeMarker.properties.ownerName}</span>
-                </div>
-                <div className="info-item">
+              <div className="info-item">
+                <strong>Owner:</strong>
+                <span>{activeMarker.properties.name || activeMarker.properties.ownerName}</span>
+              </div>
+              <div className="info-item">
                   <strong>Species:</strong>
                   <ul className="species-list">
                     {activeMarker.properties.species && activeMarker.properties.species.map((s, index) => (

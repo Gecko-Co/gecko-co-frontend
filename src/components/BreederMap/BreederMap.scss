@@ -55,7 +55,7 @@
 
     .floating-controls {
       position: absolute;
-      top: 280px; // Increased from 20px to move it further down
+      top: 280px;
       left: 50%;
       transform: translateX(-50%);
       z-index: 1000;
@@ -67,17 +67,17 @@
       max-width: 400px;
 
       @media (max-width: 768px) {
-        top: 160px; // Increased for mobile screens
+        top: 160px;
         width: 95%;
         max-width: 100%;
       }
 
       @media (min-width: 769px) and (max-width: 1024px) {
-        top: 170px; // Increased for medium-sized screens
+        top: 170px;
       }
 
       @media (min-width: 1025px) {
-        top: 220px; // Increased for large screens
+        top: 220px;
       }
 
       @media (min-width: 768px) {
@@ -85,6 +85,7 @@
         justify-content: center;
         max-width: 800px;
       }
+
       .search-container {
         position: relative;
         width: 100%;
@@ -828,4 +829,18 @@
 
 .cluster-count {
   animation: pulse 1.5s infinite;
+}
+
+.breeder-map__loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  font-size: 18px;
+  color: #333;
+
+  svg {
+    margin-bottom: 10px;
+  }
 }
