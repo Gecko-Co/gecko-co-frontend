@@ -66,6 +66,7 @@ export default function BreederMap() {
   const [isLoading, setIsLoading] = useState(true);
   const [cachedBreederLocations, setCachedBreederLocations] = useState(null);
   const [lastFetchTime, setLastFetchTime] = useState(null);
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -331,12 +332,13 @@ export default function BreederMap() {
         (position) => {
           const { latitude, longitude } = position.coords;
           setCenter({ lat: latitude, lng: longitude });
-          setZoom(7); // Zoom in closer when user clicks "Show breeders around me"
+          setZoom(7);
           if (mapRef.current) {
             mapRef.current.panTo({ lat: latitude, lng: longitude });
             mapRef.current.setZoom(7);
           }
           customToast.success('Showing breeders around your precise location.');
+          setIsSearchDropdownOpen(false);
         },
         () => {
           customToast.error('Unable to get your precise location. Please check your browser settings.');
@@ -600,27 +602,6 @@ export default function BreederMap() {
 
   return (
     <div className="breeder-map">
-      <h1 className="section-title">Breeder Map</h1>
-      <div className="search-container">
-        <input
-          ref={searchInputRef}
-          type="text"
-          placeholder="Search for a location"
-          className="search-input"
-        />
-        <button onClick={handleSearch} className="search-button">
-          <FontAwesomeIcon icon={faSearch} /> Search
-        </button>
-        <button
-          onClick={toggleAddLocationMode}
-          className={`add-location-button ${isAddingLocation ? 'active' : ''}`}
-        >
-          <FontAwesomeIcon icon={faMapPin} /> {isAddingLocation ? 'Cancel' : 'Add Location'}
-        </button>
-        <button onClick={handleShowBreedersAroundMe} className="show-breeders-around-me-button">
-          <FontAwesomeIcon icon={faLocationArrow} /> Show Breeders Around Me
-        </button>
-      </div>
       <div className={`map-and-panel-container ${isMobile ? 'mobile' : ''}`}>
         <div className={`map-wrapper ${isAddingLocation ? 'adding-location' : ''}`}>
           {isLoaded ? (
@@ -634,6 +615,34 @@ export default function BreederMap() {
               onIdle={onIdle}
               options={mapOptions}
             >
+              <div className="floating-controls">
+                <div className="search-container">
+                  <input
+                    ref={searchInputRef}
+                    type="text"
+                    placeholder="Search location"
+                    className="search-input"
+                    onFocus={() => setIsSearchDropdownOpen(true)}
+                    onBlur={() => setTimeout(() => setIsSearchDropdownOpen(false), 200)}
+                  />
+                  <button onClick={handleSearch} className="search-button">
+                    <FontAwesomeIcon icon={faSearch} /> Search
+                  </button>
+                  {isSearchDropdownOpen && (
+                    <div className={`search-dropdown ${isSearchDropdownOpen ? 'open' : ''}`}>
+                      <button onClick={handleShowBreedersAroundMe} className="show-breeders-around-me-button">
+                        <FontAwesomeIcon icon={faLocationArrow} /> Show Breeders Around Me
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <button
+                  onClick={toggleAddLocationMode}
+                  className={`add-location-button ${isAddingLocation ? 'active' : ''}`}
+                >
+                  <FontAwesomeIcon icon={faMapPin} /> {isAddingLocation ? 'Cancel' : 'Add Location'}
+                </button>
+              </div>
               {clusters.map((cluster) => {
                 const [longitude, latitude] = cluster.geometry.coordinates;
                 const {
@@ -934,7 +943,7 @@ export default function BreederMap() {
                   />
                 </div>
                 <div className="form-group">
-                                    <label>Links:</label>
+                  <label>Links:</label>
                   {links.map((link, index) => (
                     <div key={index} className="link-input">
                       <input
