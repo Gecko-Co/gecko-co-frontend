@@ -16,23 +16,6 @@ const mapContainerStyle = {
   height: '100%',
 };
 
-const mapOptions = {
-  streetViewControl: false,
-  mapTypeControl: false,
-  fullscreenControl: false,
-  restriction: {
-    latLngBounds: {
-      north: 85,
-      south: -85,
-      west: -180,
-      east: 180,
-    },
-    strictBounds: false,
-  },
-  minZoom: 2,
-  mapId: '3c0cbad635cf86d2',
-};
-
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
 
 export default function BreederMap() {
@@ -59,23 +42,44 @@ export default function BreederMap() {
   const [logo, setLogo] = useState(null);
   const [isAddingLocation, setIsAddingLocation] = useState(false);
   const [center, setCenter] = useState({ lat: 20, lng: 0 });
-  const searchInputRef = useRef(null);
-  const mapRef = useRef(null);
-  const clusterIndexRef = useRef(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(false); // Changed initial value to false
   const [isLoading, setIsLoading] = useState(true);
   const [cachedBreederLocations, setCachedBreederLocations] = useState(null);
   const [lastFetchTime, setLastFetchTime] = useState(null);
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
 
+  const searchInputRef = useRef(null);
+  const mapRef = useRef(null);
+  const clusterIndexRef = useRef(null);
+
   useEffect(() => {
-    const handleResize = () => {
+    const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
 
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    checkIsMobile(); // Call immediately to set initial value
+    window.addEventListener('resize', checkIsMobile);
+
+    return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
+
+  const mapOptions = {
+    streetViewControl: false,
+    mapTypeControl: false,
+    fullscreenControl: false,
+    restriction: {
+      latLngBounds: {
+        north: 85,
+        south: -85,
+        west: -180,
+        east: 180,
+      },
+      strictBounds: false,
+    },
+    minZoom: 2,
+    mapId: '3c0cbad635cf86d2',
+    gestureHandling: isMobile ? 'greedy' : 'cooperative',
+  };
 
   useEffect(() => {
     if (loadError) {
@@ -477,7 +481,7 @@ export default function BreederMap() {
             contactInfo: editedMarker.properties.contactInfo,
             logo: logoUrl,
             links: links.filter(link => link.trim() !== ''),
-            ownerName: editedMarker.properties.ownerName,
+            ownerName: editedMarker.properties.name || editedMarker.properties.ownerName,
           }
           : location
       );
@@ -491,7 +495,7 @@ export default function BreederMap() {
           contactInfo: editedMarker.properties.contactInfo,
           logo: logoUrl,
           links: links.filter(link => link.trim() !== ''),
-          ownerName: editedMarker.properties.ownerName,
+          ownerName: editedMarker.properties.name || editedMarker.properties.ownerName,
         },
       };
       setMarkers(markers.map(marker =>
@@ -720,43 +724,43 @@ export default function BreederMap() {
             <div>Loading map...</div>
           )}
         </div>
-        {isSidePanelOpen && activeMarker && (
-          <div className={`side-panel ${isMobile ? 'mobile' : ''}`}>
-            {isMobile && <div className="drag-handle" />}
-            <button className="close-button" onClick={handleCloseSidePanel}>
-              <FontAwesomeIcon icon={faTimes} />
-            </button>
-            <div className="breeder-header">
-              {activeMarker.properties.logo && (
-                <img src={activeMarker.properties.logo} alt="Breeder logo" className="breeder-logo" />
-              )}
-              <h3>{activeMarker.properties.breeder}</h3>
-            </div>
-            {editMode ? (
-              <form onSubmit={(e) => { e.preventDefault(); handleSaveEdit(); }} className="edit-form">
-                <div className="info-item">
-                  <label htmlFor="breeder">Breeder Name:</label>
-                  <input
-                    type="text"
-                    id="breeder"
-                    name="breeder"
-                    value={editedMarker.properties.breeder}
-                    onChange={handleInputChange}
-                    className="form-input"
-                  />
-                </div>
-                <div className="info-item">
-                  <label htmlFor="ownerName">Owner Name:</label>
-                  <input
-                    type="text"
-                    id="ownerName"
-                    name="ownerName"
-                    value={editedMarker.properties.ownerName}
-                    onChange={handleInputChange}
-                    className="form-input"
-                  />
-                </div>
-                <div className="info-item">
+      {isSidePanelOpen && activeMarker && (
+        <div className={`side-panel ${isMobile ? 'mobile' : ''}`}>
+          {isMobile && <div className="drag-handle" />}
+          <button className="close-button" onClick={handleCloseSidePanel}>
+            <FontAwesomeIcon icon={faTimes} />
+          </button>
+          <div className="breeder-header">
+            {activeMarker.properties.logo && (
+              <img src={activeMarker.properties.logo} alt="Breeder logo" className="breeder-logo" />
+            )}
+            <h3>{activeMarker.properties.breeder}</h3>
+          </div>
+          {editMode ? (
+            <form onSubmit={(e) => { e.preventDefault(); handleSaveEdit(); }} className="edit-form">
+              <div className="info-item">
+                <label htmlFor="breeder">Breeder Name:</label>
+                <input
+                  type="text"
+                  id="breeder"
+                  name="breeder"
+                  value={editedMarker.properties.breeder}
+                  onChange={handleInputChange}
+                  className="form-input"
+                />
+              </div>
+              <div className="info-item">
+                <label htmlFor="ownerName">Owner Name:</label>
+                <input
+                  type="text"
+                  id="ownerName"
+                  name="ownerName"
+                  value={editedMarker.properties.name || editedMarker.properties.ownerName}
+                  onChange={handleInputChange}
+                  className="form-input"
+                />
+              </div>
+              <div className="info-item">
                   <label>Species:</label>
                   {species.map((s, index) => (
                     <div key={index} className="species-input">
@@ -830,18 +834,18 @@ export default function BreederMap() {
                 <button type="submit" className="save-button">
                   <FontAwesomeIcon icon={faCheck} /> Save
                 </button>
-              </form>
-            ) : (
-              <>
-                <div className="info-item">
+            </form>
+          ) : (
+            <>
+                            <div className="info-item">
                   <strong>Breeder Name:</strong>
                   <span>{activeMarker.properties.breeder}</span>
                 </div>
-                <div className="info-item">
-                  <strong>Owner:</strong>
-                  <span>{activeMarker.properties.ownerName}</span>
-                </div>
-                <div className="info-item">
+              <div className="info-item">
+                <strong>Owner:</strong>
+                <span>{activeMarker.properties.name || activeMarker.properties.ownerName}</span>
+              </div>
+              <div className="info-item">
                   <strong>Species:</strong>
                   <ul className="species-list">
                     {activeMarker.properties.species && activeMarker.properties.species.map((s, index) => (
