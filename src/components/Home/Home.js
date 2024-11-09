@@ -115,7 +115,7 @@ export default function Component() {
   useEffect(() => {
     const fetchGeckos = async () => {
       const geckosRef = collection(db, 'geckos');
-      const q = query(geckosRef, where("status", "==", "Available"));
+      const q = query(geckosRef, where("status", "==", "Reserved"));
       const querySnapshot = await getDocs(q);
       const geckos = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setAvailableGeckos(geckos);
