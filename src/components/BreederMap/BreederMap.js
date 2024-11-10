@@ -67,6 +67,7 @@ export default function BreederMap() {
     streetViewControl: false,
     mapTypeControl: false,
     fullscreenControl: false,
+    zoomControl: true,
     restriction: {
       latLngBounds: {
         north: 85,
@@ -80,7 +81,17 @@ export default function BreederMap() {
     mapId: '3c0cbad635cf86d2',
     gestureHandling: isMobile ? 'greedy' : 'cooperative',
   };
-
+  
+  // Inside your component, after the Google Maps API is loaded:
+  useEffect(() => {
+    if (isLoaded && map) {
+      map.setOptions({
+        zoomControlOptions: {
+          position: window.google?.maps.ControlPosition.LEFT_CENTER,
+        },
+      });
+    }
+  }, [isLoaded, map]);
   useEffect(() => {
     if (loadError) {
       console.error('Error loading Google Maps:', loadError);
@@ -323,7 +334,7 @@ export default function BreederMap() {
           map.setCenter(location);
           map.setZoom(8);
         } else {
-          customToast.error('Search was not successful. Please try a different location.');
+          customToast.error('Search was not successful. Please try a different location.Try adding more details.');
         }
       });
     } else {
