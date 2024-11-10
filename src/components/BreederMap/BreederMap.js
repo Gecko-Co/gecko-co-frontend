@@ -68,6 +68,7 @@ export default function BreederMap() {
     mapTypeControl: false,
     fullscreenControl: false,
     zoomControl: true,
+    clickableIcons: false,
     restriction: {
       latLngBounds: {
         north: 85,
