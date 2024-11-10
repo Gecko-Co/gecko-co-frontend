@@ -2,6 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebook } from '@fortawesome/free-brands-svg-icons';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -19,13 +20,15 @@ const Footer = () => {
           <FooterSection>
             <FooterHeading>Explore</FooterHeading>
             <ExploreLinks>
-              <FooterLink href="/">Home</FooterLink>
-              <FooterLink href="/shop">Shop</FooterLink>
-              <FooterLink href="/learn">Learn</FooterLink>
-              <FooterLink href="/genetic-calculator">Genetic Calculator</FooterLink>
-              <FooterLink href="/policies">Policies</FooterLink>
-              <FooterLink href="/contact">Contact Us</FooterLink>
-
+              <FooterLink to="/">Home</FooterLink>
+              <FooterLink to="/shop">Shop</FooterLink>
+              <FooterLink to="/learn">Learn</FooterLink>
+              <FooterLink to="/genetic-calculator">Genetic Calculator</FooterLink>
+              <FooterLink to="/contact">Contact</FooterLink>
+              <FooterLink to="/cart">Cart</FooterLink>
+              <FooterLink to="/blogs">Blogs</FooterLink>
+              <FooterLink to="/policies">Policies</FooterLink>
+              <FooterLink to="/breeder-map">Breeder Map</FooterLink>
             </ExploreLinks>
           </FooterSection>
           <FooterSection>
@@ -44,7 +47,7 @@ const Footer = () => {
         </FooterTop>
         <FooterBottom>
           <FooterText>
-            &copy; 2018-2024 Gecko Co.&reg; | All Rights Reserved
+            &copy; 2018-{new Date().getFullYear()} Gecko Co.&reg; | All Rights Reserved
           </FooterText>
         </FooterBottom>
       </Container>
@@ -63,7 +66,6 @@ const CompanyName = styled.span`
   font-weight: bold;
   color: #bd692d;
 `;
-
 const StyledFooter = styled.footer`
   background-color: #23283b;
   color: white;
@@ -125,7 +127,7 @@ const ExploreLinks = styled.div`
   gap: 5px;
 `;
 
-const FooterLink = styled.a`
+const FooterLink = styled(Link)`
   color: white;
   text-decoration: none;
   margin-bottom: 5px;
