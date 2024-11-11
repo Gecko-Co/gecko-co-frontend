@@ -51,7 +51,7 @@ export default function BreederMap() {
   const searchInputRef = useRef(null);
   const mapRef = useRef(null);
   const clusterIndexRef = useRef(null);
-
+  const [isSubmitting, setIsSubmitting] = useState(false);
   useEffect(() => {
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -395,11 +395,19 @@ export default function BreederMap() {
 
   const handlePinSubmit = async (e) => {
     e.preventDefault();
-    const breeder = e.target.breeder.value;
-    const contactInfo = e.target.contactInfo.value;
-    const ownerName = e.target.ownerName.value;
+    setIsSubmitting(true);
 
-    if (breeder && contactInfo && ownerName && newPin && currentUser) {
+    const breeder = e.target.breeder.value.trim();
+    const ownerName = e.target.ownerName.value.trim();
+    const contactInfo = e.target.contactInfo.value.trim();
+
+    if (!breeder || !ownerName) {
+      setIsSubmitting(false);
+      customToast.error('Please fill in all required fields (Breeder Name and Owner Name).');
+      return;
+    }
+
+    if (newPin && currentUser) {
       try {
         const logoUrl = logo ? await uploadLogo(logo) : null;
         const newBreederLocation = {
@@ -412,7 +420,7 @@ export default function BreederMap() {
           links: links.filter(link => link.trim() !== ''),
           ownerName,
         };
-        const userRef =   doc(db, 'users', currentUser.uid);
+        const userRef = doc(db, 'users', currentUser.uid);
         await updateDoc(userRef, {
           breederLocations: arrayUnion(newBreederLocation)
         });
@@ -445,7 +453,12 @@ export default function BreederMap() {
       } catch (error) {
         console.error('Error adding breeder location:', error);
         customToast.error('Failed to add breeder location. Please try again.');
+      } finally {
+        setIsSubmitting(false);
       }
+    } else {
+      setIsSubmitting(false);
+      customToast.error('Please select a location on the map.');
     }
   };
 
@@ -912,25 +925,29 @@ export default function BreederMap() {
               <h3>Add Your Breeder Location</h3>
               <form onSubmit={handlePinSubmit} className="add-location-form">
                 <div className="form-group">
-                  <label htmlFor="breeder">Breeder Name:</label>
+                  <label htmlFor="breeder">
+                    Breeder Name: <span className="required">*</span>
+                  </label>
                   <input
                     type="text"
                     id="breeder"
                     name="breeder"
                     placeholder="Breeder Name"
                     required
-                    className="form-input"
+                    className="form-input required-field"
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="ownerName">Owner Name:</label>
+                  <label htmlFor="ownerName">
+                    Owner Name: <span className="required">*</span>
+                  </label>
                   <input
                     type="text"
                     id="ownerName"
                     name="ownerName"
                     placeholder="Owner Name"
                     required
-                    className="form-input"
+                    className="form-input required-field"
                   />
                 </div>
                 <div className="form-group">
@@ -954,7 +971,7 @@ export default function BreederMap() {
                   </button>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="contactInfo">Contact Info(Optional):</label>
+                  <label htmlFor="contactInfo">Contact Info:</label>
                   <input
                     type="text"
                     id="contactInfo"
@@ -1004,9 +1021,17 @@ export default function BreederMap() {
                   )}
                 </div>
                 <div className="button-group">
-                  <button type="submit" className="btn-submit">
-                    <FontAwesomeIcon icon={faCheck} /> Submit
-                  </button>
+                <button type="submit" className="btn-submit" disabled={isSubmitting}>
+              {isSubmitting ? (
+                <>
+                  <FontAwesomeIcon icon={faSpinner} spin /> Submitting...
+                </>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faCheck} /> Submit
+                </>
+              )}
+            </button>
                 </div>
               </form>
             </div>
