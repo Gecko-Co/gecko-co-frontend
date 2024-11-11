@@ -17,11 +17,12 @@ const mapContainerStyle = {
 };
 
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+const libraries = ['places'];
 
 export default function BreederMap() {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || '',
-    libraries: ['places'],
+    libraries: libraries,
   });
 
   const { currentUser } = useAuth();
