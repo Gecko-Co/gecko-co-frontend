@@ -17,11 +17,12 @@ const mapContainerStyle = {
 };
 
 const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours in milliseconds
+const libraries = ['places'];
 
 export default function BreederMap() {
   const { isLoaded, loadError } = useJsApiLoader({
     googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY || '',
-    libraries: ['places'],
+    libraries: libraries,
   });
 
   const { currentUser } = useAuth();
@@ -172,7 +173,7 @@ export default function BreederMap() {
     }
 
     try {
-      const breederQuery = query(collection(db, 'breeders'), limit(1000));
+      const breederQuery = query(collection(db, 'breeders'), limit(5000));
       const breederSnapshot = await getDocs(breederQuery);
       const breederLocations = breederSnapshot.docs.map(doc => {
         const data = doc.data();
