@@ -173,7 +173,7 @@ export default function BreederMap() {
     }
 
     try {
-      const breederQuery = query(collection(db, 'breeders'), limit(5000));
+      const breederQuery = query(collection(db, 'breeders'), limit(1000));
       const breederSnapshot = await getDocs(breederQuery);
       const breederLocations = breederSnapshot.docs.map(doc => {
         const data = doc.data();
