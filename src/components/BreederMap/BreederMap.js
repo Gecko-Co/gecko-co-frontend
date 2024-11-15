@@ -48,11 +48,13 @@ export default function BreederMap() {
   const [cachedBreederLocations, setCachedBreederLocations] = useState(null);
   const [lastFetchTime, setLastFetchTime] = useState(null);
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
+  const [initialZoom, setInitialZoom] = useState(3);
 
   const searchInputRef = useRef(null);
   const mapRef = useRef(null);
   const clusterIndexRef = useRef(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
   useEffect(() => {
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768);
@@ -84,7 +86,6 @@ export default function BreederMap() {
     gestureHandling: isMobile ? 'greedy' : 'cooperative',
   };
   
-  // Inside your component, after the Google Maps API is loaded:
   useEffect(() => {
     if (isLoaded && map) {
       map.setOptions({
@@ -94,6 +95,7 @@ export default function BreederMap() {
       });
     }
   }, [isLoaded, map]);
+
   useEffect(() => {
     if (loadError) {
       console.error('Error loading Google Maps:', loadError);
@@ -128,20 +130,20 @@ export default function BreederMap() {
         
         // Set initial zoom based on country
         if (country_name === "United States") {
-          setZoom(4);
+          setInitialZoom(4);
         } else {
-          setZoom(5);
+          setInitialZoom(5);
         }
         
         if (mapRef.current) {
           mapRef.current.panTo({ lat: latitude, lng: longitude });
-          mapRef.current.setZoom(zoom);
+          mapRef.current.setZoom(initialZoom);
         }
       } catch (error) {
         console.error('Error fetching IP-based location:', error);
         // Fallback to default center and zoom
         setCenter({ lat: 20, lng: 0 });
-        setZoom(3);
+        setInitialZoom(3);
       }
     };
 
@@ -645,7 +647,7 @@ export default function BreederMap() {
             <GoogleMap
               mapContainerStyle={mapContainerStyle}
               center={center}
-              zoom={zoom}
+              zoom={initialZoom}
               onLoad={onLoad}
               onUnmount={onUnmount}
               onClick={handleMapClick}
