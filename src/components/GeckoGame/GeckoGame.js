@@ -280,6 +280,15 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
           points: increment(earnedScore + bonusPoints),
         });
 
+        // Add a new document to the 'geckoClicks' collection
+        await addDoc(collection(db, 'geckoClicks'), {
+          userId: currentUser.uid,
+          timestamp: new Date(),
+          earnedScore: earnedScore,
+          bonusPoints: bonusPoints,
+          page: location.pathname
+        });
+
         const userDoc = await getDoc(userRef);
         const newPoints = userDoc.data().points;
 
@@ -309,7 +318,7 @@ const GeckoGame = ({ transferTime, respawnTime, enabledPages, geckoGameEnabled }
     } else if (!currentUser) {
       customToast.info('Sign in to collect points!');
     }
-  }, [currentUser, calculateScore, isUpdating, dailyBonusAvailable, geckoGameEnabled, scheduleRespawn]);
+  }, [currentUser, calculateScore, isUpdating, dailyBonusAvailable, geckoGameEnabled, scheduleRespawn, location.pathname]);
 
   if (!geckoGameEnabled || !isVisible) return null;
 
