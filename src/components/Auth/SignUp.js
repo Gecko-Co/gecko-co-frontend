@@ -88,6 +88,7 @@ const SignUp = () => {
   };
 
   return (
+    <div className="google-anno-skip">
     <div className="signup-container" style={{ pointerEvents: loading ? 'none' : 'auto' }}>
       <div className="signup-form">
         <h2>Create your account</h2>
@@ -158,6 +159,7 @@ const SignUp = () => {
           Already have an account? <Link to="/signin">Sign In</Link>
         </p>
       </div>
+    </div>
     </div>
   );
 };

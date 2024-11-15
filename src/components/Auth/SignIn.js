@@ -40,6 +40,7 @@ const SignIn = () => {
   };
 
   return (
+    <div className="google-anno-skip">
     <div className="signin-container">
       <div className="signin-form">
         <h2>Sign In to Your Account</h2>
@@ -79,6 +80,7 @@ const SignIn = () => {
           Don't have an account? <Link to="/signup">Sign Up</Link>
         </p>
       </div>
+    </div>
     </div>
   );
 };
